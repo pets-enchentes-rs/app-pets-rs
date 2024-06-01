@@ -3,12 +3,17 @@ import React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import COLORS from '../const/colors';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
 
   const handleRegister= ()=>{
     navigation.navigate("SignUp");
+  }
+
+  const handleEnter= ()=>{
+    navigation.navigate("Home");
   }
   return (
     <View style={styles.container}>
@@ -35,9 +40,9 @@ const LoginScreen = () => {
       <View>
         <Text style={styles.esqueceuSenha}>Esqueceu sua senha?</Text>
       </View>
-      <TouchableOpacity style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={handleEnter}>
         <LinearGradient
-          colors={['#13EE85', '#0088A6']}
+          colors={[COLORS.secondary, COLORS.primary]}
           style={styles.button}>
           <Text style={styles.buttonText}>Entrar</Text>
         </LinearGradient>
@@ -60,7 +65,7 @@ export default LoginScreen;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#F5F5F5",
+    backgroundColor: COLORS.light,
     flex: 1,
     position: "relative"
   },
@@ -73,16 +78,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 70,
     fontWeight: "500",
-    color: "#262626",
+    color: COLORS.titlePrimary,
   },
   signInText: {
     textAlign: "center",
     fontSize: 18,
-    color: "#262626",
+    color: COLORS.titlePrimary,
     marginBottom: 30,
   },
   inputContainer: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: COLORS.white,
     flexDirection: "row",
     borderRadius: 20,
     marginHorizontal: 40,
@@ -99,7 +104,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   esqueceuSenha: {
-    color: "#BEBEBE",
+    color: COLORS.titleSecondary,
     textAlign: "right",
     width: "85%",
     fontSize: 15,
@@ -118,12 +123,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: COLORS.white,
     fontSize: 18,
     fontWeight: 'bold',
   },
   semContaText: {
-    color: "#262626",
+    color: COLORS.titlePrimary,
     textAlign: "center",
     fontSize: 15,
     marginTop: 120,
