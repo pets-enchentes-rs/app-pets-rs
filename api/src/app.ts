@@ -2,18 +2,16 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import routes from './routes'
-import { openDb } from './database'
 
 class App {
   public express: express.Application
 
   constructor() {
     dotenv.config()
-    
+
     this.express = express()
     this.middlewares()
     this.routes()
-    openDb()
   }
 
   private middlewares(): void {
