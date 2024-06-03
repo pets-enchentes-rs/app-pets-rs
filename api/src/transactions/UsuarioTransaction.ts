@@ -1,10 +1,9 @@
-import { openDb } from "../database"
-import { Usuario } from "../models"
+import { openDb } from '../database'
+import { Usuario } from '../models'
 
 const table = 'usuario'
 
 export default class UsuarioTransaction {
-
   public static async createTable() {
     const db = await openDb()
 

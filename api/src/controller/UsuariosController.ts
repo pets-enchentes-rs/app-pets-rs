@@ -1,10 +1,9 @@
-import { Request, Response } from "express"
-import { Usuario } from "../models"
-import { UsuarioTransaction } from "../transactions"
-import { HttpStatus } from "../utils/HttpStatus"
+import { Request, Response } from 'express'
+import { Usuario } from '../models'
+import { UsuarioTransaction } from '../transactions'
+import { HttpStatus } from '../utils/HttpStatus'
 
 export default class UsuariosController {
-
   public static async create(req: Request, res: Response): Promise<void> {
     UsuarioTransaction.createTable()
   }
@@ -50,6 +49,6 @@ export default class UsuariosController {
 
     if (!result) return res.status(HttpStatus.NOT_FOUND).end()
 
-    return res.send("Usuário excluído com sucesso").end()
+    return res.send('Usuário excluído com sucesso').end()
   }
 }
