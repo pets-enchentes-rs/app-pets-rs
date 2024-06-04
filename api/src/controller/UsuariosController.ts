@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { Usuario } from '../models'
 import { UsuarioTransaction } from '../transactions'
-import { HttpStatus } from '../utils/HttpStatus'
+import { HttpStatus } from '../enums/HttpStatus'
 
 export default class UsuariosController {
   public static async create(req: Request, res: Response): Promise<void> {

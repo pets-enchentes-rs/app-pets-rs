@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import routes from './routes'
+import createTables from './database/Create'
 
 class App {
   public express: express.Application
@@ -12,6 +13,8 @@ class App {
     this.express = express()
     this.middlewares()
     this.routes()
+
+    createTables()
   }
 
   private middlewares(): void {
