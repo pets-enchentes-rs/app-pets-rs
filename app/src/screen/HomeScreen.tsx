@@ -1,4 +1,4 @@
-import { Dimensions, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, FlatList, Image } from 'react-native'
+import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View, FlatList, Image } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import COLORS from '../const/colors';
@@ -30,39 +30,43 @@ interface CardProps {
 const petCategories = [
     { name: 'GATOS', icon: 'cat' },
     { name: 'CACHORROS', icon: 'dog' },
-    { name: 'PÁSSAROS', icon: 'ladybug' },
+    { name: 'AVES', icon: 'bird' },
     { name: 'COELHOS', icon: 'rabbit' },
+    { name: 'OUTROS', icon: 'paw' },
 ];
 
 interface HomeScreenProps {
     navigation: any;
 }
 
-//TODO: corrigir erro VirtualizedLists should never be nested inside plain ScrollViews
-
 const Card: React.FC<CardProps> = ({ pet, navigation }) => {
-    return <TouchableOpacity activeOpacity={0.8}>
-        <View style={styles.cardContainer}>
-            <View style={styles.cardImageContainer}>
-                <Image source={pet.image} style={{width: '100%', height: '100%', resizeMode: 'contain'}}></Image>
-            </View>
-            <View style={styles.cardDetailsContainer}>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Text style={{fontWeight: 'bold', color: COLORS.dark, fontSize: 20}}>{pet?.name}
-                    </Text>
-                    <MaterialCommunityIcons name={`gender-${pet?.gender}`} size={25} color={COLORS.grey}/>
+    return (
+        <TouchableOpacity activeOpacity={0.8}
+        onPress={() => navigation.navigate('DetailsScreen', pet)}>
+            <View style={styles.cardContainer}>
+                <View style={styles.cardImageContainer}>
+                    <Image source={pet.image} style={styles.cardImage} />
+                </View>
+                <View style={styles.cardDetailsContainer}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ fontWeight: 'bold', color: COLORS.dark, fontSize: 20 }}>{pet?.name}</Text>
+                        <MaterialCommunityIcons name={`gender-${pet?.gender}`} size={25} color={COLORS.grey} />
+                    </View>
+                    <View style={{ marginTop: 20, flexDirection: 'row' }}>
+                        <MaterialCommunityIcons name="map-marker" size={18} color='#306060' />
+                        <Text style={{fontSize: 12, marginLeft: 5, color: COLORS.grey}}>{pet?.location}</Text>
+                    </View>
                 </View>
             </View>
-        </View>
-
-    </TouchableOpacity>
+        </TouchableOpacity>
+    );
 };
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     const [selectedCategoryIndex, setSeletedCategoryIndex] = React.useState(0);
     const [filteredPets, setFilteredPets] = React.useState([]);
 
-    const fliterPet = index => {
+    const filterPet = index => {
         const currentPets = pets.filter(
             item => item?.pet?.toUpperCase() == petCategories[index].name,
         )[0]?.pets;
@@ -70,7 +74,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     };
 
     React.useEffect(() => {
-        fliterPet(0);
+        filterPet(0);
     }, []);
 
     return (
@@ -78,58 +82,54 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <View style={styles.header}>
                 <Ionicons name="reorder-four" size={24} />
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={styles.mainContainer}>
-                    <View style={styles.searchInputContainer}>
-                        <Ionicons name="search" size={24} color={COLORS.grey} style={{ marginTop: 12 }} />
-                        <TextInput placeholder="Procurar pet" style={{ flex: 1, marginLeft: 5 }}
-                            placeholderTextColor={COLORS.grey} />
-                    </View>
-
-                    <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        marginTop: 20
-                    }}>
-                        {petCategories.map((item, index) => (
-                            <View key={'pet' + index} style={{ alignItems: 'center' }}>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        setSeletedCategoryIndex(index);
-                                    }}
-                                    style={[styles.categoryButton,
-                                    {
-                                        backgroundColor: selectedCategoryIndex == index
-                                            ? COLORS.primary
-                                            : COLORS.white,
-                                    },
-                                    ]}>
-                                    <MaterialCommunityIcons name={item.icon} size={30} color={selectedCategoryIndex == index ? COLORS.white : COLORS.primary} />
-                                </TouchableOpacity>
-                                <Text style={styles.categoryButtonName}>{item.name}</Text>
-                            </View>
-                        ))}
-                    </View>
-                    <View style={{ marginTop: 20 }}>
-                        <FlatList
-                            showsVerticalScrollIndicator={false}
-                            data={filteredPets}
-                            renderItem={({ item }) => (
-                                <Card pet={item} navigation={navigation} />
-                            )}
-                        />
-                    </View>
+            <View style={styles.mainContainer}>
+                <View style={styles.searchInputContainer}>
+                    <Ionicons name="search" size={24} color={COLORS.grey} style={{ marginTop: 12 }} />
+                    <TextInput
+                        placeholder="Procurar pet"
+                        style={{ flex: 1, marginLeft: 5 }}
+                        placeholderTextColor={COLORS.grey}
+                    />
                 </View>
-            </ScrollView>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+                    {petCategories.map((item, index) => (
+                        <View key={'pet' + index} style={{ alignItems: 'center' }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setSeletedCategoryIndex(index);
+                                    filterPet(index);
+                                }}
+                                style={[styles.categoryButton, {
+                                    backgroundColor: selectedCategoryIndex == index ? COLORS.primary : COLORS.white,
+                                }]}>
+                                <MaterialCommunityIcons
+                                    name={item.icon}
+                                    size={30}
+                                    color={selectedCategoryIndex == index ? COLORS.white : COLORS.primary}
+                                />
+                            </TouchableOpacity>
+                            <Text style={styles.categoryButtonName}>{item.name}</Text>
+                        </View>
+                    ))}
+                </View>
+                <FlatList
+                    showsVerticalScrollIndicator={false}
+                    data={filteredPets}
+                    renderItem={({ item }) => <Card pet={item} navigation={navigation} />}
+                    keyExtractor={item => item.id.toString()}
+                    contentContainerStyle={{ paddingBottom: 20, paddingTop: 20 }}
+                />
+            </View>
         </View>
-    )
-}
+    );
+};
 
-export default HomeScreen
+export default HomeScreen;
 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: COLORS.background,
+        flex: 1,
     },
     cardContainer: {
         flexDirection: 'row',
@@ -141,6 +141,12 @@ const styles = StyleSheet.create({
         width: 140,
         backgroundColor: COLORS.background,
         borderRadius: 20,
+        overflow: 'hidden',
+    },
+    cardImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
     },
     cardDetailsContainer: {
         height: 120,
@@ -157,7 +163,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     mainContainer: {
-        minHeight: height,
+        flex: 1,
         backgroundColor: COLORS.light,
         marginTop: 20,
         borderTopLeftRadius: 40,
@@ -180,12 +186,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 10,
-        backgroundColor: COLORS.primary
     },
     categoryButtonName: {
         color: COLORS.dark,
         fontSize: 10,
         marginTop: 5,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     }
-})
+});
