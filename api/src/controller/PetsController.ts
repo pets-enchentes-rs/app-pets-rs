@@ -19,7 +19,7 @@ export default class PetsController {
 
     const pet = await PetTransaction.getById(parseInt(id))
 
-    if (!pet) return res.status(HttpStatus.NOT_FOUND).end()
+    if (!pet) return res.status(HttpStatus.NOT_FOUND)
 
     return res.json(pet)
   }
@@ -27,9 +27,9 @@ export default class PetsController {
   public static async add(req: Request, res: Response): Promise<Response<Pet>> {
     const petId = await PetTransaction.insert(req.body)
 
-    if (!petId) return res.status(HttpStatus.BAD_REQUEST).end()
+    if (!petId) return res.status(HttpStatus.BAD_REQUEST)
 
-    return res.status(HttpStatus.CREATED).json(`Adicionado pet ${petId}`)
+    return res.status(HttpStatus.CREATED).json(`[${petId}] Pet adicionado`)
   }
 
   public static async update(req: Request, res: Response): Promise<Response<Pet>> {
@@ -37,9 +37,9 @@ export default class PetsController {
 
     const result = await PetTransaction.update(parseInt(id), req.body)
 
-    if (!result) return res.status(HttpStatus.NOT_FOUND).end()
+    if (!result) return res.status(HttpStatus.NOT_FOUND)
 
-    return res.json(result)
+    return res.json(`[${id}] Pet atualizado`)
   }
 
   public static async delete(req: Request, res: Response): Promise<Response<Pet>> {
@@ -47,8 +47,8 @@ export default class PetsController {
 
     const result = await PetTransaction.delete(parseInt(id))
 
-    if (!result) return res.status(HttpStatus.NOT_FOUND).end()
+    if (!result) return res.status(HttpStatus.NOT_FOUND)
 
-    return res.send('Pet excluído com sucesso').end()
+    return res.json(`[${id}] Pet excluído com sucesso`)
   }
 }

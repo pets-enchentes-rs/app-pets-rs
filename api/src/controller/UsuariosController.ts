@@ -19,7 +19,7 @@ export default class UsuariosController {
 
     const usuario = await UsuarioTransaction.getById(parseInt(id))
 
-    if (!usuario) return res.status(HttpStatus.NOT_FOUND).end()
+    if (!usuario) return res.status(HttpStatus.NOT_FOUND)
 
     return res.json(usuario)
   }
@@ -27,9 +27,9 @@ export default class UsuariosController {
   public static async add(req: Request, res: Response): Promise<Response<Usuario>> {
     const usuarioId = await UsuarioTransaction.insert(req.body)
 
-    if (!usuarioId) return res.status(HttpStatus.BAD_REQUEST).end()
+    if (!usuarioId) return res.status(HttpStatus.BAD_REQUEST)
 
-    return res.status(HttpStatus.CREATED).json(`Adicionado usuário ${usuarioId}`)
+    return res.status(HttpStatus.CREATED).json(`[${usuarioId}] Adicionado usuário`)
   }
 
   public static async update(req: Request, res: Response): Promise<Response<Usuario>> {
@@ -37,9 +37,9 @@ export default class UsuariosController {
 
     const result = await UsuarioTransaction.update(parseInt(id), req.body)
 
-    if (!result) return res.status(HttpStatus.NOT_FOUND).end()
+    if (!result) return res.status(HttpStatus.NOT_FOUND)
 
-    return res.json(result)
+    return res.json(`[${id}] Usuário atualizado`)
   }
 
   public static async delete(req: Request, res: Response): Promise<Response<Usuario>> {
@@ -47,8 +47,8 @@ export default class UsuariosController {
 
     const result = await UsuarioTransaction.delete(parseInt(id))
 
-    if (!result) return res.status(HttpStatus.NOT_FOUND).end()
+    if (!result) return res.status(HttpStatus.NOT_FOUND)
 
-    return res.send('Usuário excluído com sucesso').end()
+    return res.json(`[${id}] Usuário excluído com sucesso`)
   }
 }
