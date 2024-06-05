@@ -10,6 +10,7 @@ interface Pet {
   localEncontrado: string
   descricao?: string
   contato: string
+  id_usuario: number
 }
 
 export default Pet

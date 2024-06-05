@@ -16,7 +16,8 @@ export default class PetTransaction {
       diaEncontrado DATE,
       localEncontrado TEXT,
       descricao TEXT,
-      contato TEXT
+      contato TEXT,
+      id_usuario INTEGER
     )`)
 
     db.close()
@@ -42,13 +43,13 @@ export default class PetTransaction {
     return pet
   }
 
-  public static async insert(pet: Pet): Promise<number | undefined> {
+  public static async insert(pet: any): Promise<number | undefined> {
     const db = await openDb()
 
     const result = await db.run(
       `INSERT INTO ${table} 
-        (nome, sexo, categoria, foto, diaEncontrado, localEncontrado, descricao, contato)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        (nome, sexo, categoria, foto, diaEncontrado, localEncontrado, descricao, contato, id_usuario)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         pet.nome,
         pet.sexo,
@@ -57,7 +58,8 @@ export default class PetTransaction {
         pet.diaEncontrado,
         pet.localEncontrado,
         pet.descricao,
-        pet.contato
+        pet.contato,
+        pet.id_usuario
       ]
     )
 
@@ -70,7 +72,7 @@ export default class PetTransaction {
     const db = await openDb()
 
     const result = await db.run(
-      `UPDATE ${table} SET nome = ?, categoria = ?, sexo = ?, foto = ?, diaEncontrado = ?, localEncontrado = ?, descricao = ?, contato = ? WHERE id = ?`,
+      `UPDATE ${table} SET nome = ?, categoria = ?, sexo = ?, foto = ?, diaEncontrado = ?, localEncontrado = ?, descricao = ?, contato = ?, id_usuario = ? WHERE id = ?`,
       [
         pet.nome,
         pet.sexo,
@@ -80,6 +82,7 @@ export default class PetTransaction {
         pet.localEncontrado,
         pet.descricao,
         pet.contato,
+        pet.id_usuario,
         id
       ]
     )
