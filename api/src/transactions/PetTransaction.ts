@@ -43,6 +43,16 @@ export default class PetTransaction {
     return pet
   }
 
+  public static async getByCategoria(id: number): Promise<Pet[]> {
+    const db = await openDb()
+
+    const pets = await db.all(`SELECT * FROM ${table} WHERE categoria = ?`, id)
+
+    db.close()
+
+    return pets
+  }
+
   public static async insert(pet: any): Promise<number | undefined> {
     const db = await openDb()
 

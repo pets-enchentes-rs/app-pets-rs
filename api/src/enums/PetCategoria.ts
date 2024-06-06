@@ -1,7 +1,7 @@
 export enum PetCategoria {
   OUTRO,
-  CACHORRO,
   GATO,
+  CACHORRO,
   AVE,
   COELHO
 }
