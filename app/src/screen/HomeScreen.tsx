@@ -42,7 +42,7 @@ interface HomeScreenProps {
 const Card: React.FC<CardProps> = ({ pet, navigation }) => {
     return (
         <TouchableOpacity activeOpacity={0.8}
-        onPress={() => navigation.navigate('DetailsScreen', pet)}>
+            onPress={() => navigation.navigate('DetailsScreen', pet)}>
             <View style={styles.cardContainer}>
                 <View style={styles.cardImageContainer}>
                     <Image source={pet.image} style={styles.cardImage} />
@@ -54,7 +54,7 @@ const Card: React.FC<CardProps> = ({ pet, navigation }) => {
                     </View>
                     <View style={{ marginTop: 20, flexDirection: 'row' }}>
                         <MaterialCommunityIcons name="map-marker" size={18} color='#306060' />
-                        <Text style={{fontSize: 12, marginLeft: 5, color: COLORS.grey}}>{pet?.location}</Text>
+                        <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>{pet?.location}</Text>
                     </View>
                 </View>
             </View>
@@ -80,7 +80,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Ionicons name="reorder-four" size={24} />
+                <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                    <Ionicons name="reorder-four" size={24} style={{ marginTop: 20 }} />
+                </TouchableOpacity>
             </View>
             <View style={styles.mainContainer}>
                 <View style={styles.searchInputContainer}>
@@ -128,7 +130,6 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: COLORS.background,
         flex: 1,
     },
     cardContainer: {
@@ -166,8 +167,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: COLORS.light,
         marginTop: 20,
-        borderTopLeftRadius: 40,
-        borderTopRightRadius: 40,
         paddingHorizontal: 20,
         paddingVertical: 20,
     },

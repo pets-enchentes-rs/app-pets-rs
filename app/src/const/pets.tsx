@@ -74,7 +74,7 @@ const pets = [
       pets: [
         {
           id: '1',
-          name: 'Coco',
+          name: 'Blue',
           image: require('../assets/bird1.jpg'),
           age: '2 anos',
           gender: 'female',
@@ -84,7 +84,7 @@ const pets = [
         },
         {
           id: '2',
-          name: 'Alfie',
+          name: 'Chico',
           image: require('../assets/bird2.jpg'),
           age: '4 anos',
           gender: 'male',

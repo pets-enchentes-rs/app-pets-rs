@@ -8,12 +8,12 @@ import COLORS from '../const/colors';
 const LoginScreen = () => {
   const navigation = useNavigation();
 
-  const handleRegister= ()=>{
-    navigation.navigate("SignUp");
+  const handleRegister = () => {
+    navigation.navigate("SignUpScreen");
   }
 
-  const handleEnter= ()=>{
-    navigation.navigate("Home");
+  const handleEnter = () => {
+    navigation.navigate("HomeScreen");
   }
   return (
     <View style={styles.container}>
@@ -31,11 +31,11 @@ const LoginScreen = () => {
       </View>
       <View style={styles.inputContainer}>
         <Ionicons name="person" size={24} color="#9A9A9A" style={styles.inputIcon} />
-        <TextInput style={styles.textInput} placeholder='Email'/>
+        <TextInput style={styles.textInput} placeholder='Email' />
       </View>
       <View style={styles.inputContainer}>
         <Ionicons name="lock-closed" size={24} color="#9A9A9A" style={styles.inputIcon} />
-        <TextInput style={styles.textInput} placeholder='Senha'/>
+        <TextInput style={styles.textInput} placeholder='Senha' />
       </View>
       <View>
         <Text style={styles.esqueceuSenha}>Esqueceu sua senha?</Text>
@@ -48,11 +48,11 @@ const LoginScreen = () => {
         </LinearGradient>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleRegister}>
-      <View>
-        <Text style={styles.semContaText}>Não possui uma conta?{" "}
-          <Text style={styles.registerText}>Registre-se</Text>
-        </Text>
-      </View>
+        <View>
+          <Text style={styles.semContaText}>Não possui uma conta?{" "}
+            <Text style={styles.registerText}>Registre-se</Text>
+          </Text>
+        </View>
       </TouchableOpacity>
       <View style={styles.leftVectorContainer}>
         <ImageBackground source={require("../assets/leftVector.png")} style={styles.leftVectorImage} />
