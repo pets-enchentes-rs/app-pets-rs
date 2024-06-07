@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons'
 import COLORS from '../const/colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import pets from '../const/pets';
+import { StatusBar } from 'expo-status-bar';
 
 const { height } = Dimensions.get('window');
 
@@ -79,6 +80,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <StatusBar translucent backgroundColor="transparent" style="light" />
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.openDrawer()}>
                     <Ionicons name="reorder-four" size={24} style={{ marginTop: 20 }} />
@@ -92,6 +94,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                         style={{ flex: 1, marginLeft: 5 }}
                         placeholderTextColor={COLORS.grey}
                     />
+                    <MaterialCommunityIcons name="sort-ascending" size={24} color={COLORS.grey} style={{marginTop: 12}}/>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
                     {petCategories.map((item, index) => (
@@ -166,7 +169,6 @@ const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
         backgroundColor: COLORS.light,
-        marginTop: 20,
         paddingHorizontal: 20,
         paddingVertical: 20,
     },

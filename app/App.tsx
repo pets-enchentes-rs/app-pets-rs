@@ -7,6 +7,7 @@ import LoginScreen from './src/screen/LoginScreen';
 import SignupScreen from './src/screen/SignupScreen';
 import DetailsScreen from './src/screen/DetailsScreen';
 import DrawerNavigator from './src/navigators/DrawerNavigator';
+import ProfileScreen from './src/screen/ProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,10 +17,11 @@ const App = () => {
       <Stack.Navigator screenOptions={{
         headerShown: false,
       }}>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="SignUp" component={SignupScreen} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="SignUpScreen" component={SignupScreen} />
         <Stack.Screen name="HomeScreen" component={DrawerNavigator} />
         <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

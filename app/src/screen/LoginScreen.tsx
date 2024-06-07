@@ -1,5 +1,5 @@
 import { Image, ImageBackground, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import COLORS from '../const/colors';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const [password, setPassword] = useState('');
 
   const handleRegister = () => {
     navigation.navigate("SignUpScreen");
@@ -17,29 +18,42 @@ const LoginScreen = () => {
   }
   return (
     <View style={styles.container}>
+
       <View style={styles.topImageContainer}>
         <Image
           source={require("../assets/topVector.png")}
           style={styles.topImage}
         />
       </View>
+
       <View>
         <Text style={styles.titleText}>Olá</Text>
       </View>
+
       <View>
         <Text style={styles.signInText}>Entre na sua conta</Text>
       </View>
+
       <View style={styles.inputContainer}>
         <Ionicons name="person" size={24} color="#9A9A9A" style={styles.inputIcon} />
         <TextInput style={styles.textInput} placeholder='Email' />
       </View>
+
       <View style={styles.inputContainer}>
         <Ionicons name="lock-closed" size={24} color="#9A9A9A" style={styles.inputIcon} />
-        <TextInput style={styles.textInput} placeholder='Senha' />
+        <TextInput
+            style={styles.textInput}
+            placeholder='Senha'
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
       </View>
+
       <View>
         <Text style={styles.esqueceuSenha}>Esqueceu sua senha?</Text>
       </View>
+
       <TouchableOpacity style={styles.buttonContainer} onPress={handleEnter}>
         <LinearGradient
           colors={[COLORS.secondary, COLORS.primary]}
@@ -47,6 +61,7 @@ const LoginScreen = () => {
           <Text style={styles.buttonText}>Entrar</Text>
         </LinearGradient>
       </TouchableOpacity>
+
       <TouchableOpacity onPress={handleRegister}>
         <View>
           <Text style={styles.semContaText}>Não possui uma conta?{" "}
@@ -54,6 +69,7 @@ const LoginScreen = () => {
           </Text>
         </View>
       </TouchableOpacity>
+
       <View style={styles.leftVectorContainer}>
         <ImageBackground source={require("../assets/leftVector.png")} style={styles.leftVectorImage} />
       </View>
