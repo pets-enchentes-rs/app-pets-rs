@@ -8,7 +8,7 @@ interface Pet {
   image: string
   foundDate: Date
   foundLocal: string
-  description: string
+  description?: string
   contact: string
   idUser: number
 }

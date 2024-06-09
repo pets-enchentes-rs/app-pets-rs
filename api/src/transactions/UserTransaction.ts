@@ -9,11 +9,11 @@ export default class UserTransaction {
 
     await db.exec(`CREATE TABLE IF NOT EXISTS ${table} (
       id INTEGER PRIMARY KEY,
-      name TEXT,
-      email TEXT,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
       image TEXT,
-      phone TEXT,
-      password TEXT
+      phone TEXT NOT NULL,
+      password TEXT NOT NULL
     )`)
 
     db.close()

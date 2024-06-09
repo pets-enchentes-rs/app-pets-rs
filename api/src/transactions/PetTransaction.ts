@@ -11,13 +11,13 @@ export default class PetTransaction {
       id INTEGER PRIMARY KEY,
       name TEXT,
       gender CHAR(1),
-      type INTEGER,
-      image TEXT,
-      found_date DATE,
-      found_local TEXT,
+      type INTEGER NOT NULL,
+      image TEXT NOT NULL,
+      found_date DATE NOT NULL,
+      found_local TEXT NOT NULL,
       description TEXT,
-      contact TEXT,
-      id_user INTEGER
+      contact TEXT NOT NULL,
+      id_user INTEGER NOT NULL
     )`)
 
     db.close()
