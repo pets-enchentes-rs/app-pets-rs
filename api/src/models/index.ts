@@ -1,2 +1,2 @@
-export { default as Usuario } from './Usuario'
+export { default as User } from './User'
 export { default as Pet } from './Pet'

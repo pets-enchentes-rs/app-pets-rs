@@ -1,10 +1,10 @@
 import { Router } from 'express'
-import UsuariosRoutes from './routes/UsuariosRoutes'
+import UsersRoutes from './routes/UsersRoutes'
 import PetsRoutes from './routes/PetsRoutes'
 
 const routes = Router()
 
-routes.use(UsuariosRoutes)
+routes.use(UsersRoutes)
 routes.use(PetsRoutes)
 
 export default routes

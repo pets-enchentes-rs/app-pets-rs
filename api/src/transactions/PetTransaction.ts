@@ -9,15 +9,15 @@ export default class PetTransaction {
 
     await db.exec(`CREATE TABLE IF NOT EXISTS ${table} (
       id INTEGER PRIMARY KEY,
-      nome TEXT,
-      sexo CHAR(1),
-      categoria INTEGER,
-      foto TEXT,
-      diaEncontrado DATE,
-      localEncontrado TEXT,
-      descricao TEXT,
-      contato TEXT,
-      id_usuario INTEGER
+      name TEXT,
+      gender CHAR(1),
+      type INTEGER,
+      image TEXT,
+      found_date DATE,
+      found_local TEXT,
+      description TEXT,
+      contact TEXT,
+      id_user INTEGER
     )`)
 
     db.close()
@@ -43,33 +43,43 @@ export default class PetTransaction {
     return pet
   }
 
-  public static async getByCategoria(id: number): Promise<Pet[]> {
+  public static async getByType(id: number): Promise<Pet[]> {
     const db = await openDb()
 
-    const pets = await db.all(`SELECT * FROM ${table} WHERE categoria = ?`, id)
+    const pets = await db.all(`SELECT * FROM ${table} WHERE type = ?`, id)
 
     db.close()
 
     return pets
   }
 
-  public static async insert(pet: any): Promise<number | undefined> {
+  public static async getByUser(id: number): Promise<Pet[]> {
+    const db = await openDb()
+
+    const pets = await db.all(`SELECT * FROM ${table} WHERE id_user = ?`, id)
+
+    db.close()
+
+    return pets
+  }
+
+  public static async insert(pet: Pet): Promise<number | undefined> {
     const db = await openDb()
 
     const result = await db.run(
       `INSERT INTO ${table} 
-        (nome, sexo, categoria, foto, diaEncontrado, localEncontrado, descricao, contato, id_usuario)
+        (name, gender, type, image, found_date, found_local, description, contact, id_user)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        pet.nome,
-        pet.sexo,
-        pet.categoria,
-        pet.foto,
-        pet.diaEncontrado,
-        pet.localEncontrado,
-        pet.descricao,
-        pet.contato,
-        pet.id_usuario
+        pet.name,
+        pet.gender,
+        pet.type,
+        pet.image,
+        pet.foundDate,
+        pet.foundLocal,
+        pet.description,
+        pet.contact,
+        pet.idUser
       ]
     )
 
@@ -82,17 +92,27 @@ export default class PetTransaction {
     const db = await openDb()
 
     const result = await db.run(
-      `UPDATE ${table} SET nome = ?, categoria = ?, sexo = ?, foto = ?, diaEncontrado = ?, localEncontrado = ?, descricao = ?, contato = ?, id_usuario = ? WHERE id = ?`,
+      `UPDATE ${table} SET 
+        name = ?,
+        gender = ?,
+        type = ?,
+        image = ?,
+        found_date = ?,
+        found_local = ?,
+        description = ?,
+        contact = ?,
+        id_user = ?
+      WHERE id = ?`,
       [
-        pet.nome,
-        pet.sexo,
-        pet.categoria,
-        pet.foto,
-        pet.diaEncontrado,
-        pet.localEncontrado,
-        pet.descricao,
-        pet.contato,
-        pet.id_usuario,
+        pet.name,
+        pet.gender,
+        pet.type,
+        pet.image,
+        pet.foundDate,
+        pet.foundLocal,
+        pet.description,
+        pet.contact,
+        pet.idUser,
         id
       ]
     )

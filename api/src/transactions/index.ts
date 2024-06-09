@@ -1,2 +1,2 @@
-export { default as UsuarioTransaction } from './UsuarioTransaction'
+export { default as UserTransaction } from './UserTransaction'
 export { default as PetTransaction } from './PetTransaction'

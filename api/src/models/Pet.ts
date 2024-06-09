@@ -1,16 +1,16 @@
-import { PetCategoria } from '../enums/PetCategoria'
+import { PetType } from '../enums/PetType'
 
 interface Pet {
   id: number
-  nome?: string
-  sexo?: string
-  categoria: PetCategoria
-  foto: string
-  diaEncontrado: Date
-  localEncontrado: string
-  descricao?: string
-  contato: string
-  id_usuario: number
+  name?: string
+  gender?: string
+  type: PetType
+  image: string
+  foundDate: Date
+  foundLocal: string
+  description: string
+  contact: string
+  idUser: number
 }
 
 export default Pet

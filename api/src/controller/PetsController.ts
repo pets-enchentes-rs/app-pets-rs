@@ -24,11 +24,22 @@ export default class PetsController {
     return res.json(pet)
   }
 
-  // GET: /pets/categoria/1
-  public static async findByCategoria(req: Request, res: Response): Promise<Response<Pet[]>> {
+  // GET: /pets/type/1
+  public static async findByType(req: Request, res: Response): Promise<Response<Pet[]>> {
     const { id } = req.params
 
-    const pets = await PetTransaction.getByCategoria(parseInt(id))
+    const pets = await PetTransaction.getByType(parseInt(id))
+
+    if (!pets) return res.status(HttpStatus.NO_CONTENT).end()
+
+    return res.json(pets)
+  }
+
+  // GET: /pets/user/1
+  public static async findByUser(req: Request, res: Response): Promise<Response<Pet[]>> {
+    const { id } = req.params
+
+    const pets = await PetTransaction.getByUser(parseInt(id))
 
     if (!pets) return res.status(HttpStatus.NO_CONTENT).end()
 
@@ -41,7 +52,7 @@ export default class PetsController {
 
     if (!petId) return res.status(HttpStatus.BAD_REQUEST).end()
 
-    return res.status(HttpStatus.CREATED).json(`[${petId}] Pet adicionado`)
+    return res.status(HttpStatus.CREATED).json(`[${petId}] Pet added`)
   }
 
   // PUT: /pets/1
@@ -52,7 +63,7 @@ export default class PetsController {
 
     if (!result) return res.status(HttpStatus.NOT_FOUND).end()
 
-    return res.json(`[${id}] Pet atualizado`)
+    return res.json(`[${id}] Pet updated`)
   }
 
   // DELETE: /pets/1
@@ -63,6 +74,6 @@ export default class PetsController {
 
     if (!result) return res.status(HttpStatus.NOT_FOUND).end()
 
-    return res.json(`[${id}] Pet excluído com sucesso`)
+    return res.json(`[${id}] Pet deleted`)
   }
 }

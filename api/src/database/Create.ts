@@ -1,7 +1,7 @@
-import { UsuarioTransaction, PetTransaction } from '../transactions'
+import { UserTransaction, PetTransaction } from '../transactions'
 
 const createTables = () => {
-  UsuarioTransaction.createTable()
+  UserTransaction.createTable()
   PetTransaction.createTable()
 }
 
