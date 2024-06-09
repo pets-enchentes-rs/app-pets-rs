@@ -8,7 +8,7 @@ export default class UserTransaction {
     const db = await openDb()
 
     await db.exec(`CREATE TABLE IF NOT EXISTS ${table} (
-      id INTEGER PRIMARY KEY,
+      id INTEGER PRIMARY KEY NOT NULL,
       name TEXT NOT NULL,
       email TEXT NOT NULL,
       image TEXT,
