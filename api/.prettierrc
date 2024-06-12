@@ -4,5 +4,6 @@
   "arrowParens": "always",
   "singleQuote": true,
   "prettier.tabWidth": 2,
-  "printWidth": 100
+  "printWidth": 100,
+  "singleAttributePerLine": true
 }
