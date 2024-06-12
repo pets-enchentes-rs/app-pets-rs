@@ -3,5 +3,5 @@ export enum PetType {
   CAT,
   DOG,
   BIRD,
-  RABBIT
+  BUNNY
 }

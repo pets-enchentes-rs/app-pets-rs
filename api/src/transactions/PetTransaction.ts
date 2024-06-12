@@ -66,6 +66,8 @@ export default class PetTransaction {
   public static async insert(pet: Pet): Promise<number | undefined> {
     const db = await openDb()
 
+    // TO-DO: Verificar se idUser existe no DB
+
     const result = await db.run(
       `INSERT INTO ${table} 
         (name, gender, type, image, found_date, found_local, description, contact, id_user)

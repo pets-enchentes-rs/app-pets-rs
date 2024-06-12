@@ -9,6 +9,7 @@ interface Pet {
   foundDate: Date
   foundLocal: string
   description?: string
+  //status
   contact: string
   idUser: number
 }

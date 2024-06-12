@@ -5,7 +5,8 @@
   "author": "NandoFilter",
   "license": "ISC",
   "scripts": {
-    "dev": "tsnd --quiet --debug --inspect -- ./src/server.ts"
+    "dev": "tsnd --quiet --debug --inspect -- ./src/server.ts",
+    "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
   },
   "dependencies": {
     "cors": "^2.8.5",

@@ -1,22 +1,24 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
-const { height } = Dimensions.get('window');
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { Dimensions, StyleSheet, Text, View } from 'react-native'
+const { height } = Dimensions.get('window')
 
-import LoginScreen from './src/screen/LoginScreen';
-import SignupScreen from './src/screen/SignupScreen';
-import DetailsScreen from './src/screen/DetailsScreen';
-import DrawerNavigator from './src/navigators/DrawerNavigator';
-import ProfileScreen from './src/screen/ProfileScreen';
+import LoginScreen from './src/screen/LoginScreen'
+import SignupScreen from './src/screen/SignupScreen'
+import DetailsScreen from './src/screen/DetailsScreen'
+import DrawerNavigator from './src/navigators/DrawerNavigator'
+import ProfileScreen from './src/screen/ProfileScreen'
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator()
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{
-        headerShown: false,
-      }}>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false
+        }}
+      >
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="SignUpScreen" component={SignupScreen} />
         <Stack.Screen name="HomeScreen" component={DrawerNavigator} />
@@ -24,16 +26,16 @@ const App = () => {
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
-  );
-};
+  )
+}
 
-export default App;
+export default App
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+    justifyContent: 'center'
+  }
+})
