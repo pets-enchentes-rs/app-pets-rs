@@ -1,7 +1,8 @@
 import axios from 'axios'
+import { API_PATH } from '@env'
 
 const instance = axios.create({
-  baseURL: process.env.API_PATH
+  baseURL: API_PATH
 })
 
 export default {
