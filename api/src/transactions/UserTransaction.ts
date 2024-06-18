@@ -39,6 +39,19 @@ export default class UserTransaction {
     return user
   }
 
+  public static async getByLogin(email: string, password: string): Promise<User | undefined> {
+    const db = await openDb()
+
+    const user = await db.get(`SELECT * FROM ${table} WHERE email = ? AND password = ?`, [
+      email,
+      password
+    ])
+
+    db.close()
+
+    return user
+  }
+
   public static async insert(user: User): Promise<number | undefined> {
     const db = await openDb()
 

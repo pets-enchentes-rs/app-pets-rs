@@ -33,6 +33,17 @@ export default class UsersController {
     return res.status(HttpStatus.CREATED).json(`[${userId}] User added`)
   }
 
+  // POST: /users/login
+  public static async login(req: Request, res: Response): Promise<Response<User>> {
+    const { email, password } = req.body
+
+    const user = await UserTransaction.getByLogin(email, password)
+
+    if (!user) return res.status(HttpStatus.NOT_FOUND).end()
+
+    return res.json(user)
+  }
+
   // PUT: /users/1
   public static async update(req: Request, res: Response): Promise<Response<User>> {
     const { id } = req.params

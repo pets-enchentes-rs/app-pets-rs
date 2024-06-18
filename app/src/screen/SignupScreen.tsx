@@ -11,12 +11,31 @@ import React, { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
+import { User } from '../models'
+import { UserService } from '../services'
 
 const SignupScreen = () => {
   const navigation = useNavigation()
+
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
+    const user: User = {
+      name,
+      email,
+      phone,
+      password
+    }
+
+    const data = await UserService.create(user)
+
+    if (data) handleReturnLogin()
+  }
+
+  const handleReturnLogin = () => {
     navigation.navigate('LoginScreen')
   }
 
@@ -32,17 +51,32 @@ const SignupScreen = () => {
 
       <View style={styles.inputContainer}>
         <Ionicons name="person" size={24} color="#9A9A9A" style={styles.inputIcon} />
-        <TextInput style={styles.textInput} placeholder="Nome" />
+        <TextInput
+          style={styles.textInput}
+          placeholder="Nome"
+          value={name}
+          onChangeText={setName}
+        />
       </View>
 
       <View style={styles.inputContainer}>
         <Ionicons name="mail" size={24} color="#9A9A9A" style={styles.inputIcon} />
-        <TextInput style={styles.textInput} placeholder="Email" />
+        <TextInput
+          style={styles.textInput}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+        />
       </View>
 
       <View style={styles.inputContainer}>
         <Ionicons name="call" size={24} color="#9A9A9A" style={styles.inputIcon} />
-        <TextInput style={styles.textInput} placeholder="Contato" />
+        <TextInput
+          style={styles.textInput}
+          placeholder="Contato"
+          value={phone}
+          onChangeText={setPhone}
+        />
       </View>
 
       <View style={styles.inputContainer}>
@@ -56,13 +90,13 @@ const SignupScreen = () => {
         />
       </View>
 
-      <TouchableOpacity style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={handleRegister}>
         <LinearGradient colors={['#13EE85', '#0088A6']} style={styles.button}>
           <Text style={styles.buttonText}>Registrar</Text>
         </LinearGradient>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={handleRegister}>
+      <TouchableOpacity onPress={handleReturnLogin}>
         <View>
           <Text style={styles.semContaText}>
             Já possui uma conta? <Text style={styles.registerText}>Entre</Text>

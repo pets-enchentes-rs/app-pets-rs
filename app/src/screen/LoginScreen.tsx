@@ -12,18 +12,23 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import COLORS from '../const/colors'
+import { UserService } from '../services'
 
 const LoginScreen = () => {
   const navigation = useNavigation()
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const handleRegister = () => {
     navigation.navigate('SignUpScreen')
   }
 
-  const handleEnter = () => {
-    navigation.navigate('HomeScreen')
+  const handleEnter = async () => {
+    const data = await UserService.login(email, password)
+
+    if (data) navigation.navigate('HomeScreen')
   }
+
   return (
     <View style={styles.container}>
       <View style={styles.topImageContainer}>
@@ -40,7 +45,12 @@ const LoginScreen = () => {
 
       <View style={styles.inputContainer}>
         <Ionicons name="person" size={24} color="#9A9A9A" style={styles.inputIcon} />
-        <TextInput style={styles.textInput} placeholder="Email" />
+        <TextInput
+          style={styles.textInput}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+        />
       </View>
 
       <View style={styles.inputContainer}>
