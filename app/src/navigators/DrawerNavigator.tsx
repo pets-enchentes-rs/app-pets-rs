@@ -11,6 +11,7 @@ import COLORS from '../const/colors'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import ProfileScreen from '../screen/ProfileScreen'
 import { StatusBar } from 'expo-status-bar'
+import PetListScreen from '../screen/PetListScreen'
 
 const Drawer = createDrawerNavigator()
 
@@ -77,7 +78,7 @@ const DrawerNavigator = () => {
           title: 'CADASTRAR',
           drawerIcon: ({ color }) => <MaterialCommunityIcons name="plus" size={25} color={color} />
         }}
-        component={HomeScreen}
+        component={PetListScreen}
       />
     </Drawer.Navigator>
   )
