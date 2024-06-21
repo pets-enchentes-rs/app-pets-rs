@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { User } from '../models'
 import { UserService } from '../services'
+import { TextInputMask } from 'react-native-masked-text'
 
 const SignupScreen = () => {
   const navigation = useNavigation()
@@ -71,7 +72,13 @@ const SignupScreen = () => {
 
       <View style={styles.inputContainer}>
         <Ionicons name="call" size={24} color="#9A9A9A" style={styles.inputIcon} />
-        <TextInput
+        <TextInputMask
+          type={'cel-phone'}
+          options={{
+            maskType: 'BRL',
+            withDDD: true,
+            dddMask: '(99) '
+          }}
           style={styles.textInput}
           placeholder="Contato"
           value={phone}

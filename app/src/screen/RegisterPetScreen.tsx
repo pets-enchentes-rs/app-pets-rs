@@ -7,10 +7,14 @@ import {
   StyleSheet,
   Modal,
   Button,
+  Image,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
+import * as ImagePicker from 'expo-image-picker';
+import { format } from 'date-fns';
+import { TextInputMask } from 'react-native-masked-text';
 import COLORS from '../const/colors';
 import { NavigationProp } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -32,6 +36,8 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [animalModalVisible, setAnimalModalVisible] = useState(false);
   const [genderModalVisible, setGenderModalVisible] = useState(false);
+  const [image, setImage] = useState<string | null>(null);
+  const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false);
 
   const openDatePicker = () => {
     setShowDatePicker(true);
@@ -58,8 +64,35 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
     setLocation(`${address[0].street}, ${address[0].city}`);
   };
 
-  const formatDate = (date) => {
-    return format(date, 'dd/MM/yyyy', { locale: ptBR });
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      setImagePickerModalVisible(false);
+    }
+  };
+
+  const takePhoto = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      setImagePickerModalVisible(false);
+    }
+  };
+
+  const formatDate = (date: Date) => {
+    return format(date, 'dd/MM/yyyy');
   };
 
   return (
@@ -72,6 +105,39 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
       </View>
 
       <View style={styles.content}>
+        <TouchableOpacity style={styles.imageContainer} onPress={() => setImagePickerModalVisible(true)}>
+          {!image && <Ionicons name="image-outline" size={50} color={COLORS.dark} />}
+          {image && <Image source={{ uri: image }} style={styles.image} />}
+        </TouchableOpacity>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={imagePickerModalVisible}
+          onRequestClose={() => setImagePickerModalVisible(false)}
+        >
+          <View style={styles.modalView}>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={takePhoto}
+            >
+              <Text style={styles.modalButtonText}>Usar Câmera</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={pickImage}
+            >
+              <Text style={styles.modalButtonText}>Escolher da Galeria</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setImagePickerModalVisible(false)}
+            >
+              <Text style={styles.modalButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
         <TouchableOpacity
           style={styles.inputContainer}
           onPress={() => setAnimalModalVisible(true)}
@@ -156,7 +222,13 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
 
         <View style={styles.inputContainer}>
           <Ionicons name="call" size={24} color="#9A9A9A" style={styles.inputIcon} />
-          <TextInput
+          <TextInputMask
+            type={'cel-phone'}
+            options={{
+              maskType: 'BRL',
+              withDDD: true,
+              dddMask: '(99) '
+            }}
             style={styles.textInput}
             placeholder="Contato"
             value={contact}
@@ -180,7 +252,7 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
           onRequestClose={() => setGenderModalVisible(!genderModalVisible)}
         >
           <View style={styles.modalView}>
-            {['Macho', 'Fêmea'].map((genderOption) => (
+            {['Macho', 'Fêmea', 'Não sei'].map((genderOption) => (
               <TouchableOpacity
                 key={genderOption}
                 style={styles.modalButton}
@@ -263,6 +335,22 @@ const styles = StyleSheet.create({
   },
   modalButtonText: {
     fontSize: 18,
+  },
+  imageContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
+    marginBottom: 20,
+    width: 100,
+    height: 100,
+    borderWidth: 1,
+    borderColor: COLORS.grey,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
   },
   buttonContainer: {
     marginTop: 30,

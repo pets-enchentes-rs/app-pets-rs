@@ -4,6 +4,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import COLORS from '../const/colors'
+import { TextInputMask } from 'react-native-masked-text';
 import { StatusBar } from 'expo-status-bar'
 
 const ProfileScreen = ({ navigation }) => {
@@ -124,7 +125,13 @@ const ProfileScreen = ({ navigation }) => {
 
         <View style={styles.inputContainer}>
           <Ionicons name="call" size={24} color="#9A9A9A" style={styles.inputIcon} />
-          <TextInput
+          <TextInputMask
+            type={'cel-phone'}
+            options={{
+              maskType: 'BRL',
+              withDDD: true,
+              dddMask: '(99) '
+            }}
             style={styles.textInput}
             placeholder="Contato"
             value={contact}
