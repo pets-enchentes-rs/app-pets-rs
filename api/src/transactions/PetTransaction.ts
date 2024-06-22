@@ -72,17 +72,7 @@ export default class PetTransaction {
       `INSERT INTO ${table} 
         (name, gender, type, image, foundDate, foundLocal, description, contact, idUser)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        pet.name,
-        pet.gender,
-        pet.type,
-        pet.image,
-        pet.foundDate,
-        pet.foundLocal,
-        pet.description,
-        pet.contact,
-        pet.idUser
-      ]
+      [pet.name, pet.gender, pet.type, pet.image, pet.foundDate, pet.foundLocal, pet.description, pet.contact, pet.idUser]
     )
 
     db.close()
@@ -90,10 +80,7 @@ export default class PetTransaction {
     return result.lastID
   }
 
-  public static async update(
-    id: number,
-    pet: Pet
-  ): Promise<number | undefined> {
+  public static async update(id: number, pet: Pet): Promise<number | undefined> {
     const db = await openDb()
 
     const result = await db.run(
@@ -108,18 +95,7 @@ export default class PetTransaction {
         contact = ?,
         idUser = ?
       WHERE id = ?`,
-      [
-        pet.name,
-        pet.gender,
-        pet.type,
-        pet.image,
-        pet.foundDate,
-        pet.foundLocal,
-        pet.description,
-        pet.contact,
-        pet.idUser,
-        id
-      ]
+      [pet.name, pet.gender, pet.type, pet.image, pet.foundDate, pet.foundLocal, pet.description, pet.contact, pet.idUser, id]
     )
 
     db.close()

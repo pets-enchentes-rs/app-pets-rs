@@ -9,8 +9,7 @@ const pets = [
         age: '5 anos',
         gender: 'female',
         location: 'R. Elizabeth Beuren, 125 - Conventos, Lajeado - RS',
-        description:
-          'Foi encontrado no bairro Tal após recentes enchentes, assustado e buscando um lugar seguro. É um gato brasino, se encontra no abrigo Teste, qualquer coisa entrar em contato.',
+        description: 'Foi encontrado no bairro Tal após recentes enchentes, assustado e buscando um lugar seguro. É um gato brasino, se encontra no abrigo Teste, qualquer coisa entrar em contato.',
         diaEncontrado: '25 de Maio de 2024'
       },
       {

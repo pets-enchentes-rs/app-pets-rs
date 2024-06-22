@@ -1,11 +1,6 @@
 import React from 'react'
 import { StyleSheet, Image, View, Text } from 'react-native'
-import {
-  createDrawerNavigator,
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerContentComponentProps
-} from '@react-navigation/drawer'
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerContentComponentProps } from '@react-navigation/drawer'
 import HomeScreen from '../screen/HomeScreen'
 import COLORS from '../const/colors'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -24,10 +19,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
       <StatusBar translucent backgroundColor="transparent" style="light" />
       <View style={styles.drawerContent}>
         <View style={styles.profileContainer}>
-          <Image
-            source={user?.image ? { uri: user.image } : require('../assets/default-user.png')}
-            style={styles.profileImage}
-          />
+          <Image source={user?.image ? { uri: user.image } : require('../assets/default-user.png')} style={styles.profileImage} />
           <Text style={styles.profileName}>{user?.name}</Text>
         </View>
         <DrawerItemList {...props} />
@@ -65,9 +57,7 @@ const DrawerNavigator = () => {
         name="Home"
         options={{
           title: 'PETS',
-          drawerIcon: ({ color }) => (
-            <MaterialCommunityIcons name="paw" size={25} color={color} />
-          )
+          drawerIcon: ({ color }) => <MaterialCommunityIcons name="paw" size={25} color={color} />
         }}
         component={HomeScreen}
       />
@@ -76,9 +66,7 @@ const DrawerNavigator = () => {
         name="Register"
         options={{
           title: 'CADASTRAR',
-          drawerIcon: ({ color }) => (
-            <MaterialCommunityIcons name="plus" size={25} color={color} />
-          )
+          drawerIcon: ({ color }) => <MaterialCommunityIcons name="plus" size={25} color={color} />
         }}
         component={RegisterPetScreen}
       />
@@ -87,9 +75,7 @@ const DrawerNavigator = () => {
         name="Settings"
         options={{
           title: 'CONFIGURAÇÕES',
-          drawerIcon: ({ color }) => (
-            <MaterialCommunityIcons name="cog" size={25} color={color} />
-          )
+          drawerIcon: ({ color }) => <MaterialCommunityIcons name="cog" size={25} color={color} />
         }}
         component={SettingsScreen}
       />

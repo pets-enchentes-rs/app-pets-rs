@@ -1,12 +1,4 @@
-import {
-  Image,
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
-} from 'react-native'
+import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Ionicons } from '@expo/vector-icons'
@@ -38,10 +30,7 @@ const LoginScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.topImageContainer}>
-        <Image
-          source={require('../assets/topVector.png')}
-          style={styles.topImage}
-        />
+        <Image source={require('../assets/topVector.png')} style={styles.topImage} />
       </View>
 
       <View>
@@ -53,34 +42,13 @@ const LoginScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons
-          name="person"
-          size={24}
-          color={COLORS.lightGrey}
-          style={styles.inputIcon}
-        />
-        <TextInput
-          style={styles.textInput}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
+        <Ionicons name="person" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+        <TextInput style={styles.textInput} placeholder="Email" value={email} onChangeText={setEmail} />
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons
-          name="lock-closed"
-          size={24}
-          color={COLORS.lightGrey}
-          style={styles.inputIcon}
-        />
-        <TextInput
-          style={styles.textInput}
-          placeholder="Senha"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+        <Ionicons name="lock-closed" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+        <TextInput style={styles.textInput} placeholder="Senha" value={password} onChangeText={setPassword} secureTextEntry />
       </View>
 
       <View>
@@ -88,10 +56,7 @@ const LoginScreen = () => {
       </View>
 
       <TouchableOpacity style={styles.buttonContainer} onPress={handleEnter}>
-        <LinearGradient
-          colors={[COLORS.secondary, COLORS.primary]}
-          style={styles.button}
-        >
+        <LinearGradient colors={[COLORS.secondary, COLORS.primary]} style={styles.button}>
           <Text style={styles.buttonText}>Entrar</Text>
         </LinearGradient>
       </TouchableOpacity>
@@ -99,17 +64,13 @@ const LoginScreen = () => {
       <TouchableOpacity onPress={handleRegister}>
         <View>
           <Text style={styles.semContaText}>
-            Não possui uma conta?{' '}
-            <Text style={styles.registerText}>Registre-se</Text>
+            Não possui uma conta? <Text style={styles.registerText}>Registre-se</Text>
           </Text>
         </View>
       </TouchableOpacity>
 
       <View style={styles.leftVectorContainer}>
-        <ImageBackground
-          source={require('../assets/leftVector.png')}
-          style={styles.leftVectorImage}
-        />
+        <ImageBackground source={require('../assets/leftVector.png')} style={styles.leftVectorImage} />
       </View>
     </View>
   )

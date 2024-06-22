@@ -39,16 +39,10 @@ export default class UserTransaction {
     return user
   }
 
-  public static async getByLogin(
-    email: string,
-    password: string
-  ): Promise<User | undefined> {
+  public static async getByLogin(email: string, password: string): Promise<User | undefined> {
     const db = await openDb()
 
-    const user = await db.get(
-      `SELECT * FROM ${table} WHERE email = ? AND password = ?`,
-      [email, password]
-    )
+    const user = await db.get(`SELECT * FROM ${table} WHERE email = ? AND password = ?`, [email, password])
 
     db.close()
 
@@ -58,26 +52,17 @@ export default class UserTransaction {
   public static async insert(user: User): Promise<number | undefined> {
     const db = await openDb()
 
-    const result = await db.run(
-      `INSERT INTO ${table} (name, email, image, phone, password) VALUES (?, ?, ?, ?, ?)`,
-      [user.name, user.email, user.image, user.phone, user.password]
-    )
+    const result = await db.run(`INSERT INTO ${table} (name, email, image, phone, password) VALUES (?, ?, ?, ?, ?)`, [user.name, user.email, user.image, user.phone, user.password])
 
     db.close()
 
     return result.lastID
   }
 
-  public static async update(
-    id: number,
-    user: User
-  ): Promise<User | undefined> {
+  public static async update(id: number, user: User): Promise<User | undefined> {
     const db = await openDb()
 
-    const result = await db.run(
-      `UPDATE ${table} SET name = ?, email = ?, image = ?, phone = ? WHERE id = ?`,
-      [user.name, user.email, user.image, user.phone, id]
-    )
+    const result = await db.run(`UPDATE ${table} SET name = ?, email = ?, image = ?, phone = ? WHERE id = ?`, [user.name, user.email, user.image, user.phone, id])
 
     db.close()
 

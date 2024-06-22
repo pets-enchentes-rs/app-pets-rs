@@ -1,12 +1,4 @@
-import {
-  Image,
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
-} from 'react-native'
+import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Ionicons } from '@expo/vector-icons'
@@ -44,10 +36,7 @@ const SignupScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.topImageContainer}>
-        <Image
-          source={require('../assets/topVector.png')}
-          style={styles.topImage}
-        />
+        <Image source={require('../assets/topVector.png')} style={styles.topImage} />
       </View>
 
       <View>
@@ -55,42 +44,17 @@ const SignupScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons
-          name="person"
-          size={24}
-          color={COLORS.lightGrey}
-          style={styles.inputIcon}
-        />
-        <TextInput
-          style={styles.textInput}
-          placeholder="Nome"
-          value={name}
-          onChangeText={setName}
-        />
+        <Ionicons name="person" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+        <TextInput style={styles.textInput} placeholder="Nome" value={name} onChangeText={setName} />
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons
-          name="mail"
-          size={24}
-          color={COLORS.lightGrey}
-          style={styles.inputIcon}
-        />
-        <TextInput
-          style={styles.textInput}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
+        <Ionicons name="mail" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+        <TextInput style={styles.textInput} placeholder="Email" value={email} onChangeText={setEmail} />
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons
-          name="call"
-          size={24}
-          color={COLORS.lightGrey}
-          style={styles.inputIcon}
-        />
+        <Ionicons name="call" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
         <TextInputMask
           type={'cel-phone'}
           options={{
@@ -106,19 +70,8 @@ const SignupScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons
-          name="lock-closed"
-          size={24}
-          color={COLORS.lightGrey}
-          style={styles.inputIcon}
-        />
-        <TextInput
-          style={styles.textInput}
-          placeholder="Senha"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+        <Ionicons name="lock-closed" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+        <TextInput style={styles.textInput} placeholder="Senha" value={password} onChangeText={setPassword} secureTextEntry />
       </View>
 
       <TouchableOpacity style={styles.buttonContainer} onPress={handleRegister}>
@@ -136,10 +89,7 @@ const SignupScreen = () => {
       </TouchableOpacity>
 
       <View style={styles.leftVectorContainer}>
-        <ImageBackground
-          source={require('../assets/leftVector.png')}
-          style={styles.leftVectorImage}
-        />
+        <ImageBackground source={require('../assets/leftVector.png')} style={styles.leftVectorImage} />
       </View>
     </View>
   )

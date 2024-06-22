@@ -5,11 +5,7 @@ module.exports = {
     node: true
   },
   plugins: ['@typescript-eslint'],
-  extends: [
-    'plugin:@typescript-eslint/recommended',
-    'prettier/@typescript-eslint',
-    'standard'
-  ],
+  extends: ['plugin:@typescript-eslint/recommended', 'prettier/@typescript-eslint', 'standard'],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module'

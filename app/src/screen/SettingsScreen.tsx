@@ -14,11 +14,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar backgroundColor={COLORS.light} />
       <View style={styles.header}>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color={COLORS.dark} />
         </TouchableOpacity>
         <View style={styles.titleContainer}>
@@ -28,26 +24,16 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Conta</Text>
-        <TouchableOpacity
-          style={styles.item}
-          onPress={() => navigation.navigate('ProfileScreen')}
-        >
+        <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('ProfileScreen')}>
           <Ionicons name="person-outline" size={24} color={COLORS.dark} />
           <Text style={styles.itemText}>Editar perfil</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.item}
-          onPress={() => navigation.navigate('SecurityScreen')}
-        >
+        <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('SecurityScreen')}>
           <Ionicons name="shield-outline" size={24} color={COLORS.dark} />
           <Text style={styles.itemText}>Segurança</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.item}>
-          <Ionicons
-            name="notifications-outline"
-            size={24}
-            color={COLORS.dark}
-          />
+          <Ionicons name="notifications-outline" size={24} color={COLORS.dark} />
           <Text style={styles.itemText}>Notificações</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.item}>
@@ -63,11 +49,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.itemText}>Ajuda & Suporte</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.item}>
-          <Ionicons
-            name="document-text-outline"
-            size={24}
-            color={COLORS.dark}
-          />
+          <Ionicons name="document-text-outline" size={24} color={COLORS.dark} />
           <Text style={styles.itemText}>Termos e Políticas</Text>
         </TouchableOpacity>
       </View>
@@ -82,10 +64,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           <Ionicons name="trash-outline" size={24} color={COLORS.dark} />
           <Text style={styles.itemText}>Deletar conta</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.item}
-          onPress={() => navigation.navigate('LoginScreen')}
-        >
+        <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('LoginScreen')}>
           <Ionicons name="log-out-outline" size={24} color={COLORS.dark} />
           <Text style={styles.itemText}>Sair</Text>
         </TouchableOpacity>

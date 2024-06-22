@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Modal,
-  Image,
-  ToastAndroid
-} from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Image, ToastAndroid } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { Ionicons } from '@expo/vector-icons'
 import * as Location from 'expo-location'
@@ -126,10 +117,7 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
     })
 
     if (!valid) {
-      ToastAndroid.show(
-        'Há campos obrigatórios que não foram preenchidos',
-        ToastAndroid.LONG
-      )
+      ToastAndroid.show('Há campos obrigatórios que não foram preenchidos', ToastAndroid.LONG)
     }
 
     return valid
@@ -171,31 +159,18 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar backgroundColor={COLORS.light} />
       <View style={styles.header}>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => navigation.goBack()}
-        >
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={28} color={COLORS.dark} />
         </TouchableOpacity>
       </View>
 
       <View style={styles.content}>
-        <TouchableOpacity
-          style={[styles.imageContainer, imageError && styles.errorInput]}
-          onPress={() => setImagePickerModalVisible(true)}
-        >
-          {!image && (
-            <Ionicons name="image-outline" size={50} color={COLORS.dark} />
-          )}
+        <TouchableOpacity style={[styles.imageContainer, imageError && styles.errorInput]} onPress={() => setImagePickerModalVisible(true)}>
+          {!image && <Ionicons name="image-outline" size={50} color={COLORS.dark} />}
           {image && <Image source={{ uri: image }} style={styles.image} />}
         </TouchableOpacity>
 
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={imagePickerModalVisible}
-          onRequestClose={() => setImagePickerModalVisible(false)}
-        >
+        <Modal animationType="slide" transparent={true} visible={imagePickerModalVisible} onRequestClose={() => setImagePickerModalVisible(false)}>
           <View style={styles.modalView}>
             <TouchableOpacity style={styles.modalButton} onPress={takePhoto}>
               <Text style={styles.modalButtonText}>Usar Câmera</Text>
@@ -203,36 +178,18 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
             <TouchableOpacity style={styles.modalButton} onPress={pickImage}>
               <Text style={styles.modalButtonText}>Escolher da Galeria</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => setImagePickerModalVisible(false)}
-            >
+            <TouchableOpacity style={styles.modalButton} onPress={() => setImagePickerModalVisible(false)}>
               <Text style={styles.modalButtonText}>Cancelar</Text>
             </TouchableOpacity>
           </View>
         </Modal>
 
-        <TouchableOpacity
-          style={[styles.inputContainer, animalTypeError && styles.errorInput]}
-          onPress={() => setAnimalModalVisible(true)}
-        >
-          <Ionicons
-            name="paw"
-            size={24}
-            color={COLORS.lightGrey}
-            style={styles.inputIcon}
-          />
-          <Text style={styles.textInput}>
-            {animalType || 'Selecionar tipo de animal'}
-          </Text>
+        <TouchableOpacity style={[styles.inputContainer, animalTypeError && styles.errorInput]} onPress={() => setAnimalModalVisible(true)}>
+          <Ionicons name="paw" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+          <Text style={styles.textInput}>{animalType || 'Selecionar tipo de animal'}</Text>
         </TouchableOpacity>
 
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={animalModalVisible}
-          onRequestClose={() => setAnimalModalVisible(!animalModalVisible)}
-        >
+        <Modal animationType="slide" transparent={true} visible={animalModalVisible} onRequestClose={() => setAnimalModalVisible(!animalModalVisible)}>
           <View style={styles.modalView}>
             {['Cachorro', 'Gato', 'Coelho', 'Ave', 'Outros'].map((type) => (
               <TouchableOpacity
@@ -249,118 +206,39 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
           </View>
         </Modal>
 
-        <View
-          style={[styles.inputContainer, descriptionError && styles.errorInput]}
-        >
-          <Ionicons
-            name="clipboard"
-            size={24}
-            color={COLORS.lightGrey}
-            style={styles.inputIcon}
-          />
-          <TextInput
-            style={[styles.textInput]}
-            placeholder="Descrição"
-            value={description}
-            onChangeText={setDescription}
-            multiline
-          />
+        <View style={[styles.inputContainer, descriptionError && styles.errorInput]}>
+          <Ionicons name="clipboard" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+          <TextInput style={[styles.textInput]} placeholder="Descrição" value={description} onChangeText={setDescription} multiline />
         </View>
 
-        <TouchableOpacity
-          style={[styles.inputContainer, foundDateError && styles.errorInput]}
-          onPress={openDatePicker}
-        >
-          <Ionicons
-            name="calendar"
-            size={24}
-            color={COLORS.lightGrey}
-            style={styles.inputIcon}
-          />
-          <Text style={styles.textInput}>
-            {foundDate ? formatDate(foundDate) : 'Data encontrada'}
-          </Text>
+        <TouchableOpacity style={[styles.inputContainer, foundDateError && styles.errorInput]} onPress={openDatePicker}>
+          <Ionicons name="calendar" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+          <Text style={styles.textInput}>{foundDate ? formatDate(foundDate) : 'Data encontrada'}</Text>
         </TouchableOpacity>
-        {showDatePicker && (
-          <DateTimePicker
-            value={foundDate || new Date()}
-            mode="date"
-            display="default"
-            onChange={handleDateChange}
-          />
-        )}
+        {showDatePicker && <DateTimePicker value={foundDate || new Date()} mode="date" display="default" onChange={handleDateChange} />}
 
-        <TouchableOpacity
-          style={[
-            styles.inputContainer,
-            currentLocationError && styles.errorInput
-          ]}
-          onPress={() => getLocation(setCurrentLocation)}
-        >
-          <Ionicons
-            name="location-sharp"
-            size={24}
-            color={COLORS.lightGrey}
-            style={styles.inputIcon}
-          />
-          <Text style={styles.textInput}>
-            {currentLocation || 'Local Atual'}
-          </Text>
+        <TouchableOpacity style={[styles.inputContainer, currentLocationError && styles.errorInput]} onPress={() => getLocation(setCurrentLocation)}>
+          <Ionicons name="location-sharp" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+          <Text style={styles.textInput}>{currentLocation || 'Local Atual'}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[
-            styles.inputContainer,
-            foundLocationError && styles.errorInput
-          ]}
-          onPress={() => getLocation(setFoundLocation)}
-        >
-          <Ionicons
-            name="location"
-            size={24}
-            color={COLORS.lightGrey}
-            style={styles.inputIcon}
-          />
-          <Text style={styles.textInput}>
-            {foundLocation || 'Local Encontrado'}
-          </Text>
+        <TouchableOpacity style={[styles.inputContainer, foundLocationError && styles.errorInput]} onPress={() => getLocation(setFoundLocation)}>
+          <Ionicons name="location" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+          <Text style={styles.textInput}>{foundLocation || 'Local Encontrado'}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.inputContainer, genderError && styles.errorInput]}
-          onPress={() => setGenderModalVisible(true)}
-        >
-          <Ionicons
-            name="male-female"
-            size={24}
-            color={COLORS.lightGrey}
-            style={styles.inputIcon}
-          />
+        <TouchableOpacity style={[styles.inputContainer, genderError && styles.errorInput]} onPress={() => setGenderModalVisible(true)}>
+          <Ionicons name="male-female" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
           <Text style={styles.textInput}>{gender || 'Selecionar gênero'}</Text>
         </TouchableOpacity>
 
         <View style={styles.inputContainer}>
-          <Ionicons
-            name="text"
-            size={24}
-            color={COLORS.lightGrey}
-            style={styles.inputIcon}
-          />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Nome"
-            value={name}
-            onChangeText={setName}
-          />
+          <Ionicons name="text" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+          <TextInput style={styles.textInput} placeholder="Nome" value={name} onChangeText={setName} />
         </View>
 
         <View style={styles.inputContainer}>
-          <Ionicons
-            name="call"
-            size={24}
-            color={COLORS.lightGrey}
-            style={styles.inputIcon}
-          />
+          <Ionicons name="call" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
           <TextInputMask
             type={'cel-phone'}
             options={{
@@ -376,12 +254,7 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
           />
         </View>
 
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={genderModalVisible}
-          onRequestClose={() => setGenderModalVisible(!genderModalVisible)}
-        >
+        <Modal animationType="slide" transparent={true} visible={genderModalVisible} onRequestClose={() => setGenderModalVisible(!genderModalVisible)}>
           <View style={styles.modalView}>
             {['Macho', 'Fêmea', 'Não sei'].map((genderOption) => (
               <TouchableOpacity
@@ -398,14 +271,8 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
           </View>
         </Modal>
 
-        <TouchableOpacity
-          style={styles.buttonContainer}
-          onPress={handleRegister}
-        >
-          <LinearGradient
-            colors={[COLORS.secondary, COLORS.primary]}
-            style={styles.button}
-          >
+        <TouchableOpacity style={styles.buttonContainer} onPress={handleRegister}>
+          <LinearGradient colors={[COLORS.secondary, COLORS.primary]} style={styles.button}>
             <Text style={styles.buttonText}>Cadastrar</Text>
           </LinearGradient>
         </TouchableOpacity>

@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  Modal
-} from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Ionicons } from '@expo/vector-icons'
@@ -102,11 +94,7 @@ const ProfileScreen = ({ navigation }) => {
         <View style={styles.container}>
           <StatusBar backgroundColor={COLORS.light} />
           <View style={styles.header}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => navigation.goBack()}
-              style={styles.backButton}
-            >
+            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={styles.backButton}>
               <Ionicons name="arrow-back" size={24} color="black" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Editar perfil</Text>
@@ -114,18 +102,8 @@ const ProfileScreen = ({ navigation }) => {
 
           <View style={styles.content}>
             <View style={styles.imageWrapper}>
-              <TouchableOpacity
-                onPress={() => setModalVisible(true)}
-                style={styles.imageContainer}
-              >
-                <Image
-                  source={
-                    user.image
-                      ? { uri: user.image }
-                      : require('../assets/default-user.png')
-                  }
-                  style={styles.profileImage}
-                />
+              <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.imageContainer}>
+                <Image source={user.image ? { uri: user.image } : require('../assets/default-user.png')} style={styles.profileImage} />
                 <View style={styles.cameraIconContainer}>
                   <Ionicons name="camera" size={20} color={COLORS.primary} />
                 </View>
@@ -141,64 +119,30 @@ const ProfileScreen = ({ navigation }) => {
               }}
             >
               <View style={styles.modalView}>
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={pickImageFromCamera}
-                >
+                <TouchableOpacity style={styles.modalButton} onPress={pickImageFromCamera}>
                   <Text style={styles.modalButtonText}>Câmera</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={pickImageFromGallery}
-                >
+                <TouchableOpacity style={styles.modalButton} onPress={pickImageFromGallery}>
                   <Text style={styles.modalButtonText}>Galeria</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={removeImage}
-                >
+                <TouchableOpacity style={styles.modalButton} onPress={removeImage}>
                   <Text style={styles.modalButtonText}>Remover Foto</Text>
                 </TouchableOpacity>
               </View>
             </Modal>
 
             <View style={styles.inputContainer}>
-              <Ionicons
-                name="person"
-                size={24}
-                color="#9A9A9A"
-                style={styles.inputIcon}
-              />
-              <TextInput
-                style={styles.textInput}
-                placeholder="Nome"
-                value={name}
-                onChangeText={setName}
-              />
+              <Ionicons name="person" size={24} color="#9A9A9A" style={styles.inputIcon} />
+              <TextInput style={styles.textInput} placeholder="Nome" value={name} onChangeText={setName} />
             </View>
 
             <View style={styles.inputContainer}>
-              <Ionicons
-                name="mail"
-                size={24}
-                color="#9A9A9A"
-                style={styles.inputIcon}
-              />
-              <TextInput
-                style={styles.textInput}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-              />
+              <Ionicons name="mail" size={24} color="#9A9A9A" style={styles.inputIcon} />
+              <TextInput style={styles.textInput} placeholder="Email" value={email} onChangeText={setEmail} />
             </View>
 
             <View style={styles.inputContainer}>
-              <Ionicons
-                name="call"
-                size={24}
-                color="#9A9A9A"
-                style={styles.inputIcon}
-              />
+              <Ionicons name="call" size={24} color="#9A9A9A" style={styles.inputIcon} />
               <TextInputMask
                 type={'cel-phone'}
                 options={{
@@ -228,14 +172,8 @@ const ProfileScreen = ({ navigation }) => {
             />
           </View> */}
 
-            <TouchableOpacity
-              style={styles.buttonContainer}
-              onPress={handleEditUser}
-            >
-              <LinearGradient
-                colors={[COLORS.secondary, COLORS.primary]}
-                style={styles.button}
-              >
+            <TouchableOpacity style={styles.buttonContainer} onPress={handleEditUser}>
+              <LinearGradient colors={[COLORS.secondary, COLORS.primary]} style={styles.button}>
                 <Text style={styles.buttonText}>Atualizar</Text>
               </LinearGradient>
             </TouchableOpacity>

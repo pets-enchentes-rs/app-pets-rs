@@ -1,15 +1,7 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useState } from 'react'
-import {
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
-} from 'react-native'
+import { FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import COLORS from '../const/colors'
 import { PetType } from '../enums/PetType'
 import { Pet } from '../models'
@@ -36,38 +28,19 @@ const Card: React.FC<CardProps> = ({ pet, navigation }) => {
   const petGender = pet.gender === 'M' ? 'male' : 'female'
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      onPress={() => navigation.navigate('DetailsScreen', pet)}
-    >
+    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('DetailsScreen', pet)}>
       <View style={styles.cardContainer}>
         <View style={styles.cardImageContainer}>
           <Image source={pet.image} style={styles.cardImage} />
         </View>
         <View style={styles.cardDetailsContainer}>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-          >
-            <Text
-              style={{ fontWeight: 'bold', color: COLORS.dark, fontSize: 20 }}
-            >
-              {pet.name}
-            </Text>
-            <MaterialCommunityIcons
-              name={`gender-${petGender}`}
-              size={25}
-              color={COLORS.grey}
-            />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={{ fontWeight: 'bold', color: COLORS.dark, fontSize: 20 }}>{pet.name}</Text>
+            <MaterialCommunityIcons name={`gender-${petGender}`} size={25} color={COLORS.grey} />
           </View>
           <View style={{ marginTop: 20, flexDirection: 'row' }}>
-            <MaterialCommunityIcons
-              name="map-marker"
-              size={18}
-              color="#306060"
-            />
-            <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>
-              {pet.foundLocal}
-            </Text>
+            <MaterialCommunityIcons name="map-marker" size={18} color="#306060" />
+            <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>{pet.foundLocal}</Text>
           </View>
         </View>
       </View>
@@ -108,23 +81,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       </View>
       <View style={styles.mainContainer}>
         <View style={styles.searchInputContainer}>
-          <Ionicons
-            name="search"
-            size={24}
-            color={COLORS.grey}
-            style={{ marginTop: 12 }}
-          />
-          <TextInput
-            placeholder="Procurar pet"
-            style={{ flex: 1, marginLeft: 5 }}
-            placeholderTextColor={COLORS.grey}
-          />
-          <MaterialCommunityIcons
-            name="sort-ascending"
-            size={24}
-            color={COLORS.grey}
-            style={{ marginTop: 12 }}
-          />
+          <Ionicons name="search" size={24} color={COLORS.grey} style={{ marginTop: 12 }} />
+          <TextInput placeholder="Procurar pet" style={{ flex: 1, marginLeft: 5 }} placeholderTextColor={COLORS.grey} />
+          <MaterialCommunityIcons name="sort-ascending" size={24} color={COLORS.grey} style={{ marginTop: 12 }} />
         </View>
         <View
           style={{
@@ -143,34 +102,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 style={[
                   styles.categoryButton,
                   {
-                    backgroundColor:
-                      selectedCategoryIndex == category.id
-                        ? COLORS.primary
-                        : COLORS.white
+                    backgroundColor: selectedCategoryIndex == category.id ? COLORS.primary : COLORS.white
                   }
                 ]}
               >
-                <MaterialCommunityIcons
-                  name={category.icon}
-                  size={30}
-                  color={
-                    selectedCategoryIndex == category.id
-                      ? COLORS.white
-                      : COLORS.primary
-                  }
-                />
+                <MaterialCommunityIcons name={category.icon} size={30} color={selectedCategoryIndex == category.id ? COLORS.white : COLORS.primary} />
               </TouchableOpacity>
               <Text style={styles.categoryButtonName}>{category.name}</Text>
             </View>
           ))}
         </View>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={filteredPets}
-          renderItem={({ item }) => <Card pet={item} navigation={navigation} />}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={{ paddingBottom: 20, paddingTop: 20 }}
-        />
+        <FlatList showsVerticalScrollIndicator={false} data={filteredPets} renderItem={({ item }) => <Card pet={item} navigation={navigation} />} keyExtractor={(item) => item.id.toString()} contentContainerStyle={{ paddingBottom: 20, paddingTop: 20 }} />
       </View>
     </View>
   )

@@ -28,9 +28,5 @@ interface Props {
 export const UserProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null>(null)
 
-  return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
-  )
+  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>
 }

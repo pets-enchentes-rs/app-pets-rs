@@ -10,45 +10,20 @@ const DetailsScreen = ({ navigation, route }) => {
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
       <StatusBar translucent backgroundColor="transparent" style="light" />
       <View style={{ flex: 1, backgroundColor: COLORS.background }}>
-        <ImageBackground
-          source={pet?.image}
-          resizeMode="cover"
-          style={{ height: 400 }}
-        >
+        <ImageBackground source={pet?.image} resizeMode="cover" style={{ height: 400 }}>
           <View style={styles.header}>
-            <MaterialCommunityIcons
-              name="arrow-left"
-              size={28}
-              color={COLORS.white}
-              onPress={navigation.goBack}
-            />
+            <MaterialCommunityIcons name="arrow-left" size={28} color={COLORS.white} onPress={navigation.goBack} />
           </View>
         </ImageBackground>
 
         <View style={styles.detailsContainer}>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-          >
-            <Text
-              style={{ fontSize: 20, color: COLORS.dark, fontWeight: 'bold' }}
-            >
-              {pet?.name}
-            </Text>
-            <MaterialCommunityIcons
-              name={`gender-${pet?.gender}`}
-              size={25}
-              color={COLORS.grey}
-            />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={{ fontSize: 20, color: COLORS.dark, fontWeight: 'bold' }}>{pet?.name}</Text>
+            <MaterialCommunityIcons name={`gender-${pet?.gender}`} size={25} color={COLORS.grey} />
           </View>
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
-            <MaterialCommunityIcons
-              name="map-marker"
-              size={18}
-              color="#306060"
-            />
-            <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>
-              {pet?.location}
-            </Text>
+            <MaterialCommunityIcons name="map-marker" size={18} color="#306060" />
+            <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>{pet?.location}</Text>
           </View>
         </View>
       </View>
@@ -56,22 +31,11 @@ const DetailsScreen = ({ navigation, route }) => {
       <View style={{ marginTop: 80, justifyContent: 'space-between', flex: 1 }}>
         <View>
           <View style={{ flexDirection: 'row', paddingHorizontal: 20 }}>
-            <Image
-              source={require('../assets/user.jpg')}
-              style={{ height: 50, width: 50, borderRadius: 30 }}
-            />
+            <Image source={require('../assets/user.jpg')} style={{ height: 50, width: 50, borderRadius: 30 }} />
             <View style={{ flex: 1, paddingLeft: 10 }}>
-              <Text
-                style={{ color: COLORS.dark, fontSize: 13, fontWeight: 'bold' }}
-              >
-                ANA LUÍSA
-              </Text>
+              <Text style={{ color: COLORS.dark, fontSize: 13, fontWeight: 'bold' }}>ANA LUÍSA</Text>
               <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                <MaterialCommunityIcons
-                  name="phone"
-                  size={16}
-                  color="#306060"
-                />
+                <MaterialCommunityIcons name="phone" size={16} color="#306060" />
                 <Text
                   style={{
                     color: COLORS.grey,
@@ -84,9 +48,7 @@ const DetailsScreen = ({ navigation, route }) => {
                 </Text>
               </View>
             </View>
-            <Text style={{ color: COLORS.grey, fontSize: 12 }}>
-              25 de Maio de 2024
-            </Text>
+            <Text style={{ color: COLORS.grey, fontSize: 12 }}>25 de Maio de 2024</Text>
           </View>
           <Text style={styles.description}>{pet?.description}</Text>
         </View>
