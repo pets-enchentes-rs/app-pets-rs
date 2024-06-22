@@ -17,7 +17,7 @@ import { useUser } from '../contexts/UserContext'
 const Drawer = createDrawerNavigator()
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
-  const { user, setUser } = useUser()
+  const { user } = useUser()
 
   return (
     <DrawerContentScrollView {...props} style={{ paddingVertical: 30 }}>
@@ -25,7 +25,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
       <View style={styles.drawerContent}>
         <View style={styles.profileContainer}>
           <Image
-            source={user?.image ?? require('../assets/user.jpg')}
+            source={user?.image ? { uri: user.image } : require('../assets/default-user.png')}
             style={styles.profileImage}
           />
           <Text style={styles.profileName}>{user?.name}</Text>

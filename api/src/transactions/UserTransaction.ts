@@ -71,17 +71,21 @@ export default class UserTransaction {
   public static async update(
     id: number,
     user: User
-  ): Promise<number | undefined> {
+  ): Promise<User | undefined> {
     const db = await openDb()
 
     const result = await db.run(
-      `UPDATE ${table} SET name = ?, email = ?, image = ?, phone = ?, password = ? WHERE id = ?`,
-      [user.name, user.email, user.image, user.phone, user.password, id]
+      `UPDATE ${table} SET name = ?, email = ?, image = ?, phone = ? WHERE id = ?`,
+      [user.name, user.email, user.image, user.phone, id]
     )
 
     db.close()
 
-    return result.changes
+    if (!result.changes) return
+
+    user.id = id
+
+    return user
   }
 
   public static async delete(id: number): Promise<number | undefined> {

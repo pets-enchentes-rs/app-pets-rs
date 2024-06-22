@@ -20,10 +20,6 @@ export default async function UsersMiddleware(
         .json({ error: 'Invalid e-mail' })
     if (!phone)
       return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Invalid phone' })
-    if (!password)
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json({ error: 'Invalid password' })
 
     next()
   } else {

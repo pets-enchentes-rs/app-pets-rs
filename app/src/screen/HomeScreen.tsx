@@ -89,7 +89,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const setAllPets = async () => {
     const data = await PetService.getAll()
 
-    if (data && !pets) setPets(data)
+    if (data) setPets(data)
   }
 
   const filterPet = (index: number) => {

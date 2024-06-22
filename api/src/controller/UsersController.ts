@@ -63,11 +63,11 @@ export default class UsersController {
   ): Promise<Response<User>> {
     const { id } = req.params
 
-    const result = await UserTransaction.update(parseInt(id), req.body)
+    const user = await UserTransaction.update(parseInt(id), req.body)
 
-    if (!result) return res.status(HttpStatus.NOT_FOUND).end()
+    if (!user) return res.status(HttpStatus.NOT_FOUND).end()
 
-    return res.json(`[${id}] User updated`)
+    return res.json(user)
   }
 
   // DELETE: /users/1
