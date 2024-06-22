@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Modal,
-  Button,
   Image,
+  ToastAndroid,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
@@ -38,6 +38,14 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
   const [genderModalVisible, setGenderModalVisible] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false);
+
+  const [animalTypeError, setAnimalTypeError] = useState(false);
+  const [descriptionError, setDescriptionError] = useState(false);
+  const [foundLocationError, setFoundLocationError] = useState(false);
+  const [foundDateError, setFoundDateError] = useState(false);
+  const [currentLocationError, setCurrentLocationError] = useState(false);
+  const [genderError, setGenderError] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const openDatePicker = () => {
     setShowDatePicker(true);
@@ -95,9 +103,70 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
     return format(date, 'dd/MM/yyyy');
   };
 
+  const validateFields = () => {
+    const fields = [
+      { value: animalType, setter: setAnimalTypeError },
+      { value: description, setter: setDescriptionError },
+      { value: foundLocation, setter: setFoundLocationError },
+      { value: foundDate, setter: setFoundDateError },
+      { value: currentLocation, setter: setCurrentLocationError },
+      { value: gender, setter: setGenderError },
+      { value: image, setter: setImageError },
+    ];
+
+    let valid = true;
+
+    fields.forEach(field => {
+      if (!field.value) {
+        field.setter(true);
+        valid = false;
+      } else {
+        field.setter(false);
+      }
+    });
+
+    if (!valid) {
+      ToastAndroid.show("Há campos obrigatórios que não foram preenchidos", ToastAndroid.LONG);
+    }
+
+    return valid;
+  };
+
+  const handleRegister = () => {
+    if (validateFields()) {
+      // Cadastrar o pet
+      ToastAndroid.show("Cadastro realizado com sucesso", ToastAndroid.LONG);
+    }
+  };
+
+  const resetForm = () => {
+    setAnimalType('');
+    setName('');
+    setDescription('');
+    setFoundLocation('');
+    setFoundDate(null);
+    setCurrentLocation('');
+    setContact('');
+    setGender('');
+    setImage(null);
+
+    setAnimalTypeError(false);
+    setDescriptionError(false);
+    setFoundLocationError(false);
+    setFoundDateError(false);
+    setCurrentLocationError(false);
+    setGenderError(false);
+    setImageError(false);
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', resetForm);
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={COLORS.background} />
+      <StatusBar backgroundColor={COLORS.light} />
       <View style={styles.header}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={28} color={COLORS.dark} />
@@ -105,7 +174,10 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
       </View>
 
       <View style={styles.content}>
-        <TouchableOpacity style={styles.imageContainer} onPress={() => setImagePickerModalVisible(true)}>
+        <TouchableOpacity
+          style={[styles.imageContainer, imageError && styles.errorInput]}
+          onPress={() => setImagePickerModalVisible(true)}
+        >
           {!image && <Ionicons name="image-outline" size={50} color={COLORS.dark} />}
           {image && <Image source={{ uri: image }} style={styles.image} />}
         </TouchableOpacity>
@@ -139,11 +211,11 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
         </Modal>
 
         <TouchableOpacity
-          style={styles.inputContainer}
+          style={[styles.inputContainer, animalTypeError && styles.errorInput]}
           onPress={() => setAnimalModalVisible(true)}
         >
-          <Ionicons name="paw" size={24} color="#9A9A9A" style={styles.inputIcon} />
-          <Text style={styles.textInput}>{animalType || 'Selecionar Tipo de Animal'}</Text>
+          <Ionicons name="paw" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+          <Text style={styles.textInput}>{animalType || 'Selecionar tipo de animal'}</Text>
         </TouchableOpacity>
 
         <Modal
@@ -168,20 +240,10 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
           </View>
         </Modal>
 
-        <View style={styles.inputContainer}>
-          <Ionicons name="text" size={24} color="#9A9A9A" style={styles.inputIcon} />
+        <View style={[styles.inputContainer, descriptionError && styles.errorInput]}>
+          <Ionicons name="clipboard" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
           <TextInput
-            style={styles.textInput}
-            placeholder="Nome"
-            value={name}
-            onChangeText={setName}
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Ionicons name="clipboard" size={24} color="#9A9A9A" style={styles.inputIcon} />
-          <TextInput
-            style={styles.textInput}
+            style={[styles.textInput]}
             placeholder="Descrição"
             value={description}
             onChangeText={setDescription}
@@ -189,8 +251,11 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
           />
         </View>
 
-        <TouchableOpacity style={styles.inputContainer} onPress={openDatePicker}>
-          <Ionicons name="calendar" size={24} color="#9A9A9A" style={styles.inputIcon} />
+        <TouchableOpacity
+          style={[styles.inputContainer, foundDateError && styles.errorInput]}
+          onPress={openDatePicker}
+        >
+          <Ionicons name="calendar" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
           <Text style={styles.textInput}>
             {foundDate ? formatDate(foundDate) : 'Data encontrada'}
           </Text>
@@ -205,23 +270,41 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
         )}
 
         <TouchableOpacity
-          style={styles.inputContainer}
+          style={[styles.inputContainer, currentLocationError && styles.errorInput]}
           onPress={() => getLocation(setCurrentLocation)}
         >
-          <Ionicons name="location-sharp" size={24} color="#9A9A9A" style={styles.inputIcon} />
+          <Ionicons name="location-sharp" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
           <Text style={styles.textInput}>{currentLocation || 'Local Atual'}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.inputContainer}
+          style={[styles.inputContainer, foundLocationError && styles.errorInput]}
           onPress={() => getLocation(setFoundLocation)}
         >
-          <Ionicons name="location" size={24} color="#9A9A9A" style={styles.inputIcon} />
+          <Ionicons name="location" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
           <Text style={styles.textInput}>{foundLocation || 'Local Encontrado'}</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity
+          style={[styles.inputContainer, genderError && styles.errorInput]}
+          onPress={() => setGenderModalVisible(true)}
+        >
+          <Ionicons name="male-female" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+          <Text style={styles.textInput}>{gender || 'Selecionar gênero'}</Text>
+        </TouchableOpacity>
+
         <View style={styles.inputContainer}>
-          <Ionicons name="call" size={24} color="#9A9A9A" style={styles.inputIcon} />
+          <Ionicons name="text" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+          <TextInput
+            style={styles.textInput}
+            placeholder="Nome"
+            value={name}
+            onChangeText={setName}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Ionicons name="call" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
           <TextInputMask
             type={'cel-phone'}
             options={{
@@ -236,14 +319,6 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
             keyboardType="phone-pad"
           />
         </View>
-
-        <TouchableOpacity
-          style={styles.inputContainer}
-          onPress={() => setGenderModalVisible(true)}
-        >
-          <Ionicons name="male-female" size={24} color="#9A9A9A" style={styles.inputIcon} />
-          <Text style={styles.textInput}>{gender || 'Selecionar Gênero'}</Text>
-        </TouchableOpacity>
 
         <Modal
           animationType="slide"
@@ -267,7 +342,7 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
           </View>
         </Modal>
 
-        <TouchableOpacity style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.buttonContainer} onPress={handleRegister}>
           <LinearGradient colors={[COLORS.secondary, COLORS.primary]} style={styles.button}>
             <Text style={styles.buttonText}>Cadastrar</Text>
           </LinearGradient>
@@ -278,31 +353,32 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: COLORS.light,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 60,
+  },
   header: {
     position: 'absolute',
     top: 40,
     left: 20,
     marginTop: 40
   },
-  container: {
-    backgroundColor: COLORS.background,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 60,
-  },
   content: {
     width: '100%',
     alignItems: 'center',
   },
   textInput: {
+    color: COLORS.lightGrey,
     flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
-  textArea: {
+  textAreaContainer: {
     height: 100,
-    textAlignVertical: 'top',
+    alignItems: 'flex-start',
   },
   inputContainer: {
     backgroundColor: COLORS.white,
@@ -369,7 +445,11 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: 18,
     fontWeight: 'bold'
-  }
+  },
+  errorInput: {
+    borderColor: 'red',
+    borderWidth: 1,
+  },
 });
 
 export default RegisterPetScreen;

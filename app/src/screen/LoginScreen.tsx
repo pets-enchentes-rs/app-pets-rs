@@ -44,7 +44,7 @@ const LoginScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons name="person" size={24} color="#9A9A9A" style={styles.inputIcon} />
+        <Ionicons name="person" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
         <TextInput
           style={styles.textInput}
           placeholder="Email"
@@ -54,7 +54,7 @@ const LoginScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons name="lock-closed" size={24} color="#9A9A9A" style={styles.inputIcon} />
+        <Ionicons name="lock-closed" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
         <TextInput
           style={styles.textInput}
           placeholder="Senha"

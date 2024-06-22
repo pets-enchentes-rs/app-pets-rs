@@ -1,72 +1,72 @@
-import React, { useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native'
-import * as ImagePicker from 'expo-image-picker'
-import { LinearGradient } from 'expo-linear-gradient'
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
-import COLORS from '../const/colors'
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import COLORS from '../const/colors';
 import { TextInputMask } from 'react-native-masked-text';
-import { StatusBar } from 'expo-status-bar'
+import { StatusBar } from 'expo-status-bar';
 
 const ProfileScreen = ({ navigation }) => {
-  const [name, setName] = useState('Ana Luísa')
-  const [email, setEmail] = useState('analuisa@gmail.com')
-  const [contact, setContact] = useState('+67234567890')
-  const [password, setPassword] = useState('')
-  const [profileImage, setProfileImage] = useState(null)
-  const [modalVisible, setModalVisible] = useState(false)
+  const [name, setName] = useState('Ana Luísa');
+  const [email, setEmail] = useState('analuisa@gmail.com');
+  const [contact, setContact] = useState('+67234567890');
+  const [profileImage, setProfileImage] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const pickImageFromCamera = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync()
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== 'granted') {
-      alert('Permission to access camera is required!')
-      return
+      alert('Permission to access camera is required!');
+      return;
     }
 
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 1
-    })
+      quality: 1,
+    });
 
     if (!result.cancelled) {
-      setProfileImage(result.assets[0].uri)
+      setProfileImage(result.assets[0].uri);
     }
-    setModalVisible(false)
-  }
+    setModalVisible(false);
+  };
 
   const pickImageFromGallery = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      alert('Permission to access gallery is required!')
-      return
+      alert('Permission to access gallery is required!');
+      return;
     }
 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 1
-    })
+      quality: 1,
+    });
 
     if (!result.cancelled) {
-      setProfileImage(result.assets[0].uri)
+      setProfileImage(result.assets[0].uri);
     }
-    setModalVisible(false)
-  }
+    setModalVisible(false);
+  };
 
   const removeImage = () => {
-    setProfileImage(null)
-    setModalVisible(false)
-  }
+    setProfileImage(null);
+    setModalVisible(false);
+  };
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={COLORS.background} />
+      <StatusBar backgroundColor={COLORS.light} />
       <View style={styles.header}>
-        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()}>
-          <MaterialCommunityIcons name="arrow-left" size={28} color={COLORS.dark} />
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
+        <Text style={styles.headerTitle}>Editar perfil</Text>
       </View>
 
       <View style={styles.content}>
@@ -87,7 +87,7 @@ const ProfileScreen = ({ navigation }) => {
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            setModalVisible(!modalVisible)
+            setModalVisible(!modalVisible);
           }}
         >
           <View style={styles.modalView}>
@@ -140,35 +140,12 @@ const ProfileScreen = ({ navigation }) => {
         </View>
 
         <View style={styles.inputContainer}>
-          <Ionicons name="lock-closed" size={24} color="#9A9A9A" style={styles.inputIcon} />
+          <Ionicons name="calendar" size={24} color="#9A9A9A" style={styles.inputIcon} />
           <TextInput
             style={styles.textInput}
-            placeholder="Senha atual"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Ionicons name="lock-closed" size={24} color="#9A9A9A" style={styles.inputIcon} />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Nova senha"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Ionicons name="lock-closed" size={24} color="#9A9A9A" style={styles.inputIcon} />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Confirmar nova senha"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
+            placeholder="Data de Nascimento"
+            value="23/05/1995"
+            editable={false}
           />
         </View>
 
@@ -179,40 +156,47 @@ const ProfileScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-  header: {
-    position: 'absolute',
-    top: 40,
-    left: 20
-  },
   container: {
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.light,
     flex: 1,
-    justifyContent: 'center',
+    paddingTop: 60,
+  },
+  header: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 60
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    marginBottom: 20,
+    marginTop: 20
+  },
+  backButton: {
+    position: 'absolute',
+    left: 16,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   content: {
-    width: '100%',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   imageWrapper: {
-    position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 20
+    marginBottom: 20,
   },
   imageContainer: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50
+    width: 120,
+    height: 120,
+    borderRadius: 60,
   },
   cameraIconContainer: {
     position: 'absolute',
@@ -220,13 +204,13 @@ const styles = StyleSheet.create({
     right: 5,
     backgroundColor: COLORS.white,
     borderRadius: 12,
-    padding: 3
+    padding: 3,
   },
   textInput: {
-    flex: 1
+    flex: 1,
   },
   inputContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     flexDirection: 'row',
     borderRadius: 20,
     marginHorizontal: 30,
@@ -234,47 +218,47 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     alignItems: 'center',
     height: 50,
-    width: '85%'
+    width: '85%',
   },
   inputIcon: {
     marginLeft: 15,
-    marginRight: 10
+    marginRight: 10,
   },
   modalView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)'
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalButton: {
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     padding: 20,
     borderRadius: 5,
     marginVertical: 10,
     width: '80%',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   modalButtonText: {
-    fontSize: 18
+    fontSize: 18,
   },
   buttonContainer: {
     marginTop: 30,
     marginHorizontal: 40,
     borderRadius: 20,
     elevation: 10,
-    width: '85%'
+    width: '85%',
   },
   button: {
     height: 50,
     borderRadius: 20,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   buttonText: {
     color: '#FFFFFF',
     fontSize: 18,
-    fontWeight: 'bold'
-  }
-})
+    fontWeight: 'bold',
+  },
+});
 
-export default ProfileScreen
+export default ProfileScreen;

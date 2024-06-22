@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native'
 import { User } from '../models'
 import { UserService } from '../services'
 import { TextInputMask } from 'react-native-masked-text'
+import COLORS from '../const/colors'
 
 const SignupScreen = () => {
   const navigation = useNavigation()
@@ -51,7 +52,7 @@ const SignupScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons name="person" size={24} color="#9A9A9A" style={styles.inputIcon} />
+        <Ionicons name="person" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
         <TextInput
           style={styles.textInput}
           placeholder="Nome"
@@ -61,7 +62,7 @@ const SignupScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons name="mail" size={24} color="#9A9A9A" style={styles.inputIcon} />
+        <Ionicons name="mail" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
         <TextInput
           style={styles.textInput}
           placeholder="Email"
@@ -71,7 +72,7 @@ const SignupScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons name="call" size={24} color="#9A9A9A" style={styles.inputIcon} />
+        <Ionicons name="call" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
         <TextInputMask
           type={'cel-phone'}
           options={{
@@ -87,7 +88,7 @@ const SignupScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons name="lock-closed" size={24} color="#9A9A9A" style={styles.inputIcon} />
+        <Ionicons name="lock-closed" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
         <TextInput
           style={styles.textInput}
           placeholder="Senha"
@@ -125,7 +126,7 @@ export default SignupScreen
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: COLORS.light,
     flex: 1,
     position: 'relative'
   },
@@ -138,18 +139,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 70,
     fontWeight: '500',
-    color: '#262626'
+    color: COLORS.titlePrimary
   },
   createAccountText: {
     textAlign: 'center',
     fontSize: 30,
-    color: '#262626',
+    color: COLORS.titlePrimary,
     marginTop: 30,
     marginBottom: 30,
     fontWeight: 'bold'
   },
   inputContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     flexDirection: 'row',
     borderRadius: 20,
     marginHorizontal: 40,
@@ -178,12 +179,12 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: COLORS.white,
     fontSize: 18,
     fontWeight: 'bold'
   },
   semContaText: {
-    color: '#262626',
+    color: COLORS.titlePrimary,
     textAlign: 'center',
     fontSize: 15,
     marginTop: 70

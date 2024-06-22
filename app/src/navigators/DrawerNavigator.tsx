@@ -9,9 +9,9 @@ import {
 import HomeScreen from '../screen/HomeScreen'
 import COLORS from '../const/colors'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import ProfileScreen from '../screen/ProfileScreen'
 import { StatusBar } from 'expo-status-bar'
 import RegisterPetScreen from '../screen/RegisterPetScreen'
+import SettingsScreen from '../screen/SettingsScreen'
 
 const Drawer = createDrawerNavigator()
 
@@ -61,24 +61,25 @@ const DrawerNavigator = () => {
         }}
         component={HomeScreen}
       />
-      <Drawer.Screen
-        name="Perfil"
-        options={{
-          title: 'PERFIL',
-          drawerIcon: ({ color }) => (
-            <MaterialCommunityIcons name="account" size={25} color={color} />
-          )
-        }}
-        component={ProfileScreen}
-      />
 
       <Drawer.Screen
-        name="Cadastrar"
+        name="Register"
         options={{
           title: 'CADASTRAR',
           drawerIcon: ({ color }) => <MaterialCommunityIcons name="plus" size={25} color={color} />
         }}
         component={RegisterPetScreen}
+      />
+
+      <Drawer.Screen
+        name="Settings"
+        options={{
+          title: 'CONFIGURAÇÕES',
+          drawerIcon: ({ color }) => (
+            <MaterialCommunityIcons name="cog" size={25} color={color} />
+          )
+        }}
+        component={SettingsScreen}
       />
     </Drawer.Navigator>
   )
