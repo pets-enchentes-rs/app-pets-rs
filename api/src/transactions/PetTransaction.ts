@@ -13,11 +13,11 @@ export default class PetTransaction {
       gender CHAR(1),
       type INTEGER NOT NULL,
       image TEXT NOT NULL,
-      found_date DATE NOT NULL,
-      found_local TEXT NOT NULL,
+      foundDate DATE NOT NULL,
+      foundLocal TEXT NOT NULL,
       description TEXT,
       contact TEXT NOT NULL,
-      id_user INTEGER NOT NULL
+      idUser INTEGER NOT NULL
     )`)
 
     db.close()
@@ -56,7 +56,7 @@ export default class PetTransaction {
   public static async getByUser(id: number): Promise<Pet[]> {
     const db = await openDb()
 
-    const pets = await db.all(`SELECT * FROM ${table} WHERE id_user = ?`, id)
+    const pets = await db.all(`SELECT * FROM ${table} WHERE idUser = ?`, id)
 
     db.close()
 
@@ -70,7 +70,7 @@ export default class PetTransaction {
 
     const result = await db.run(
       `INSERT INTO ${table} 
-        (name, gender, type, image, found_date, found_local, description, contact, id_user)
+        (name, gender, type, image, foundDate, foundLocal, description, contact, idUser)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         pet.name,
@@ -99,11 +99,11 @@ export default class PetTransaction {
         gender = ?,
         type = ?,
         image = ?,
-        found_date = ?,
-        found_local = ?,
+        foundDate = ?,
+        foundLocal = ?,
         description = ?,
         contact = ?,
-        id_user = ?
+        idUser = ?
       WHERE id = ?`,
       [
         pet.name,

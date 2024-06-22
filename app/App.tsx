@@ -1,7 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
-const { height } = Dimensions.get('window')
+import { StyleSheet } from 'react-native'
+
+import { UserProvider } from './src/contexts/UserContext'
 
 import LoginScreen from './src/screen/LoginScreen'
 import SignupScreen from './src/screen/SignupScreen'

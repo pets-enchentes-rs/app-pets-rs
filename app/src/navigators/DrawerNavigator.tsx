@@ -12,17 +12,23 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { StatusBar } from 'expo-status-bar'
 import RegisterPetScreen from '../screen/RegisterPetScreen'
 import SettingsScreen from '../screen/SettingsScreen'
+import { useUser } from '../contexts/UserContext'
 
 const Drawer = createDrawerNavigator()
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
+  const { user, setUser } = useUser()
+
   return (
     <DrawerContentScrollView {...props} style={{ paddingVertical: 30 }}>
       <StatusBar translucent backgroundColor="transparent" style="light" />
       <View style={styles.drawerContent}>
         <View style={styles.profileContainer}>
-          <Image source={require('../assets/user.jpg')} style={styles.profileImage} />
-          <Text style={styles.profileName}>ANA LUÍSA</Text>
+          <Image
+            source={user?.image ?? require('../assets/user.jpg')}
+            style={styles.profileImage}
+          />
+          <Text style={styles.profileName}>{user?.name}</Text>
         </View>
         <DrawerItemList {...props} />
       </View>
@@ -42,7 +48,9 @@ const DrawerNavigator = () => {
         },
         drawerActiveTintColor: COLORS.grey,
         drawerInactiveTintColor: COLORS.white,
-        drawerItemStyle: { backgroundColor: null },
+        drawerItemStyle: {
+          backgroundColor: null
+        },
         drawerLabelStyle: {
           fontWeight: 'bold',
           flexShrink: 1
@@ -57,7 +65,9 @@ const DrawerNavigator = () => {
         name="Home"
         options={{
           title: 'PETS',
-          drawerIcon: ({ color }) => <MaterialCommunityIcons name="paw" size={25} color={color} />
+          drawerIcon: ({ color }) => (
+            <MaterialCommunityIcons name="paw" size={25} color={color} />
+          )
         }}
         component={HomeScreen}
       />
@@ -66,7 +76,9 @@ const DrawerNavigator = () => {
         name="Register"
         options={{
           title: 'CADASTRAR',
-          drawerIcon: ({ color }) => <MaterialCommunityIcons name="plus" size={25} color={color} />
+          drawerIcon: ({ color }) => (
+            <MaterialCommunityIcons name="plus" size={25} color={color} />
+          )
         }}
         component={RegisterPetScreen}
       />

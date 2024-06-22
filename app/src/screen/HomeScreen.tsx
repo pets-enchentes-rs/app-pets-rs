@@ -1,36 +1,19 @@
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
+import { StatusBar } from 'expo-status-bar'
+import React, { useEffect, useState } from 'react'
 import {
-  Dimensions,
+  FlatList,
+  Image,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
-  FlatList,
-  Image
+  View
 } from 'react-native'
-import React from 'react'
-import { Ionicons } from '@expo/vector-icons'
 import COLORS from '../const/colors'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import pets from '../const/pets'
-import { StatusBar } from 'expo-status-bar'
-
-const { height } = Dimensions.get('window')
-
-interface PetCategory {
-  name: string
-  icon: string
-}
-
-interface Pet {
-  id: number
-  name: string
-  type: string
-  age: string
-  pet: string
-  gender: string
-  image: string
-}
+import { PetType } from '../enums/PetType'
+import { Pet } from '../models'
+import { PetService } from '../services'
 
 interface CardProps {
   pet: Pet
@@ -38,11 +21,11 @@ interface CardProps {
 }
 
 const petCategories = [
-  { name: 'GATOS', icon: 'cat' },
-  { name: 'CACHORROS', icon: 'dog' },
-  { name: 'AVES', icon: 'bird' },
-  { name: 'COELHOS', icon: 'rabbit' },
-  { name: 'OUTROS', icon: 'paw' }
+  { id: PetType.CAT, name: 'GATOS', icon: 'cat' },
+  { id: PetType.DOG, name: 'CACHORROS', icon: 'dog' },
+  { id: PetType.BIRD, name: 'AVES', icon: 'bird' },
+  { id: PetType.BUNNY, name: 'COELHOS', icon: 'rabbit' },
+  { id: PetType.OTHER, name: 'OUTROS', icon: 'paw' }
 ]
 
 interface HomeScreenProps {
@@ -50,22 +33,41 @@ interface HomeScreenProps {
 }
 
 const Card: React.FC<CardProps> = ({ pet, navigation }) => {
+  const petGender = pet.gender === 'M' ? 'male' : 'female'
+
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('DetailsScreen', pet)}>
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={() => navigation.navigate('DetailsScreen', pet)}
+    >
       <View style={styles.cardContainer}>
         <View style={styles.cardImageContainer}>
           <Image source={pet.image} style={styles.cardImage} />
         </View>
         <View style={styles.cardDetailsContainer}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={{ fontWeight: 'bold', color: COLORS.dark, fontSize: 20 }}>
-              {pet?.name}
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+          >
+            <Text
+              style={{ fontWeight: 'bold', color: COLORS.dark, fontSize: 20 }}
+            >
+              {pet.name}
             </Text>
-            <MaterialCommunityIcons name={`gender-${pet?.gender}`} size={25} color={COLORS.grey} />
+            <MaterialCommunityIcons
+              name={`gender-${petGender}`}
+              size={25}
+              color={COLORS.grey}
+            />
           </View>
           <View style={{ marginTop: 20, flexDirection: 'row' }}>
-            <MaterialCommunityIcons name="map-marker" size={18} color="#306060" />
-            <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>{pet?.location}</Text>
+            <MaterialCommunityIcons
+              name="map-marker"
+              size={18}
+              color="#306060"
+            />
+            <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>
+              {pet.foundLocal}
+            </Text>
           </View>
         </View>
       </View>
@@ -74,19 +76,27 @@ const Card: React.FC<CardProps> = ({ pet, navigation }) => {
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const [selectedCategoryIndex, setSeletedCategoryIndex] = React.useState(0)
-  const [filteredPets, setFilteredPets] = React.useState([])
+  const [selectedCategoryIndex, setSeletedCategoryIndex] = useState(PetType.CAT)
+  const [pets, setPets] = useState<Pet[]>([])
+  const [filteredPets, setFilteredPets] = useState<Pet[]>([])
 
-  const filterPet = (index) => {
-    const currentPets = pets.filter(
-      (item) => item?.pet?.toUpperCase() == petCategories[index].name
-    )[0]?.pets
-    setFilteredPets(currentPets)
+  useEffect(() => {
+    setAllPets().then(() => {
+      filterPet(PetType.CAT)
+    })
+  }, [])
+
+  const setAllPets = async () => {
+    const data = await PetService.getAll()
+
+    if (data && !pets) setPets(data)
   }
 
-  React.useEffect(() => {
-    filterPet(0)
-  }, [])
+  const filterPet = (index: number) => {
+    const currentPets: Pet[] = pets.filter((item) => item.type == index)
+
+    setFilteredPets(currentPets)
+  }
 
   return (
     <View style={styles.container}>
@@ -98,7 +108,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       </View>
       <View style={styles.mainContainer}>
         <View style={styles.searchInputContainer}>
-          <Ionicons name="search" size={24} color={COLORS.grey} style={{ marginTop: 12 }} />
+          <Ionicons
+            name="search"
+            size={24}
+            color={COLORS.grey}
+            style={{ marginTop: 12 }}
+          />
           <TextInput
             placeholder="Procurar pet"
             style={{ flex: 1, marginLeft: 5 }}
@@ -111,28 +126,41 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             style={{ marginTop: 12 }}
           />
         </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
-          {petCategories.map((item, index) => (
-            <View key={'pet' + index} style={{ alignItems: 'center' }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginTop: 20
+          }}
+        >
+          {petCategories.map((category) => (
+            <View key={'pet' + category.id} style={{ alignItems: 'center' }}>
               <TouchableOpacity
                 onPress={() => {
-                  setSeletedCategoryIndex(index)
-                  filterPet(index)
+                  setSeletedCategoryIndex(category.id)
+                  filterPet(category.id)
                 }}
                 style={[
                   styles.categoryButton,
                   {
-                    backgroundColor: selectedCategoryIndex == index ? COLORS.primary : COLORS.white
+                    backgroundColor:
+                      selectedCategoryIndex == category.id
+                        ? COLORS.primary
+                        : COLORS.white
                   }
                 ]}
               >
                 <MaterialCommunityIcons
-                  name={item.icon}
+                  name={category.icon}
                   size={30}
-                  color={selectedCategoryIndex == index ? COLORS.white : COLORS.primary}
+                  color={
+                    selectedCategoryIndex == category.id
+                      ? COLORS.white
+                      : COLORS.primary
+                  }
                 />
               </TouchableOpacity>
-              <Text style={styles.categoryButtonName}>{item.name}</Text>
+              <Text style={styles.categoryButtonName}>{category.name}</Text>
             </View>
           ))}
         </View>

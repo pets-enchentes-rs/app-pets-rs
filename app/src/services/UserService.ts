@@ -10,7 +10,7 @@ export default {
     return service.get(`/users/${id}`)
   },
 
-  async create(user: User): Promise<User> {
+  async create(user: User): Promise<any> {
     return service.post('/users', user)
   },
 
@@ -23,7 +23,7 @@ export default {
     return service.post('/users/login', login)
   },
 
-  async update(id: number, user: User): Promise<User> {
+  async update(id: number, user: User): Promise<any> {
     return service.put(`/users/${id}`, user)
   },
 

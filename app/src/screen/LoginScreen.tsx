@@ -13,8 +13,11 @@ import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import COLORS from '../const/colors'
 import { UserService } from '../services'
+import { useUser } from '../contexts/UserContext'
 
 const LoginScreen = () => {
+  const { user, setUser } = useUser()
+
   const navigation = useNavigation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -24,15 +27,21 @@ const LoginScreen = () => {
   }
 
   const handleEnter = async () => {
-    const data = await UserService.login(email, password)
+    const user = await UserService.login(email, password)
 
-    if (data) navigation.navigate('HomeScreen')
+    if (user) {
+      setUser(user.data)
+      navigation.navigate('HomeScreen')
+    }
   }
 
   return (
     <View style={styles.container}>
       <View style={styles.topImageContainer}>
-        <Image source={require('../assets/topVector.png')} style={styles.topImage} />
+        <Image
+          source={require('../assets/topVector.png')}
+          style={styles.topImage}
+        />
       </View>
 
       <View>
@@ -44,7 +53,12 @@ const LoginScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons name="person" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+        <Ionicons
+          name="person"
+          size={24}
+          color={COLORS.lightGrey}
+          style={styles.inputIcon}
+        />
         <TextInput
           style={styles.textInput}
           placeholder="Email"
@@ -54,7 +68,12 @@ const LoginScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons name="lock-closed" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+        <Ionicons
+          name="lock-closed"
+          size={24}
+          color={COLORS.lightGrey}
+          style={styles.inputIcon}
+        />
         <TextInput
           style={styles.textInput}
           placeholder="Senha"
@@ -69,7 +88,10 @@ const LoginScreen = () => {
       </View>
 
       <TouchableOpacity style={styles.buttonContainer} onPress={handleEnter}>
-        <LinearGradient colors={[COLORS.secondary, COLORS.primary]} style={styles.button}>
+        <LinearGradient
+          colors={[COLORS.secondary, COLORS.primary]}
+          style={styles.button}
+        >
           <Text style={styles.buttonText}>Entrar</Text>
         </LinearGradient>
       </TouchableOpacity>
@@ -77,7 +99,8 @@ const LoginScreen = () => {
       <TouchableOpacity onPress={handleRegister}>
         <View>
           <Text style={styles.semContaText}>
-            Não possui uma conta? <Text style={styles.registerText}>Registre-se</Text>
+            Não possui uma conta?{' '}
+            <Text style={styles.registerText}>Registre-se</Text>
           </Text>
         </View>
       </TouchableOpacity>
