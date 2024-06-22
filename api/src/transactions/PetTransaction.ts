@@ -90,7 +90,10 @@ export default class PetTransaction {
     return result.lastID
   }
 
-  public static async update(id: number, pet: Pet): Promise<number | undefined> {
+  public static async update(
+    id: number,
+    pet: Pet
+  ): Promise<number | undefined> {
     const db = await openDb()
 
     const result = await db.run(

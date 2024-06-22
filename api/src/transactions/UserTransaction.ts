@@ -39,13 +39,16 @@ export default class UserTransaction {
     return user
   }
 
-  public static async getByLogin(email: string, password: string): Promise<User | undefined> {
+  public static async getByLogin(
+    email: string,
+    password: string
+  ): Promise<User | undefined> {
     const db = await openDb()
 
-    const user = await db.get(`SELECT * FROM ${table} WHERE email = ? AND password = ?`, [
-      email,
-      password
-    ])
+    const user = await db.get(
+      `SELECT * FROM ${table} WHERE email = ? AND password = ?`,
+      [email, password]
+    )
 
     db.close()
 
@@ -65,7 +68,10 @@ export default class UserTransaction {
     return result.lastID
   }
 
-  public static async update(id: number, user: User): Promise<number | undefined> {
+  public static async update(
+    id: number,
+    user: User
+  ): Promise<number | undefined> {
     const db = await openDb()
 
     const result = await db.run(

@@ -5,7 +5,10 @@ import { HttpStatus } from '../enums/HttpStatus'
 
 export default class PetsController {
   // GET: /pets
-  public static async findAll(req: Request, res: Response): Promise<Response<Pet[]>> {
+  public static async findAll(
+    req: Request,
+    res: Response
+  ): Promise<Response<Pet[]>> {
     const pets = await PetTransaction.getAll()
 
     if (!pets) return res.status(HttpStatus.NO_CONTENT).end()
@@ -14,7 +17,10 @@ export default class PetsController {
   }
 
   // GET: /pets/1
-  public static async findById(req: Request, res: Response): Promise<Response<Pet>> {
+  public static async findById(
+    req: Request,
+    res: Response
+  ): Promise<Response<Pet>> {
     const { id } = req.params
 
     const pet = await PetTransaction.getById(parseInt(id))
@@ -25,7 +31,10 @@ export default class PetsController {
   }
 
   // GET: /pets/type/1
-  public static async findByType(req: Request, res: Response): Promise<Response<Pet[]>> {
+  public static async findByType(
+    req: Request,
+    res: Response
+  ): Promise<Response<Pet[]>> {
     const { id } = req.params
 
     const pets = await PetTransaction.getByType(parseInt(id))
@@ -36,7 +45,10 @@ export default class PetsController {
   }
 
   // GET: /pets/user/1
-  public static async findByUser(req: Request, res: Response): Promise<Response<Pet[]>> {
+  public static async findByUser(
+    req: Request,
+    res: Response
+  ): Promise<Response<Pet[]>> {
     const { id } = req.params
 
     const pets = await PetTransaction.getByUser(parseInt(id))
@@ -56,7 +68,10 @@ export default class PetsController {
   }
 
   // PUT: /pets/1
-  public static async update(req: Request, res: Response): Promise<Response<Pet>> {
+  public static async update(
+    req: Request,
+    res: Response
+  ): Promise<Response<Pet>> {
     const { id } = req.params
 
     const result = await PetTransaction.update(parseInt(id), req.body)
@@ -67,7 +82,10 @@ export default class PetsController {
   }
 
   // DELETE: /pets/1
-  public static async delete(req: Request, res: Response): Promise<Response<Pet>> {
+  public static async delete(
+    req: Request,
+    res: Response
+  ): Promise<Response<Pet>> {
     const { id } = req.params
 
     const result = await PetTransaction.delete(parseInt(id))

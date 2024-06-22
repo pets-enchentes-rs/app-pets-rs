@@ -44,7 +44,10 @@ const SignupScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.topImageContainer}>
-        <Image source={require('../assets/topVector.png')} style={styles.topImage} />
+        <Image
+          source={require('../assets/topVector.png')}
+          style={styles.topImage}
+        />
       </View>
 
       <View>
@@ -52,7 +55,12 @@ const SignupScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons name="person" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+        <Ionicons
+          name="person"
+          size={24}
+          color={COLORS.lightGrey}
+          style={styles.inputIcon}
+        />
         <TextInput
           style={styles.textInput}
           placeholder="Nome"
@@ -62,7 +70,12 @@ const SignupScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons name="mail" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+        <Ionicons
+          name="mail"
+          size={24}
+          color={COLORS.lightGrey}
+          style={styles.inputIcon}
+        />
         <TextInput
           style={styles.textInput}
           placeholder="Email"
@@ -72,7 +85,12 @@ const SignupScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons name="call" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+        <Ionicons
+          name="call"
+          size={24}
+          color={COLORS.lightGrey}
+          style={styles.inputIcon}
+        />
         <TextInputMask
           type={'cel-phone'}
           options={{
@@ -88,7 +106,12 @@ const SignupScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons name="lock-closed" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+        <Ionicons
+          name="lock-closed"
+          size={24}
+          color={COLORS.lightGrey}
+          style={styles.inputIcon}
+        />
         <TextInput
           style={styles.textInput}
           placeholder="Senha"

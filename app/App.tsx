@@ -29,7 +29,10 @@ const App = () => {
           <Stack.Screen name="HomeScreen" component={DrawerNavigator} />
           <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-          <Stack.Screen name="RegisterPetScreen" component={RegisterPetScreen} />
+          <Stack.Screen
+            name="RegisterPetScreen"
+            component={RegisterPetScreen}
+          />
           <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
           <Stack.Screen name="SecurityScreen" component={SecurityScreen} />
         </Stack.Navigator>
