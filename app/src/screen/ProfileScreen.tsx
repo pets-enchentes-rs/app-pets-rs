@@ -198,7 +198,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 16,
     marginBottom: 20,
-    marginTop: 20
   },
   backButton: {
     position: 'absolute',

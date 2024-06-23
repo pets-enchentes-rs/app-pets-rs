@@ -7,6 +7,7 @@ import { PetType } from '../enums/PetType'
 import { Pet } from '../models'
 import { PetService } from '../services'
 import { useIsFocused } from '@react-navigation/native'
+import FilterModal from './FilterModal'
 
 interface CardProps {
   pet: Pet
@@ -29,7 +30,7 @@ const Card: React.FC<CardProps> = ({ pet, navigation }) => {
   const petGender = pet.gender === 'M' ? 'male' : 'female'
 
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('DetailsScreen', pet)}>
+    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('DetailsPetScreen', pet)}>
       <View style={styles.cardContainer}>
         <View style={styles.cardImageContainer}>
           <Image source={pet.image} style={styles.cardImage} />
@@ -53,6 +54,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [selectedCategoryIndex, setSeletedCategoryIndex] = useState(PetType.CAT)
   const [pets, setPets] = useState<Pet[]>([])
   const [filteredPets, setFilteredPets] = useState<Pet[]>([])
+  const [isModalVisible, setModalVisible] = useState(false)
+  const [gender, setGender] = useState('')
+  const [showRadioOptions, setShowRadioOptions] = useState('Todos')
+  const [city, setCity] = useState('')
 
   const isFocused = useIsFocused()
 
@@ -76,6 +81,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     setFilteredPets(currentPets)
   }
 
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible)
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" style="light" />
@@ -88,7 +97,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         <View style={styles.searchInputContainer}>
           <Ionicons name="search" size={24} color={COLORS.grey} style={{ marginTop: 12 }} />
           <TextInput placeholder="Procurar pet" style={{ flex: 1, marginLeft: 5 }} placeholderTextColor={COLORS.grey} />
-          <MaterialCommunityIcons name="sort-ascending" size={24} color={COLORS.grey} style={{ marginTop: 12 }} />
+          <TouchableOpacity onPress={toggleModal}>
+            <MaterialCommunityIcons name="sort-ascending" size={24} color={COLORS.grey} style={{ marginTop: 12 }} />
+          </TouchableOpacity>
         </View>
         <View
           style={{
@@ -119,6 +130,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         </View>
         <FlatList showsVerticalScrollIndicator={false} data={filteredPets} renderItem={({ item }) => <Card pet={item} navigation={navigation} />} keyExtractor={(item) => item.id.toString()} contentContainerStyle={{ paddingBottom: 20, paddingTop: 20 }} />
       </View>
+
+      <FilterModal
+        isVisible={isModalVisible}
+        onClose={toggleModal}
+        gender={gender}
+        setGender={setGender}
+        showRadioOptions={showRadioOptions}
+        setShowRadioOptions={setShowRadioOptions}
+        city={city}
+        setCity={setCity}
+      />
     </View>
   )
 }

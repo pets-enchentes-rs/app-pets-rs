@@ -1,11 +1,20 @@
-import { ImageBackground, StyleSheet, Text, View, Image } from 'react-native'
-import React from 'react'
+import { ImageBackground, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import COLORS from '../const/colors'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
-const DetailsScreen = ({ navigation, route }) => {
+const DetailsPetScreen = ({ navigation, route }) => {
   const pet = route.params
+  type Gender = 'F' | 'M' | 'N';
+  const getGenderIconName = (gender: Gender): string => {
+    if (gender === 'F') {
+      return 'gender-female';
+    } else if (gender === 'M') {
+      return 'gender-male';
+    } else {
+      return 'help';
+    }
+  };
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
       <StatusBar translucent backgroundColor="transparent" style="light" />
@@ -19,12 +28,14 @@ const DetailsScreen = ({ navigation, route }) => {
         <View style={styles.detailsContainer}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text style={{ fontSize: 20, color: COLORS.dark, fontWeight: 'bold' }}>{pet?.name}</Text>
-            <MaterialCommunityIcons name={`gender-${pet?.gender}`} size={25} color={COLORS.grey} />
+            <MaterialCommunityIcons name={getGenderIconName(pet?.gender)} size={25} color={COLORS.grey} />
           </View>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('MapScreen', pet)}>
           <View style={{ flexDirection: 'row', marginTop: 5 }}>
             <MaterialCommunityIcons name="map-marker" size={18} color="#306060" />
-            <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>{pet?.location}</Text>
+            <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>{pet?.foundLocal}</Text>
           </View>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -57,7 +68,7 @@ const DetailsScreen = ({ navigation, route }) => {
   )
 }
 
-export default DetailsScreen
+export default DetailsPetScreen
 
 const styles = StyleSheet.create({
   header: {
