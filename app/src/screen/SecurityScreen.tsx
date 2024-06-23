@@ -1,12 +1,48 @@
 import React, { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import Toast from 'react-native-toast-message';
 import { LinearGradient } from 'expo-linear-gradient'
 import { Ionicons } from '@expo/vector-icons'
 import COLORS from '../const/colors'
 import { StatusBar } from 'expo-status-bar'
+import { useUser } from '../contexts/UserContext'
+import { UserService } from '../services';
+import { AxiosError, AxiosResponse } from 'axios';
+import { User } from '../models';
 
 const SecurityScreen = ({ navigation }) => {
+  const {user, setUser} = useUser()
+
   const [password, setPassword] = useState('')
+  const [newPass, setNewPass] = useState('')
+  const [confirmPass, setConfirmPass] = useState('')
+  
+  const handleChangePassword = () => {
+    if (user && user.id) {
+      const payload = {
+        password,
+        newPass,
+        confirmPass
+      }
+
+      UserService.changePassword(user.id, payload).then((response: AxiosResponse) => {
+        if (response.data) {
+          const updatedUser: User = response.data
+          setUser(updatedUser)
+
+          Toast.show({type: 'success', text1: 'Sucesso 👍', text2: "Sua senha foi alterada"});
+          navigation.navigate('HomeScreen')
+        }
+      }).catch((err: AxiosError) => {
+        if (err.response) {
+          const data: any = err.response.data
+          
+          Toast.show({type: 'error', text1: 'Algo de errado aconteceu 🔒', text2: data.error});
+        }
+      })
+    }
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={COLORS.light} />
@@ -27,17 +63,17 @@ const SecurityScreen = ({ navigation }) => {
 
         <View style={styles.inputContainer}>
           <Ionicons name="lock-closed" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
-          <TextInput style={styles.textInput} placeholder="Nova senha" value={password} onChangeText={setPassword} secureTextEntry />
+          <TextInput style={styles.textInput} placeholder="Nova senha" value={newPass} onChangeText={setNewPass} secureTextEntry />
         </View>
 
         <View style={styles.inputContainer}>
           <Ionicons name="lock-closed" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
-          <TextInput style={styles.textInput} placeholder="Confirmar nova senha" value={password} onChangeText={setPassword} secureTextEntry />
+          <TextInput style={styles.textInput} placeholder="Confirmar nova senha" value={confirmPass} onChangeText={setConfirmPass} secureTextEntry />
         </View>
       </View>
-      <TouchableOpacity style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={handleChangePassword}>
         <LinearGradient colors={[COLORS.secondary, COLORS.primary]} style={styles.button}>
-          <Text style={styles.buttonText}>Pronto</Text>
+          <Text style={styles.buttonText}>Alterar</Text>
         </LinearGradient>
       </TouchableOpacity>
     </View>

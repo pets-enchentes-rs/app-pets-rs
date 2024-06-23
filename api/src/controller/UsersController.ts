@@ -55,6 +55,23 @@ export default class UsersController {
     return res.json(user)
   }
 
+  // PUT: /users/password/1
+  public static async changePassword(req: Request, res: Response): Promise<Response<User>> {
+    const { id } = req.params
+    const { newPass } = req.body
+
+    const user = await UserTransaction.getById(parseInt(id))
+    const data = await UserTransaction.changePassword(parseInt(id), newPass)
+
+    if (user && data) {
+      user.password = newPass
+
+      return res.json(user)
+    }
+
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).end()
+  }
+
   // DELETE: /users/1
   public static async delete(req: Request, res: Response): Promise<Response<User>> {
     const { id } = req.params

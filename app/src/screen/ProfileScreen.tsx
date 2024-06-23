@@ -9,6 +9,7 @@ import { StatusBar } from 'expo-status-bar'
 import { useUser } from '../contexts/UserContext'
 import { User } from '../models'
 import { UserService } from '../services'
+import { AxiosResponse } from 'axios'
 
 const ProfileScreen = ({ navigation }) => {
   const { user, setUser } = useUser()
@@ -82,7 +83,7 @@ const ProfileScreen = ({ navigation }) => {
         phone: contact
       }
 
-      UserService.update(user.id, payload).then((response: any) => {
+      UserService.update(user.id, payload).then((response: AxiosResponse) => {
         setUser(response.data)
       })
     }

@@ -73,6 +73,16 @@ export default class UserTransaction {
     return user
   }
 
+  public static async changePassword(id: number, newPassword: string): Promise<number | undefined> {
+    const db = await openDb()
+
+    const result = await db.run(`UPDATE ${table} SET password = ? WHERE id = ?`, [newPassword, id])
+
+    db.close()
+
+    return result.changes
+  }
+
   public static async delete(id: number): Promise<number | undefined> {
     const db = await openDb()
 

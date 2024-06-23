@@ -1,5 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import Toast from 'react-native-toast-message';
 
 import { UserProvider } from './src/contexts/UserContext'
 
@@ -35,6 +36,7 @@ const App = () => {
           <Stack.Screen name="MapScreen" component={MapScreen} />
         </Stack.Navigator>
       </NavigationContainer>
+      <Toast />
     </UserProvider>
   )
 }

@@ -6,11 +6,13 @@ import { useNavigation } from '@react-navigation/native'
 import COLORS from '../const/colors'
 import { UserService } from '../services'
 import { useUser } from '../contexts/UserContext'
+import { AxiosResponse } from 'axios'
 
 const LoginScreen = () => {
   const { setUser } = useUser()
 
   const navigation = useNavigation()
+  
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -19,7 +21,7 @@ const LoginScreen = () => {
   }
 
   const handleEnter = () => {
-    UserService.login(email, password).then((response: any) => {
+    UserService.login(email, password).then((response: AxiosResponse) => {
       const user = response.data
       if (user) {
         setUser(user)
