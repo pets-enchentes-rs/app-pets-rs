@@ -8,7 +8,7 @@ import { UserService } from '../services'
 import { useUser } from '../contexts/UserContext'
 
 const LoginScreen = () => {
-  const { user, setUser } = useUser()
+  const { setUser } = useUser()
 
   const navigation = useNavigation()
   const [email, setEmail] = useState('')
@@ -18,13 +18,17 @@ const LoginScreen = () => {
     navigation.navigate('SignUpScreen')
   }
 
-  const handleEnter = async () => {
-    const user = await UserService.login(email, password)
+  const handleEnter = () => {
+    UserService.login(email, password).then((response: any) => {
+      const user = response.data
+      if (user) {
+        setUser(user)
+        setEmail('')
+        setPassword('')
 
-    if (user) {
-      setUser(user.data)
-      navigation.navigate('HomeScreen')
-    }
+        navigation.navigate('HomeScreen')
+      }
+    })
   }
 
   return (

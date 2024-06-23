@@ -4,12 +4,20 @@ import { Ionicons } from '@expo/vector-icons'
 import COLORS from '../const/colors'
 import { StatusBar } from 'expo-status-bar'
 import { NavigationProp } from '@react-navigation/native'
+import { useUser } from '../contexts/UserContext'
 
 type Props = {
   navigation: NavigationProp<any>
 }
 
 const SettingsScreen: React.FC<Props> = ({ navigation }) => {
+  const { setUser } = useUser()
+
+  const handleLogout = () => {
+    setUser(null)
+    navigation.navigate('LoginScreen')
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={COLORS.light} />
@@ -64,7 +72,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           <Ionicons name="trash-outline" size={24} color={COLORS.dark} />
           <Text style={styles.itemText}>Deletar conta</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('LoginScreen')}>
+        <TouchableOpacity style={styles.item} onPress={handleLogout}>
           <Ionicons name="log-out-outline" size={24} color={COLORS.dark} />
           <Text style={styles.itemText}>Sair</Text>
         </TouchableOpacity>

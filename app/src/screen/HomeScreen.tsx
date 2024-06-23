@@ -6,6 +6,7 @@ import COLORS from '../const/colors'
 import { PetType } from '../enums/PetType'
 import { Pet } from '../models'
 import { PetService } from '../services'
+import { useIsFocused } from '@react-navigation/native'
 
 interface CardProps {
   pet: Pet
@@ -53,11 +54,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [pets, setPets] = useState<Pet[]>([])
   const [filteredPets, setFilteredPets] = useState<Pet[]>([])
 
+  const isFocused = useIsFocused()
+
   useEffect(() => {
-    setAllPets().then(() => {
-      filterPet(PetType.CAT)
-    })
-  }, [])
+    setAllPets()
+  }, [isFocused])
+
+  useEffect(() => {
+    filterPet(PetType.CAT)
+  }, [pets])
 
   const setAllPets = async () => {
     const data = await PetService.getAll()
