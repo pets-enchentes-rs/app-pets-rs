@@ -1,17 +1,37 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import COLORS from '../const/colors'
 import { StatusBar } from 'expo-status-bar'
 import { NavigationProp } from '@react-navigation/native'
 import { useUser } from '../contexts/UserContext'
+import { UserService } from '../services'
 
 type Props = {
   navigation: NavigationProp<any>
 }
 
 const SettingsScreen: React.FC<Props> = ({ navigation }) => {
-  const { setUser } = useUser()
+  const { user, setUser } = useUser()
+
+  const showDeleteConfirmation = () => {
+    Alert.alert('Deseja excluir sua conta?', 'Essa funcionalidade é irreversível!', [
+      {
+        text: 'Cancelar',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'Excluir', onPress: handleDeleteAccount},
+    ]);
+  }
+
+  const handleDeleteAccount = () => {
+    if (user && user.id) {
+      UserService.delete(user.id).then(() => {
+        handleLogout()
+      })
+    }
+  }
 
   const handleLogout = () => {
     setUser(null)
@@ -68,7 +88,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           <Ionicons name="alert-circle-outline" size={24} color={COLORS.dark} />
           <Text style={styles.itemText}>Reportar um Problema</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item} onPress={showDeleteConfirmation}>
           <Ionicons name="trash-outline" size={24} color={COLORS.dark} />
           <Text style={styles.itemText}>Deletar conta</Text>
         </TouchableOpacity>
