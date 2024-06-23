@@ -74,7 +74,7 @@ const ProfileScreen = ({ navigation }) => {
     setModalVisible(false)
   }
 
-  const handleEditUser = () => {
+  const handleEditUser = async () => {
     if (user && user.id) {
       const payload: User = {
         name,
@@ -83,9 +83,11 @@ const ProfileScreen = ({ navigation }) => {
         phone: contact
       }
 
-      UserService.update(user.id, payload).then((response: AxiosResponse) => {
-        setUser(response.data)
-      })
+      const data = await UserService.update(user.id, payload)
+
+      if (data) {
+        setUser(data as User)
+      }
     }
   }
 

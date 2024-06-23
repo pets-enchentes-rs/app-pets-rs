@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar'
 import { NavigationProp } from '@react-navigation/native'
 import { useUser } from '../contexts/UserContext'
 import { UserService } from '../services'
+import Toast from 'react-native-toast-message'
 
 type Props = {
   navigation: NavigationProp<any>
@@ -25,11 +26,13 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     ]);
   }
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     if (user && user.id) {
-      UserService.delete(user.id).then(() => {
+      const data = await UserService.delete(user.id)
+
+      if (data) {
         handleLogout()
-      })
+      }
     }
   }
 

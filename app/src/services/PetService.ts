@@ -6,15 +6,15 @@ export default {
     return service.get('/pets')
   },
 
-  async getById(id: number): Promise<Pet> {
+  async getById(id: number): Promise<Pet | undefined> {
     return service.get(`/pets/${id}`)
   },
 
-  async create(pet: Pet): Promise<Pet> {
+  async create(pet: Pet): Promise<Pet | undefined> {
     return service.post('/pets', pet)
   },
 
-  async update(id: number, pet: Pet): Promise<Pet> {
+  async update(id: number, pet: Pet): Promise<Pet | undefined> {
     return service.put(`/pets/${id}`, pet)
   },
 

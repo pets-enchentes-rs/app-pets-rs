@@ -26,11 +26,17 @@ export default class UsersController {
 
   // POST: /users
   public static async add(req: Request, res: Response): Promise<Response<User>> {
-    const userId = await UserTransaction.insert(req.body)
+    const user: User = req.body
 
-    if (!userId) return res.status(HttpStatus.BAD_REQUEST).end()
+    const id = await UserTransaction.insert(user)
 
-    return res.status(HttpStatus.CREATED).json(`[${userId}] User added`)
+    if (id) {
+      user.id = id
+
+      return res.json(user)
+    }
+
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).end()
   }
 
   // POST: /users/login
@@ -80,6 +86,6 @@ export default class UsersController {
 
     if (!result) return res.status(HttpStatus.NOT_FOUND).end()
 
-    return res.json(`[${id}] User deleted`)
+    return res.json('Usuário deletado com sucesso')
   }
 }

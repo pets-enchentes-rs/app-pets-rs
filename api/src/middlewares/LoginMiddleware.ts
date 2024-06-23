@@ -8,7 +8,7 @@ export default async function LoginMiddleware(req: Request, res: Response, next:
   if (value) {
     let { email, password } = value as User
 
-    if (!email || !password) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Invalid login' })
+    if (!email || !password) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Preencha os campos corretamente' })
 
     next()
   } else {

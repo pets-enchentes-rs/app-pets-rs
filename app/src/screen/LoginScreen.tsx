@@ -6,7 +6,9 @@ import { useNavigation } from '@react-navigation/native'
 import COLORS from '../const/colors'
 import { UserService } from '../services'
 import { useUser } from '../contexts/UserContext'
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
+import Toast from 'react-native-toast-message'
+import { User } from '../models'
 
 const LoginScreen = () => {
   const { setUser } = useUser()
@@ -20,17 +22,17 @@ const LoginScreen = () => {
     navigation.navigate('SignUpScreen')
   }
 
-  const handleEnter = () => {
-    UserService.login(email, password).then((response: AxiosResponse) => {
-      const user = response.data
-      if (user) {
-        setUser(user)
-        setEmail('')
-        setPassword('')
+  const handleEnter = async () => {
+    const data = await UserService.login(email, password)
 
-        navigation.navigate('HomeScreen')
-      }
-    })
+    if (data) {
+      setUser(data as User)
+      
+      setEmail('')
+      setPassword('')
+
+      navigation.navigate('HomeScreen')
+    }
   }
 
   return (
