@@ -8,9 +8,9 @@ export default async function UsersMiddleware(req: Request, res: Response, next:
   if (value) {
     let { name, email, phone } = value as User
 
-    if (!name) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Invalid name' })
-    if (!email) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Invalid e-mail' })
-    if (!phone) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Invalid phone' })
+    if (!name) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Nome inválido' })
+    if (!email) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'E-mail inválido' })
+    if (!phone) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Telefone inválido' })
 
     next()
   } else {

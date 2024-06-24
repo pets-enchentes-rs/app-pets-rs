@@ -53,12 +53,16 @@ export default class UsersController {
   // PUT: /users/1
   public static async update(req: Request, res: Response): Promise<Response<User>> {
     const { id } = req.params
+    const user: User = req.body
 
-    const user = await UserTransaction.update(parseInt(id), req.body)
+    const result = await UserTransaction.update(parseInt(id), user)
 
-    if (!user) return res.status(HttpStatus.NOT_FOUND).end()
+    if (result) {
+      user.id = parseInt(id)
+      res.json(user)
+    }
 
-    return res.json(user)
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).end()
   }
 
   // PUT: /users/password/1
@@ -71,7 +75,6 @@ export default class UsersController {
 
     if (user && data) {
       user.password = newPass
-
       return res.json(user)
     }
 

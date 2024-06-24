@@ -59,11 +59,11 @@ export default class PetsController {
   public static async update(req: Request, res: Response): Promise<Response<Pet>> {
     const { id } = req.params
 
-    const result = await PetTransaction.update(parseInt(id), req.body)
+    const pet = await PetTransaction.update(parseInt(id), req.body)
 
-    if (!result) return res.status(HttpStatus.NOT_FOUND).end()
+    if (!pet) return res.status(HttpStatus.NOT_FOUND).end()
 
-    return res.json(`[${id}] Pet updated`)
+    return res.json(pet)
   }
 
   // DELETE: /pets/1
@@ -74,6 +74,6 @@ export default class PetsController {
 
     if (!result) return res.status(HttpStatus.NOT_FOUND).end()
 
-    return res.json(`[${id}] Pet deleted`)
+    return res.json('Pet deletado com sucesso')
   }
 }

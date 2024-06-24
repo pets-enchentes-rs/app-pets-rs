@@ -10,15 +10,15 @@ export default async function PetsMiddleware(req: Request, res: Response, next: 
     let { name, gender, type, image, foundDate, foundLocal, contact, idUser } = value as Pet
 
     if (!name || !gender || !Object.values(PetType).includes(type) || !image) {
-      return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Invalid Pet data' })
+      return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Informações inválidas' })
     }
 
     if (!foundDate || !foundLocal) {
-      return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Invalid Found data' })
+      return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Localização ou data inválidos' })
     }
 
-    if (!contact) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Invalid contact' })
-    if (!idUser) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Invalid User data' })
+    if (!contact) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Contato inválido' })
+    if (!idUser) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Usuário inválido' })
 
     next()
   } else {

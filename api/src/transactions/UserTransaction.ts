@@ -59,18 +59,14 @@ export default class UserTransaction {
     return result.lastID
   }
 
-  public static async update(id: number, user: User): Promise<User | undefined> {
+  public static async update(id: number, user: User): Promise<number | undefined> {
     const db = await openDb()
 
     const result = await db.run(`UPDATE ${table} SET name = ?, email = ?, image = ?, phone = ? WHERE id = ?`, [user.name, user.email, user.image, user.phone, id])
 
     db.close()
 
-    if (!result.changes) return
-
-    user.id = id
-
-    return user
+    return result.changes
   }
 
   public static async changePassword(id: number, newPassword: string): Promise<number | undefined> {
