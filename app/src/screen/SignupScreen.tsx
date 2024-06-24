@@ -75,7 +75,7 @@ const SignupScreen = () => {
       </View>
 
       <TouchableOpacity style={styles.buttonContainer} onPress={handleRegister}>
-        <LinearGradient colors={['#13EE85', '#0088A6']} style={styles.button}>
+        <LinearGradient colors={[COLORS.secondary, COLORS.primary]} style={styles.button}>
           <Text style={styles.buttonText}>Registrar</Text>
         </LinearGradient>
       </TouchableOpacity>

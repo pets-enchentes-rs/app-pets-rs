@@ -28,12 +28,14 @@ interface HomeScreenProps {
 
 const Card: React.FC<CardProps> = ({ pet, navigation }) => {
   const petGender = pet.gender === 'M' ? 'male' : 'female'
+  
+  const imageSource = typeof pet.image === 'string' ? { uri: pet.image } : pet.image;
 
   return (
     <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('DetailsPetScreen', pet)}>
       <View style={styles.cardContainer}>
         <View style={styles.cardImageContainer}>
-          <Image source={pet.image} style={styles.cardImage} />
+          <Image source={imageSource} style={styles.cardImage} />
         </View>
         <View style={styles.cardDetailsContainer}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -58,6 +60,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [gender, setGender] = useState('')
   const [showRadioOptions, setShowRadioOptions] = useState('Todos')
   const [city, setCity] = useState('')
+  const [searchText, setSearchText] = useState('')
 
   const isFocused = useIsFocused()
 
@@ -69,15 +72,24 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     filterPet(PetType.CAT)
   }, [pets])
 
+  useEffect(() => {
+    filterPetsBySearchText(searchText)
+  }, [searchText, selectedCategoryIndex, pets])
+
   const setAllPets = async () => {
     const data = await PetService.getAll()
-
     if (data) setPets(data)
   }
 
   const filterPet = (index: number) => {
     const currentPets: Pet[] = pets.filter((item) => item.type == index)
+    setFilteredPets(currentPets)
+  }
 
+  const filterPetsBySearchText = (text: string) => {
+    const currentPets: Pet[] = pets.filter((item) =>
+      item.type == selectedCategoryIndex && item.name?.toLowerCase().includes(text.toLowerCase())
+    )
     setFilteredPets(currentPets)
   }
 
@@ -96,7 +108,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       <View style={styles.mainContainer}>
         <View style={styles.searchInputContainer}>
           <Ionicons name="search" size={24} color={COLORS.grey} style={{ marginTop: 12 }} />
-          <TextInput placeholder="Procurar pet" style={{ flex: 1, marginLeft: 5 }} placeholderTextColor={COLORS.grey} />
+          <TextInput
+            placeholder="Procurar pet"
+            style={{ flex: 1, marginLeft: 5 }}
+            placeholderTextColor={COLORS.grey}
+            value={searchText}
+            onChangeText={setSearchText}
+          />
           <TouchableOpacity onPress={toggleModal}>
             <MaterialCommunityIcons name="sort-ascending" size={24} color={COLORS.grey} style={{ marginTop: 12 }} />
           </TouchableOpacity>
@@ -122,13 +140,19 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   }
                 ]}
               >
-                <MaterialCommunityIcons name={category.icon} size={30} color={selectedCategoryIndex == category.id ? COLORS.white : COLORS.primary} />
+                <MaterialCommunityIcons name={category.icon as keyof typeof MaterialCommunityIcons.glyphMap} size={30} color={selectedCategoryIndex == category.id ? COLORS.white : COLORS.primary} />
               </TouchableOpacity>
               <Text style={styles.categoryButtonName}>{category.name}</Text>
             </View>
           ))}
         </View>
-        <FlatList showsVerticalScrollIndicator={false} data={filteredPets} renderItem={({ item }) => <Card pet={item} navigation={navigation} />} keyExtractor={(item) => item.id.toString()} contentContainerStyle={{ paddingBottom: 20, paddingTop: 20 }} />
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={filteredPets}
+          renderItem={({ item }) => <Card pet={item} navigation={navigation} />}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={{ paddingBottom: 20, paddingTop: 20 }}
+        />
       </View>
 
       <FilterModal
@@ -138,14 +162,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         setGender={setGender}
         showRadioOptions={showRadioOptions}
         setShowRadioOptions={setShowRadioOptions}
-        city={city}
-        setCity={setCity}
       />
     </View>
   )
 }
-
-export default HomeScreen
 
 const styles = StyleSheet.create({
   container: {
@@ -211,3 +231,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   }
 })
+
+export default HomeScreen

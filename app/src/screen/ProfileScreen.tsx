@@ -7,17 +7,15 @@ import COLORS from '../const/colors'
 import { TextInputMask } from 'react-native-masked-text'
 import { StatusBar } from 'expo-status-bar'
 import { useUser } from '../contexts/UserContext'
-import { User } from '../models'
 import { UserService } from '../services'
-import { AxiosResponse } from 'axios'
 
-const ProfileScreen = ({ navigation }) => {
+const ProfileScreen = ({ navigation }: { navigation: any }) => {
   const { user, setUser } = useUser()
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [contact, setContact] = useState('')
-  const [profileImage, setProfileImage] = useState(null)
+  const [profileImage, setProfileImage] = useState<string | null>(null)
   const [modalVisible, setModalVisible] = useState(false)
 
   useEffect(() => {
@@ -27,23 +25,23 @@ const ProfileScreen = ({ navigation }) => {
       setEmail(user.email)
       setContact(user.phone)
     }
-  }, [])
+  }, [user])
 
   const pickImageFromCamera = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync()
     if (status !== 'granted') {
-      alert('Permission to access camera is required!')
+      alert('Permissão para acessar câmera necessária!')
       return
     }
 
-    let result = await ImagePicker.launchCameraAsync({
+    const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1
     })
 
-    if (!result.cancelled) {
+    if (!result.canceled && result.assets && result.assets.length > 0) {
       setProfileImage(result.assets[0].uri)
     }
     setModalVisible(false)
@@ -52,18 +50,18 @@ const ProfileScreen = ({ navigation }) => {
   const pickImageFromGallery = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
     if (status !== 'granted') {
-      alert('Permission to access gallery is required!')
+      alert('Permissão para acessar galeria necessária!')
       return
     }
 
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1
     })
 
-    if (!result.cancelled) {
+    if (!result.canceled && result.assets && result.assets.length > 0) {
       setProfileImage(result.assets[0].uri)
     }
     setModalVisible(false)
@@ -76,7 +74,7 @@ const ProfileScreen = ({ navigation }) => {
 
   const handleEditUser = async () => {
     if (user && user.id) {
-      const payload: User = {
+      const payload = {
         name,
         email,
         image: profileImage,
@@ -86,7 +84,7 @@ const ProfileScreen = ({ navigation }) => {
       const data = await UserService.update(user.id, payload)
 
       if (data) {
-        setUser(data as User)
+        setUser(data)
       }
     }
   }
@@ -106,7 +104,7 @@ const ProfileScreen = ({ navigation }) => {
           <View style={styles.content}>
             <View style={styles.imageWrapper}>
               <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.imageContainer}>
-                <Image source={user.image ? { uri: user.image } : require('../assets/default-user.png')} style={styles.profileImage} />
+                <Image source={profileImage ? { uri: profileImage } : require('../assets/default-user.png')} style={styles.profileImage} />
                 <View style={styles.cameraIconContainer}>
                   <Ionicons name="camera" size={20} color={COLORS.primary} />
                 </View>
@@ -117,9 +115,7 @@ const ProfileScreen = ({ navigation }) => {
               animationType="slide"
               transparent={true}
               visible={modalVisible}
-              onRequestClose={() => {
-                setModalVisible(!modalVisible)
-              }}
+              onRequestClose={() => setModalVisible(!modalVisible)}
             >
               <View style={styles.modalView}>
                 <TouchableOpacity style={styles.modalButton} onPress={pickImageFromCamera}>
@@ -160,21 +156,6 @@ const ProfileScreen = ({ navigation }) => {
               />
             </View>
 
-            {/* <View style={styles.inputContainer}>
-            <Ionicons
-              name="calendar"
-              size={24}
-              color="#9A9A9A"
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={styles.textInput}
-              placeholder="Data de Nascimento"
-              value="23/05/1995"
-              editable={false}
-            />
-          </View> */}
-
             <TouchableOpacity style={styles.buttonContainer} onPress={handleEditUser}>
               <LinearGradient colors={[COLORS.secondary, COLORS.primary]} style={styles.button}>
                 <Text style={styles.buttonText}>Atualizar</Text>
@@ -182,9 +163,7 @@ const ProfileScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-      ) : (
-        ''
-      )}
+      ) : null}
     </>
   )
 }

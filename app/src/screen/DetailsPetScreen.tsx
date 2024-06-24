@@ -1,10 +1,14 @@
-import { ImageBackground, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import React from 'react'
+import { ImageBackground, StyleSheet, Text, View, Image, TouchableOpacity, Linking } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import COLORS from '../const/colors'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient'
 
 const DetailsPetScreen = ({ navigation, route }) => {
   const pet = route.params
+  const userCadastro = false //aqui vai mudar o comportamento do botão (TRUE = usuário que cadastrou - botão pra edição / FALSE = outro user cadastrou - botão pra contatar)
+  
   type Gender = 'F' | 'M' | 'N';
   const getGenderIconName = (gender: Gender): string => {
     if (gender === 'F') {
@@ -15,6 +19,15 @@ const DetailsPetScreen = ({ navigation, route }) => {
       return 'help';
     }
   };
+
+  const handleButtonPress = () => {
+    if (userCadastro) {
+      navigation.navigate('RegisterPetScreen')
+    } else {
+      Linking.openURL('tel:+551196593820')
+    }
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
       <StatusBar translucent backgroundColor="transparent" style="light" />
@@ -31,10 +44,10 @@ const DetailsPetScreen = ({ navigation, route }) => {
             <MaterialCommunityIcons name={getGenderIconName(pet?.gender)} size={25} color={COLORS.grey} />
           </View>
           <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('MapScreen', pet)}>
-          <View style={{ flexDirection: 'row', marginTop: 5 }}>
-            <MaterialCommunityIcons name="map-marker" size={18} color="#306060" />
-            <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>{pet?.foundLocal}</Text>
-          </View>
+            <View style={{ flexDirection: 'row', marginTop: 5 }}>
+              <MaterialCommunityIcons name="map-marker" size={18} color="#306060" />
+              <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>{pet?.foundLocal}</Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -63,12 +76,15 @@ const DetailsPetScreen = ({ navigation, route }) => {
           </View>
           <Text style={styles.description}>{pet?.description}</Text>
         </View>
+        <TouchableOpacity style={styles.buttonContainer} onPress={handleButtonPress}>
+          <LinearGradient colors={[COLORS.secondary, COLORS.primary]} style={styles.button}>
+            <Text style={styles.buttonText}>{userCadastro ? 'Editar' : 'Contatar'}</Text>
+          </LinearGradient>
+        </TouchableOpacity>
       </View>
     </View>
   )
 }
-
-export default DetailsPetScreen
 
 const styles = StyleSheet.create({
   header: {
@@ -93,5 +109,26 @@ const styles = StyleSheet.create({
     color: COLORS.dark,
     lineHeight: 20,
     marginHorizontal: 20
+  },
+  buttonContainer: {
+    marginBottom: 30,
+    marginTop: 30,
+    marginHorizontal: 30,
+    borderRadius: 20,
+    elevation: 10,
+    width: '85%'
+  },
+  button: {
+    height: 50,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold'
   }
 })
+
+export default DetailsPetScreen

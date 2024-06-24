@@ -1,9 +1,18 @@
 import React from 'react'
-import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import COLORS from '../const/colors'
 
-const FilterModal = ({ isVisible, onClose, gender, setGender, showRadioOptions, setShowRadioOptions, city, setCity }) => {
+type FilterModalProps = {
+  isVisible: boolean;
+  onClose: () => void;
+  gender: string;
+  setGender: (gender: string) => void;
+  showRadioOptions: string;
+  setShowRadioOptions: (option: string) => void;
+};
+
+const FilterModal: React.FC<FilterModalProps> = ({ isVisible, onClose, gender, setGender, showRadioOptions, setShowRadioOptions }) => {
   return (
     <Modal visible={isVisible} transparent={true} animationType="slide" onRequestClose={onClose}>
       <View style={styles.modalOverlay}>

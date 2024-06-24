@@ -40,16 +40,10 @@ const DrawerNavigator = () => {
         },
         drawerActiveTintColor: COLORS.grey,
         drawerInactiveTintColor: COLORS.white,
-        drawerItemStyle: {
-          backgroundColor: null
-        },
         drawerLabelStyle: {
           fontWeight: 'bold',
           flexShrink: 1
         },
-        drawerIconContainerStyle: {
-          marginRight: -5
-        }
       }}
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
@@ -96,9 +90,9 @@ const styles = StyleSheet.create({
     marginTop: 30
   },
   profileImage: {
-    height: 60,
-    width: 60,
-    borderRadius: 30
+    height: 90,
+    width: 90,
+    borderRadius: 50
   },
   profileName: {
     color: COLORS.white,
