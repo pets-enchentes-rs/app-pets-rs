@@ -1,4 +1,4 @@
-import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Ionicons } from '@expo/vector-icons'
@@ -16,7 +16,35 @@ const SignupScreen = () => {
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
 
+  const [nameError, setNameError] = useState(false)
+  const [emailError, setEmailError] = useState(false)
+  const [phoneError, setPhoneError] = useState(false)
+  const [passwordError, setPasswordError] = useState(false)
+
+  const validateFields = () => {
+    const fields = [
+      { value: name, setter: setNameError },
+      { value: email, setter: setEmailError },
+      { value: phone, setter: setPhoneError },
+      { value: password, setter: setPasswordError }
+    ]
+
+    let valid = true
+
+    fields.forEach((field) => {
+      if (!field.value) {
+        field.setter(true)
+        valid = false
+      } else {
+        field.setter(false)
+      }
+    })
+
+    return valid;
+  }
+
   const handleRegister = async () => {
+    validateFields()
     const user: User = {
       name,
       email,
@@ -43,17 +71,17 @@ const SignupScreen = () => {
         <Text style={styles.createAccountText}>Crie sua conta</Text>
       </View>
 
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, nameError && styles.errorInput]}>
         <Ionicons name="person" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
         <TextInput style={styles.textInput} placeholder="Nome" value={name} onChangeText={setName} />
       </View>
 
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, emailError && styles.errorInput]}>
         <Ionicons name="mail" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
         <TextInput style={styles.textInput} placeholder="Email" value={email} onChangeText={setEmail} />
       </View>
 
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, phoneError && styles.errorInput]}>
         <Ionicons name="call" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
         <TextInputMask
           type={'cel-phone'}
@@ -69,7 +97,7 @@ const SignupScreen = () => {
         />
       </View>
 
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, passwordError && styles.errorInput]}>
         <Ionicons name="lock-closed" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
         <TextInput style={styles.textInput} placeholder="Senha" value={password} onChangeText={setPassword} secureTextEntry />
       </View>
@@ -89,13 +117,11 @@ const SignupScreen = () => {
       </TouchableOpacity>
 
       <View style={styles.leftVectorContainer}>
-        <ImageBackground source={require('../assets/leftVector.png')} style={styles.leftVectorImage} />
+        <Image source={require('../assets/leftVector.png')} style={styles.leftVectorImage} />
       </View>
     </View>
   )
 }
-
-export default SignupScreen
 
 const styles = StyleSheet.create({
   container: {
@@ -172,5 +198,11 @@ const styles = StyleSheet.create({
   leftVectorImage: {
     height: 250,
     width: 100
+  },
+  errorInput: {
+    borderColor: 'red',
+    borderWidth: 1
   }
 })
+
+export default SignupScreen

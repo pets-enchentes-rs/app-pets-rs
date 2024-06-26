@@ -19,6 +19,10 @@ const ProfileScreen = ({ navigation }: { navigation: any }) => {
   const [profileImage, setProfileImage] = useState<string | null>(null)
   const [modalVisible, setModalVisible] = useState(false)
 
+  const [nameError, setNameError] = useState(false)
+  const [emailError, setEmailError] = useState(false)
+  const [contactError, setContactError] = useState(false)
+
   useEffect(() => {
     if (user) {
       setProfileImage(user.image)
@@ -73,8 +77,29 @@ const ProfileScreen = ({ navigation }: { navigation: any }) => {
     setModalVisible(false)
   }
 
+  const validateFields = () => {
+    const fields = [
+      { value: name, setter: setNameError },
+      { value: email, setter: setEmailError },
+      { value: contact, setter: setContactError }
+    ]
+
+    let valid = true
+
+    fields.forEach((field) => {
+      if (!field.value) {
+        field.setter(true)
+        valid = false
+      } else {
+        field.setter(false)
+      }
+    })
+
+    return valid
+  }
+
   const handleEditUser = async () => {
-    if (user && user.id) {
+    if (validateFields() && user && user.id) {
       const payload = {
         name,
         email,
@@ -89,6 +114,8 @@ const ProfileScreen = ({ navigation }: { navigation: any }) => {
         Toast.show({ type: 'success', text1: 'Sucesso 😸', text2: 'Perfil atualizado com sucesso' })
         navigation.navigate('HomeScreen')
       }
+    } else {
+      Toast.show({ type: 'error', text1: 'Erro 🙀', text2: 'Campos obrigatórios não foram preenchidos' })
     }
   }
 
@@ -133,17 +160,17 @@ const ProfileScreen = ({ navigation }: { navigation: any }) => {
               </View>
             </Modal>
 
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer, nameError && styles.errorInput]}>
               <Ionicons name="person" size={24} color="#9A9A9A" style={styles.inputIcon} />
               <TextInput style={styles.textInput} placeholder="Nome" value={name} onChangeText={setName} />
             </View>
 
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer, emailError && styles.errorInput]}>
               <Ionicons name="mail" size={24} color="#9A9A9A" style={styles.inputIcon} />
               <TextInput style={styles.textInput} placeholder="Email" value={email} onChangeText={setEmail} />
             </View>
 
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer, contactError && styles.errorInput]}>
               <Ionicons name="call" size={24} color="#9A9A9A" style={styles.inputIcon} />
               <TextInputMask
                 type={'cel-phone'}
@@ -269,6 +296,10 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold'
+  },
+  errorInput: {
+    borderColor: 'red',
+    borderWidth: 1
   }
 })
 

@@ -7,7 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import * as Location from 'expo-location'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useState } from 'react'
-import { Image, Modal, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import { Image, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { TextInputMask } from 'react-native-masked-text'
 import Toast from 'react-native-toast-message'
 import COLORS from '../const/colors'
@@ -20,8 +20,10 @@ type Props = {
   navigation: NavigationProp<any>
 }
 
-const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
-  const { user } = useUser()
+const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
+  const { user } = useUser();
+  const isEditing = route.params?.isEditing || false;
+  const petToEdit = route.params?.pet || null;
 
   const [animalTypeLabel, setAnimalTypeLabel] = useState('')
   const [animalType, setAnimalType] = useState(0)
@@ -76,10 +78,10 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleChangeAnimalType = (option: string) => {
     setAnimalTypeLabel(option)
-    
-    const animalTypeOption = petTypeOptions.find(opt => opt.label === option);
+
+    const animalTypeOption = petTypeOptions.find((opt) => opt.label === option);
     const animalType = animalTypeOption ? animalTypeOption.id : PetType.OTHER;
-  
+
     setAnimalType(animalType);
   }
 
@@ -96,7 +98,7 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
       longitude: location.coords.longitude
     })
 
-    setCoords(`${location.coords.latitude}, ${location.coords.longitude}` )
+    setCoords(`${location.coords.latitude}, ${location.coords.longitude}`)
     setAddress(`${address[0].street}, ${address[0].city ?? address[0].district}`)
   }
 
@@ -155,14 +157,18 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
     })
 
     if (!valid) {
-      Toast.show({ type: 'error', text1: 'Campos incompletos 🙀', text2: 'Há campos obrigatórios que não foram preenchidos' })
+      Toast.show({
+        type: 'error',
+        text1: 'Campos incompletos 🙀',
+        text2: 'Há campos obrigatórios que não foram preenchidos',
+      })
     }
 
-    return valid
-  }
+    return valid;
+  };
 
   const handleRegister = async () => {
-    if (validateFields() && (user && user.id)) {
+    if (validateFields() && user?.id) {
       const payload: Pet = {
         name,
         gender,
@@ -175,10 +181,33 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
         idUser: user?.id
       }
 
-      const data = await PetService.create(payload)
+      let data;
+      if (isEditing && petToEdit) {
+        data = await PetService.update(petToEdit.id, payload);
+      } else {
+        data = await PetService.create(payload);
+      }
 
       if (data) {
-        Toast.show({ type: 'success', text1: 'Sucesso 😸', text2: 'Pet cadastrado com sucesso' })
+        Toast.show({
+          type: 'success',
+          text1: 'Sucesso 😸',
+          text2: isEditing ? 'Pet atualizado com sucesso' : 'Pet cadastrado com sucesso',
+        });
+        navigation.navigate('HomeScreen');
+      }
+    }
+  }
+
+  const handleDelete = async () => {
+    if (isEditing && petToEdit) {
+      const result = await PetService.delete(petToEdit.id);
+      if (result) {
+        Toast.show({
+          type: 'success',
+          text1: 'Sucesso 😸',
+          text2: 'Pet excluído com sucesso',
+        })
         navigation.navigate('HomeScreen')
       }
     }
@@ -327,15 +356,28 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
           </View>
         </Modal>
 
-        <TouchableOpacity style={styles.buttonContainer} onPress={handleRegister}>
-          <LinearGradient colors={[COLORS.secondary, COLORS.primary]} style={styles.button}>
-            <Text style={styles.buttonText}>Cadastrar</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        <View style={[styles.buttonsRow, !isEditing && { justifyContent: 'center' }]}>
+          <TouchableOpacity
+            style={[styles.buttonContainer, !isEditing ? { flex: 1 } : { flex: 0.45, marginRight: 10 }]}
+            onPress={handleRegister}
+          >
+            <LinearGradient colors={[COLORS.secondary, COLORS.primary]} style={styles.button}>
+              <Text style={styles.buttonText}>{isEditing ? 'Editar' : 'Cadastrar'}</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+
+          {isEditing && (
+            <TouchableOpacity style={[styles.buttonContainer, { flex: 0.45 }]} onPress={handleDelete}>
+              <LinearGradient colors={['#C30010', '#FF0000']} style={styles.button}>
+                <Text style={styles.buttonText}>Excluir</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -413,12 +455,14 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 10
   },
-  buttonContainer: {
+  buttonsRow: {
+    flexDirection: 'row',
     marginTop: 30,
-    marginHorizontal: 40,
+    width: '85%',
+  },
+  buttonContainer: {
     borderRadius: 20,
     elevation: 10,
-    width: '85%'
   },
   button: {
     height: 50,
