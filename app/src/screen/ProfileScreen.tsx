@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 import * as ImagePicker from 'expo-image-picker'
 import { LinearGradient } from 'expo-linear-gradient'
-import { Ionicons } from '@expo/vector-icons'
-import COLORS from '../const/colors'
-import { TextInputMask } from 'react-native-masked-text'
 import { StatusBar } from 'expo-status-bar'
+import React, { useEffect, useState } from 'react'
+import { Image, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { TextInputMask } from 'react-native-masked-text'
+import Toast from 'react-native-toast-message'
+import COLORS from '../const/colors'
 import { useUser } from '../contexts/UserContext'
 import { UserService } from '../services'
 
@@ -85,6 +86,8 @@ const ProfileScreen = ({ navigation }: { navigation: any }) => {
 
       if (data) {
         setUser(data)
+        Toast.show({ type: 'success', text1: 'Sucesso 😸', text2: 'Perfil atualizado com sucesso' })
+        navigation.navigate('HomeScreen')
       }
     }
   }

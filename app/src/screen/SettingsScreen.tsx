@@ -1,12 +1,11 @@
-import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import COLORS from '../const/colors'
-import { StatusBar } from 'expo-status-bar'
 import { NavigationProp } from '@react-navigation/native'
+import { StatusBar } from 'expo-status-bar'
+import React from 'react'
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import COLORS from '../const/colors'
 import { useUser } from '../contexts/UserContext'
 import { UserService } from '../services'
-import Toast from 'react-native-toast-message'
 
 type Props = {
   navigation: NavigationProp<any>

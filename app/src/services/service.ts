@@ -19,7 +19,7 @@ export default {
       if (err.response) {
         const data: any = err.response.data
 
-        Toast.show({ type: 'error', text1: 'Algo de errado aconteceu 😢', text2: data.error })
+        Toast.show({ type: 'error', text1: 'Algo de errado aconteceu 😿', text2: data.error })
       }
     }
   },
@@ -33,7 +33,7 @@ export default {
       if (err.response) {
         const data: any = err.response.data
 
-        Toast.show({ type: 'error', text1: 'Algo de errado aconteceu 😢', text2: data.error })
+        Toast.show({ type: 'error', text1: 'Algo de errado aconteceu 😿', text2: data.error })
       }
     }
   },
@@ -47,7 +47,7 @@ export default {
       if (err.response) {
         const data: any = err.response.data
 
-        Toast.show({ type: 'error', text1: 'Algo de errado aconteceu 😢', text2: data.error })
+        Toast.show({ type: 'error', text1: 'Algo de errado aconteceu 😿', text2: data.error })
       }
     }
   },
@@ -57,7 +57,7 @@ export default {
       const { data } = await instance.delete(url)
 
       if (data) {
-        Toast.show({ type: 'success', text1: 'Sucesso 👍', text2: data })
+        Toast.show({ type: 'success', text1: 'Sucesso 😸', text2: data })
       }
 
       return data
@@ -65,7 +65,7 @@ export default {
       if (err.response) {
         const data: any = err.response.data
 
-        Toast.show({ type: 'error', text1: 'Algo de errado aconteceu 😢', text2: data.error })
+        Toast.show({ type: 'error', text1: 'Algo de errado aconteceu 😿', text2: data.error })
       }
     }
   }

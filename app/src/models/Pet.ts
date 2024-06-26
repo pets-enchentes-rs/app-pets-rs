@@ -2,16 +2,16 @@ import { ImageSourcePropType } from 'react-native'
 import { PetType } from '../enums/PetType'
 
 interface Pet {
-  id: number
+  id?: number
   name?: string
-  gender?: string
+  gender: string
   type: PetType
-  image: ImageSourcePropType
-  foundDate: Date
+  image: any
+  foundDate: Date | null
   foundLocal: string
   description?: string
   contact: string
-  id_user: number
+  idUser: number
 }
 
 export default Pet

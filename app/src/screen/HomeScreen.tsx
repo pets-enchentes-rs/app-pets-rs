@@ -1,4 +1,6 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
+import { useIsFocused } from '@react-navigation/native'
+import * as Location from 'expo-location'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useState } from 'react'
 import { FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
@@ -6,7 +8,6 @@ import COLORS from '../const/colors'
 import { PetType } from '../enums/PetType'
 import { Pet } from '../models'
 import { PetService } from '../services'
-import { useIsFocused } from '@react-navigation/native'
 import FilterModal from './FilterModal'
 
 interface CardProps {
@@ -27,9 +28,49 @@ interface HomeScreenProps {
 }
 
 const Card: React.FC<CardProps> = ({ pet, navigation }) => {
-  const petGender = pet.gender === 'M' ? 'male' : 'female'
-  
+  const [genderIcon, setGenderIcon] = useState('')
+  const [foundAddress, setFoundAddress] = useState('')
+
   const imageSource = typeof pet.image === 'string' ? { uri: pet.image } : pet.image;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await handleFoundAddress(pet.foundLocal);
+      setFoundAddress(result)
+    };
+
+    handleGenderIcon(pet.gender)
+
+    fetchData()
+  }, [pet])
+
+  const handleGenderIcon = (gender: string) => {
+    switch (gender) {
+      case 'M':
+        setGenderIcon('gender-male')
+        break;
+    
+      case 'F':
+        setGenderIcon('gender-female')
+        break;
+
+      case 'N':
+      default:
+        setGenderIcon('help')
+        break;
+    }
+  };
+
+  const handleFoundAddress = async (foundLocal: string): Promise<string> => {
+    const coords = foundLocal.split(', ')
+  
+    const address = await Location.reverseGeocodeAsync({
+      latitude: parseFloat(coords[0]),
+      longitude: parseFloat(coords[1])
+    })
+  
+    return `${address[0].street}, ${address[0].city ?? address[0].district}`
+  }
 
   return (
     <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('DetailsPetScreen', pet)}>
@@ -40,11 +81,11 @@ const Card: React.FC<CardProps> = ({ pet, navigation }) => {
         <View style={styles.cardDetailsContainer}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text style={{ fontWeight: 'bold', color: COLORS.dark, fontSize: 20 }}>{pet.name}</Text>
-            <MaterialCommunityIcons name={`gender-${petGender}`} size={25} color={COLORS.grey} />
+            <MaterialCommunityIcons name={genderIcon} size={25} color={COLORS.grey} />
           </View>
           <View style={{ marginTop: 20, flexDirection: 'row' }}>
             <MaterialCommunityIcons name="map-marker" size={18} color="#306060" />
-            <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>{pet.foundLocal}</Text>
+            <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>{foundAddress}</Text>
           </View>
         </View>
       </View>
@@ -59,7 +100,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false)
   const [gender, setGender] = useState('')
   const [showRadioOptions, setShowRadioOptions] = useState('Todos')
-  const [city, setCity] = useState('')
   const [searchText, setSearchText] = useState('')
 
   const isFocused = useIsFocused()
@@ -150,7 +190,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
           data={filteredPets}
           renderItem={({ item }) => <Card pet={item} navigation={navigation} />}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.id ? item.id.toString() : ''}
           contentContainerStyle={{ paddingBottom: 20, paddingTop: 20 }}
         />
       </View>

@@ -1,28 +1,39 @@
-import React, { useState, useEffect } from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Image, ToastAndroid } from 'react-native'
-import DateTimePicker from '@react-native-community/datetimepicker'
 import { Ionicons } from '@expo/vector-icons'
-import * as Location from 'expo-location'
-import * as ImagePicker from 'expo-image-picker'
-import { format } from 'date-fns'
-import { TextInputMask } from 'react-native-masked-text'
-import COLORS from '../const/colors'
+import DateTimePicker from '@react-native-community/datetimepicker'
 import { NavigationProp } from '@react-navigation/native'
+import { format } from 'date-fns'
+import * as ImagePicker from 'expo-image-picker'
 import { LinearGradient } from 'expo-linear-gradient'
+import * as Location from 'expo-location'
 import { StatusBar } from 'expo-status-bar'
+import React, { useEffect, useState } from 'react'
+import { Image, Modal, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import { TextInputMask } from 'react-native-masked-text'
+import Toast from 'react-native-toast-message'
+import COLORS from '../const/colors'
+import { useUser } from '../contexts/UserContext'
+import { PetType } from '../enums/PetType'
+import { Pet } from '../models'
+import { PetService } from '../services'
 
 type Props = {
   navigation: NavigationProp<any>
 }
 
 const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
-  const [animalType, setAnimalType] = useState('')
+  const { user } = useUser()
+
+  const [animalTypeLabel, setAnimalTypeLabel] = useState('')
+  const [animalType, setAnimalType] = useState(0)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [foundLocation, setFoundLocation] = useState('')
+  const [foundLocal, setFoundLocal] = useState('')
+  const [foundAddress, setFoundAddress] = useState('')
   const [foundDate, setFoundDate] = useState<Date | null>(null)
   const [currentLocation, setCurrentLocation] = useState('')
+  const [currentAddress, setCurrentAddress] = useState('')
   const [contact, setContact] = useState('')
+  const [genderLabel, setGenderLabel] = useState('')
   const [gender, setGender] = useState('')
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [animalModalVisible, setAnimalModalVisible] = useState(false)
@@ -31,12 +42,27 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false)
 
   const [animalTypeError, setAnimalTypeError] = useState(false)
+  const [nameError, setNameError] = useState(false)
   const [descriptionError, setDescriptionError] = useState(false)
-  const [foundLocationError, setFoundLocationError] = useState(false)
+  const [foundLocalError, setFoundLocalError] = useState(false)
   const [foundDateError, setFoundDateError] = useState(false)
   const [currentLocationError, setCurrentLocationError] = useState(false)
   const [genderError, setGenderError] = useState(false)
   const [imageError, setImageError] = useState(false)
+
+  const petTypeOptions = [
+    { id: PetType.DOG, label: 'Cachorro' },
+    { id: PetType.CAT, label: 'Gato' },
+    { id: PetType.BUNNY, label: 'Coelho' },
+    { id: PetType.BIRD, label: 'Ave' },
+    { id: PetType.OTHER, label: 'Outro' }
+  ]
+
+  const genderOptions = [
+    { id: 0, label: 'Macho', char: 'M' },
+    { id: 1, label: 'Fêmea', char: 'F' },
+    { id: 2, label: 'Não sei', char: 'N' },
+  ]
 
   const openDatePicker = () => {
     setShowDatePicker(true)
@@ -48,7 +74,16 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
     setFoundDate(currentDate)
   }
 
-  const getLocation = async (setLocation) => {
+  const handleChangeAnimalType = (option: string) => {
+    setAnimalTypeLabel(option)
+    
+    const animalTypeOption = petTypeOptions.find(opt => opt.label === option);
+    const animalType = animalTypeOption ? animalTypeOption.id : PetType.OTHER;
+  
+    setAnimalType(animalType);
+  }
+
+  const getLocation = async (setCoords: Function, setAddress: Function) => {
     let { status } = await Location.requestForegroundPermissionsAsync()
     if (status !== 'granted') {
       alert('Permissão para acessar localização é necessária!')
@@ -60,7 +95,9 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude
     })
-    setLocation(`${address[0].street}, ${address[0].city}`)
+
+    setCoords(`${location.coords.latitude}, ${location.coords.longitude}` )
+    setAddress(`${address[0].street}, ${address[0].city ?? address[0].district}`)
   }
 
   const pickImage = async () => {
@@ -97,8 +134,9 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
   const validateFields = () => {
     const fields = [
       { value: animalType, setter: setAnimalTypeError },
+      { value: name, setter: setNameError },
       { value: description, setter: setDescriptionError },
-      { value: foundLocation, setter: setFoundLocationError },
+      { value: foundLocal, setter: setFoundLocalError },
       { value: foundDate, setter: setFoundDateError },
       { value: currentLocation, setter: setCurrentLocationError },
       { value: gender, setter: setGenderError },
@@ -117,33 +155,50 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
     })
 
     if (!valid) {
-      ToastAndroid.show('Há campos obrigatórios que não foram preenchidos', ToastAndroid.LONG)
+      Toast.show({ type: 'error', text1: 'Campos incompletos 🙀', text2: 'Há campos obrigatórios que não foram preenchidos' })
     }
 
     return valid
   }
 
-  const handleRegister = () => {
-    if (validateFields()) {
-      // Cadastrar o pet
-      ToastAndroid.show('Cadastro realizado com sucesso', ToastAndroid.LONG)
+  const handleRegister = async () => {
+    if (validateFields() && (user && user.id)) {
+      const payload: Pet = {
+        name,
+        gender,
+        type: animalType,
+        image,
+        foundDate,
+        foundLocal,
+        description,
+        contact,
+        idUser: user?.id
+      }
+
+      const data = await PetService.create(payload)
+
+      if (data) {
+        Toast.show({ type: 'success', text1: 'Sucesso 😸', text2: 'Pet cadastrado com sucesso' })
+        navigation.navigate('HomeScreen')
+      }
     }
   }
 
   const resetForm = () => {
-    setAnimalType('')
+    setAnimalTypeLabel('')
     setName('')
     setDescription('')
-    setFoundLocation('')
+    setFoundLocal('')
     setFoundDate(null)
     setCurrentLocation('')
     setContact('')
-    setGender('')
+    setGenderLabel('')
     setImage(null)
 
     setAnimalTypeError(false)
+    setNameError(false)
     setDescriptionError(false)
-    setFoundLocationError(false)
+    setFoundLocalError(false)
     setFoundDateError(false)
     setCurrentLocationError(false)
     setGenderError(false)
@@ -186,21 +241,26 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
 
         <TouchableOpacity style={[styles.inputContainer, animalTypeError && styles.errorInput]} onPress={() => setAnimalModalVisible(true)}>
           <Ionicons name="paw" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
-          <Text style={styles.textInput}>{animalType || 'Selecionar tipo de animal'}</Text>
+          <Text style={styles.textInput}>{animalTypeLabel || 'Selecionar tipo de animal'}</Text>
         </TouchableOpacity>
+
+        <View style={[styles.inputContainer, nameError && styles.errorInput]}>
+          <Ionicons name="text" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+          <TextInput style={styles.textInput} placeholder="Nome" value={name} onChangeText={setName} />
+        </View>
 
         <Modal animationType="slide" transparent={true} visible={animalModalVisible} onRequestClose={() => setAnimalModalVisible(!animalModalVisible)}>
           <View style={styles.modalView}>
-            {['Cachorro', 'Gato', 'Coelho', 'Ave', 'Outros'].map((type) => (
+            {petTypeOptions.map((type) => (
               <TouchableOpacity
-                key={type}
+                key={type.id}
                 style={styles.modalButton}
                 onPress={() => {
-                  setAnimalType(type)
+                  handleChangeAnimalType(type.label)
                   setAnimalModalVisible(false)
                 }}
               >
-                <Text style={styles.modalButtonText}>{type}</Text>
+                <Text style={styles.modalButtonText}>{type.label}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -217,25 +277,20 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
         </TouchableOpacity>
         {showDatePicker && <DateTimePicker value={foundDate || new Date()} mode="date" display="default" onChange={handleDateChange} />}
 
-        <TouchableOpacity style={[styles.inputContainer, currentLocationError && styles.errorInput]} onPress={() => getLocation(setCurrentLocation)}>
+        <TouchableOpacity style={[styles.inputContainer, currentLocationError && styles.errorInput]} onPress={() => getLocation(setCurrentLocation, setCurrentAddress)}>
           <Ionicons name="location-sharp" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
-          <Text style={styles.textInput}>{currentLocation || 'Local Atual'}</Text>
+          <Text style={styles.textInput}>{currentAddress || 'Endereço Atual do Pet'}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.inputContainer, foundLocationError && styles.errorInput]} onPress={() => getLocation(setFoundLocation)}>
+        <TouchableOpacity style={[styles.inputContainer, foundLocalError && styles.errorInput]} onPress={() => getLocation(setFoundLocal, setFoundAddress)}>
           <Ionicons name="location" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
-          <Text style={styles.textInput}>{foundLocation || 'Local Encontrado'}</Text>
+          <Text style={styles.textInput}>{foundAddress || 'Endereço Encontrado'}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.inputContainer, genderError && styles.errorInput]} onPress={() => setGenderModalVisible(true)}>
           <Ionicons name="male-female" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
-          <Text style={styles.textInput}>{gender || 'Selecionar gênero'}</Text>
+          <Text style={styles.textInput}>{genderLabel || 'Selecionar gênero'}</Text>
         </TouchableOpacity>
-
-        <View style={styles.inputContainer}>
-          <Ionicons name="text" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
-          <TextInput style={styles.textInput} placeholder="Nome" value={name} onChangeText={setName} />
-        </View>
 
         <View style={styles.inputContainer}>
           <Ionicons name="call" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
@@ -256,16 +311,17 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation }) => {
 
         <Modal animationType="slide" transparent={true} visible={genderModalVisible} onRequestClose={() => setGenderModalVisible(!genderModalVisible)}>
           <View style={styles.modalView}>
-            {['Macho', 'Fêmea', 'Não sei'].map((genderOption) => (
+            {genderOptions.map((gender) => (
               <TouchableOpacity
-                key={genderOption}
+                key={gender.id}
                 style={styles.modalButton}
                 onPress={() => {
-                  setGender(genderOption)
+                  setGender(gender.char)
+                  setGenderLabel(gender.label)
                   setGenderModalVisible(false)
                 }}
               >
-                <Text style={styles.modalButtonText}>{genderOption}</Text>
+                <Text style={styles.modalButtonText}>{gender.label}</Text>
               </TouchableOpacity>
             ))}
           </View>

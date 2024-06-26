@@ -32,7 +32,7 @@ export default {
     const data = await service.put(`/users/password/${id}`, payload)
 
     if (data) {
-      Toast.show({ type: 'success', text1: 'Sucesso 👍', text2: 'Sua senha foi alterada' })
+      Toast.show({ type: 'success', text1: 'Sucesso 😸', text2: 'Sua senha foi alterada' })
     }
 
     return data

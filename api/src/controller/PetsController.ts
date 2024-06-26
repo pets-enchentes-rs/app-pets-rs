@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
+import { HttpStatus } from '../enums/HttpStatus'
 import { Pet } from '../models'
 import { PetTransaction } from '../transactions'
-import { HttpStatus } from '../enums/HttpStatus'
 
 export default class PetsController {
   // GET: /pets
@@ -48,22 +48,32 @@ export default class PetsController {
 
   // POST: /pets
   public static async add(req: Request, res: Response): Promise<Response<Pet>> {
-    const petId = await PetTransaction.insert(req.body)
+    const pet: Pet = req.body
 
-    if (!petId) return res.status(HttpStatus.BAD_REQUEST).end()
+    const id = await PetTransaction.insert(req.body)
 
-    return res.status(HttpStatus.CREATED).json(`[${petId}] Pet added`)
+    if (id) {
+      pet.id = id
+
+      return res.json(pet)
+    }
+
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).end()
   }
 
   // PUT: /pets/1
   public static async update(req: Request, res: Response): Promise<Response<Pet>> {
     const { id } = req.params
+    const pet: Pet = req.body
 
-    const pet = await PetTransaction.update(parseInt(id), req.body)
+    const result = await PetTransaction.update(parseInt(id), req.body)
 
-    if (!pet) return res.status(HttpStatus.NOT_FOUND).end()
+    if (result) {
+      pet.id = parseInt(id)
+      res.json(pet)
+    }
 
-    return res.json(pet)
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).end()
   }
 
   // DELETE: /pets/1

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
-import { Pet } from '../models'
 import { HttpStatus } from '../enums/HttpStatus'
 import { PetType } from '../enums/PetType'
+import { Pet } from '../models'
 
 export default async function PetsMiddleware(req: Request, res: Response, next: NextFunction) {
   const value = req.body as any
@@ -15,6 +15,10 @@ export default async function PetsMiddleware(req: Request, res: Response, next: 
 
     if (!foundDate || !foundLocal) {
       return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Localização ou data inválidos' })
+    }
+
+    if (new Date(foundDate) > new Date()) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Data Encontrada não pode ser maior que o dia atual' })
     }
 
     if (!contact) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Contato inválido' })
