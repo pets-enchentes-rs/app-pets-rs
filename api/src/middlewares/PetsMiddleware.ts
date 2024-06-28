@@ -7,13 +7,13 @@ export default async function PetsMiddleware(req: Request, res: Response, next: 
   const value = req.body as any
 
   if (value) {
-    let { name, gender, type, image, foundDate, foundLocal, contact, idUser } = value as Pet
+    let { name, gender, type, image, foundDate, foundLocal, currentLocal, contact, idUser } = value as Pet
 
     if (!name || !gender || !Object.values(PetType).includes(type) || !image) {
       return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Informações inválidas' })
     }
 
-    if (!foundDate || !foundLocal) {
+    if (!foundDate || !foundLocal || !currentLocal) {
       return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Localização ou data inválidos' })
     }
 
