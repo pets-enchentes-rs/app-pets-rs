@@ -13,6 +13,8 @@ import RegisterPetScreen from './src/screen/RegisterPetScreen'
 import SettingsScreen from './src/screen/SettingsScreen'
 import SecurityScreen from './src/screen/SecurityScreen'
 import MapScreen from './src/screen/MapScreen'
+import DonationScreen from './src/screen/DonationScreen';
+import QRCodeScreen from './src/screen/QRCodeScreen';
 
 const Stack = createNativeStackNavigator()
 
@@ -34,6 +36,8 @@ const App = () => {
           <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
           <Stack.Screen name="SecurityScreen" component={SecurityScreen} />
           <Stack.Screen name="MapScreen" component={MapScreen} />
+          <Stack.Screen name="DonationScreen" component={DonationScreen} />
+          <Stack.Screen name="QRCodeScreen" component={QRCodeScreen} />
         </Stack.Navigator>
       </NavigationContainer>
       <Toast />

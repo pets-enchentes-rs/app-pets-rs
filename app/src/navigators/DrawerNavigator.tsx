@@ -8,6 +8,7 @@ import { StatusBar } from 'expo-status-bar'
 import RegisterPetScreen from '../screen/RegisterPetScreen'
 import SettingsScreen from '../screen/SettingsScreen'
 import { useUser } from '../contexts/UserContext'
+import DonationScreen from '../screen/DonationScreen'
 
 const Drawer = createDrawerNavigator()
 
@@ -63,6 +64,15 @@ const DrawerNavigator = () => {
           drawerIcon: ({ color }) => <MaterialCommunityIcons name="plus" size={25} color={color} />
         }}
         component={RegisterPetScreen}
+      />
+
+      <Drawer.Screen
+        name="Donation"
+        options={{
+          title: 'DOAÇÃO',
+          drawerIcon: ({ color }) => <MaterialCommunityIcons name="hand-heart" size={25} color={color} />
+        }}
+        component={DonationScreen}
       />
 
       <Drawer.Screen
