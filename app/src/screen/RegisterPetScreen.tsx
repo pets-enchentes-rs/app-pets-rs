@@ -15,6 +15,7 @@ import { useUser } from '../contexts/UserContext'
 import { PetType } from '../enums/PetType'
 import { Pet } from '../models'
 import { PetService } from '../services'
+import AddressModal from './AddressModal'
 
 interface Props {
   navigation: NavigationProp<any>
@@ -95,6 +96,37 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
 
     //setPet(prev => ({ ...prev, foundDate: currentDate }))
   }
+
+  const [currentLocationModalVisible, setCurrentLocationModalVisible] = useState(false);
+  const [foundLocationModalVisible, setFoundLocationModalVisible] = useState(false);
+
+  const handleSaveCurrentLocation = (addressInfo) => {
+    setCurrentLocationModalVisible(false);
+    setCurrentAddress(`${addressInfo.street}, ${addressInfo.neighborhood}`);
+  };
+
+  const handleSaveFoundLocation = (addressInfo) => {
+    setFoundLocationModalVisible(false);
+    setFoundAddress(`${addressInfo.street}, ${addressInfo.neighborhood}`);
+  };
+
+  //função para pegar endereço pelas coordenadas
+  // async function getAddressFromCoordinates(lat, lon) {
+  //   try {
+  //     const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+
+  //    if (response.data && response.data.display_name) {
+  //      const address = response.data.display_name;
+  //       return address;
+  //     } else {
+  //        console.log('Não foi possível encontrar o endereço para as coordenadas fornecidas.');
+  //       return null;
+  //     }
+  //    } catch (error) {
+  //     console.error('Erro ao obter endereço:', error);
+  //    throw error;
+  //   }
+  //  }
 
   const handleChangeAnimalType = (option: number) => {
     const animalType = petTypeOptions.find(opt => opt.id === option);
@@ -220,7 +252,7 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
       //   image,
       //   foundDate,
       //   foundLocal,
-      //   //currentLocal,
+      //   currentLocal,
       //   description,
       //   contact,
       //   idUser: user?.id
@@ -229,7 +261,7 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
       pet.idUser = user.id
 
       let data;
-      
+
       if (isEditing && petToEdit && petToEdit.id) {
         data = await PetService.update(petToEdit.id, pet);
       } else {
@@ -368,7 +400,7 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
           <Ionicons name="calendar" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
           <Text style={styles.textInput}>{pet.foundDate ? formatDate(pet.foundDate) : 'Data encontrada'}</Text>
         </TouchableOpacity>
-        {showDatePicker && 
+        {showDatePicker &&
           <DateTimePicker
             value={pet.foundDate || new Date()}
             mode="date"
@@ -377,15 +409,34 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
           />
         }
 
-        <TouchableOpacity style={[styles.inputContainer, currentLocalError && styles.errorInput]} onPress={() => setLocation(true)}>
-          <Ionicons name="location-sharp" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
-          <Text style={styles.textInput}>{currentAddress || 'Endereço Atual do Pet'}</Text>
+        <TouchableOpacity
+          style={[styles.inputContainer, currentLocalError && styles.errorInput]}
+          onPress={() => setCurrentLocationModalVisible(true)}>
+          <Ionicons name="location" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
+          <Text style={styles.textInput}>{currentAddress || 'Endereço Atual do Pet'}
+          </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.inputContainer, foundLocalError && styles.errorInput]} onPress={() => setLocation(false)}>
+        <AddressModal
+          visible={currentLocationModalVisible}
+          onClose={() => setCurrentLocationModalVisible(false)}
+          onSave={handleSaveCurrentLocation}
+          title="Endereço atual"
+        />
+
+        <TouchableOpacity
+          style={[styles.inputContainer, foundLocalError && styles.errorInput]}
+          onPress={() => setFoundLocationModalVisible(true)}>
           <Ionicons name="location" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
           <Text style={styles.textInput}>{foundAddress || 'Endereço Encontrado'}</Text>
         </TouchableOpacity>
+
+        <AddressModal
+          visible={foundLocationModalVisible}
+          onClose={() => setFoundLocationModalVisible(false)}
+          onSave={handleSaveFoundLocation}
+          title="Endereço encontrado"
+        />
 
         <TouchableOpacity style={[styles.inputContainer, genderError && styles.errorInput]} onPress={() => setGenderModalVisible(true)}>
           <Ionicons name="male-female" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
