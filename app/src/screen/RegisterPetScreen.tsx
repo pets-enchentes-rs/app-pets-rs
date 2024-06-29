@@ -16,8 +16,9 @@ import { PetType } from '../enums/PetType'
 import { Pet } from '../models'
 import { PetService } from '../services'
 
-type Props = {
+interface Props {
   navigation: NavigationProp<any>
+  route: any
 }
 
 const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
@@ -31,31 +32,20 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
     type: 0,
     image: null,
     foundLocal: '',
-    //foundAddress: '',
     foundDate: null,
     currentLocal: '',
     description: '',
-    //currentAddress: '',
     contact: '',
     idUser: 0
   })
 
   const [animalTypeLabel, setAnimalTypeLabel] = useState('')
-  // const [animalType, setAnimalType] = useState(0)
-  // const [name, setName] = useState('')
-  // const [description, setDescription] = useState('')
-  // const [foundLocal, setFoundLocal] = useState('')
   const [foundAddress, setFoundAddress] = useState('')
-  // const [foundDate, setFoundDate] = useState<Date | null>(null)
-  // const [currentLocation, setCurrentLocation] = useState('')
   const [currentAddress, setCurrentAddress] = useState('')
-  // const [contact, setContact] = useState('')
   const [genderLabel, setGenderLabel] = useState('')
-  // const [gender, setGender] = useState('')
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [animalModalVisible, setAnimalModalVisible] = useState(false)
   const [genderModalVisible, setGenderModalVisible] = useState(false)
-  // const [image, setImage] = useState<string | null>(null)
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false)
 
   const [animalTypeError, setAnimalTypeError] = useState(false)
@@ -82,20 +72,16 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
   ]
 
   useEffect(() => {
-    if (petToEdit) {
-      setPet(petToEdit)
+    if (isEditing && petToEdit) {
+      setPet(petToEdit);
+
       setAnimalTypeLabel(petTypeOptions.find(opt => opt.id === petToEdit.type)?.label || '')
       setGenderLabel(genderOptions.find(opt => opt.char === petToEdit.gender)?.label || '')
 
       setLocation(true)
       setLocation(false)
     }
-  }, [petToEdit])
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', resetForm)
-    return unsubscribe
-  }, [navigation])
+  }, [isEditing, petToEdit]);
 
   const openDatePicker = () => {
     setShowDatePicker(true)
@@ -104,8 +90,10 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || pet.foundDate
     setShowDatePicker(false)
-    setPet(prev => ({ ...prev, foundDate: currentDate }))
-    //setFoundDate(currentDate)
+
+    console.log('currentDate', currentDate)
+
+    //setPet(prev => ({ ...prev, foundDate: currentDate }))
   }
 
   const handleChangeAnimalType = (option: number) => {
@@ -113,7 +101,6 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
     const animalTypeLabel = animalType?.label ?? petTypeOptions.find(opt => opt.id === PetType.OTHER)!.label;
 
     setPet(prev => ({ ...prev, type: option }))
-    //setAnimalType(option);
     setAnimalTypeLabel(animalTypeLabel)
   }
 
@@ -128,15 +115,7 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
     let address = null;
     let coords = ''
 
-    if (!isEditing) {
-      location = await Location.getCurrentPositionAsync({})
-      address = await Location.reverseGeocodeAsync({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude
-      })
-
-      coords = `${location.coords.latitude}, ${location.coords.longitude}`
-    } else {
+    if (isEditing && pet.currentLocal && pet.foundLocal) {
       location = isCurrent ? pet.currentLocal.split(', ') : pet.foundLocal.split(', ');
 
       address = await Location.reverseGeocodeAsync({
@@ -145,6 +124,15 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
       });
 
       coords = isCurrent ? pet.currentLocal : pet.foundLocal
+    } else {
+      location = await Location.getCurrentPositionAsync({})
+
+      address = await Location.reverseGeocodeAsync({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      })
+
+      coords = `${location.coords.latitude}, ${location.coords.longitude}`
     }
 
     let addressName = `${address[0].street}, ${address[0].city ?? address[0].district}`
@@ -168,7 +156,6 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
 
     if (!result.canceled) {
       setPet(prev => ({ ...prev, image: result.assets[0].uri }))
-      //setImage(result.assets[0].uri)
       setImagePickerModalVisible(false)
     }
   }
@@ -182,7 +169,6 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
 
     if (!result.canceled) {
       setPet(prev => ({ ...prev, image: result.assets[0].uri }))
-      //setImage(result.assets[0].uri)
       setImagePickerModalVisible(false)
     }
   }
@@ -363,7 +349,7 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
             style={styles.textInput}
             placeholder="Nome"
             value={pet.name}
-            onChangeText={(text) => setPet(prev => ({ ...prev, name: text }))}
+            onChangeText={(text) => setPet({ ...pet, name: text })}
           />
         </View>
 
