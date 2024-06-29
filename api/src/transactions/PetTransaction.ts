@@ -15,6 +15,7 @@ export default class PetTransaction {
       image TEXT NOT NULL,
       foundDate DATE NOT NULL,
       foundLocal TEXT NOT NULL,
+      currentLocal TEXT NOT NULL,
       description TEXT,
       contact TEXT NOT NULL,
       idUser INTEGER NOT NULL
@@ -70,9 +71,9 @@ export default class PetTransaction {
 
     const result = await db.run(
       `INSERT INTO ${table} 
-        (name, gender, type, image, foundDate, foundLocal, description, contact, idUser)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [pet.name, pet.gender, pet.type, pet.image, pet.foundDate, pet.foundLocal, pet.description, pet.contact, pet.idUser]
+        (name, gender, type, image, foundDate, foundLocal, currentLocal, description, contact, idUser)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [pet.name, pet.gender, pet.type, pet.image, pet.foundDate, pet.foundLocal, pet.currentLocal, pet.description, pet.contact, pet.idUser]
     )
 
     db.close()
@@ -91,11 +92,12 @@ export default class PetTransaction {
         image = ?,
         foundDate = ?,
         foundLocal = ?,
+        currentLocal = ?,
         description = ?,
         contact = ?,
         idUser = ?
       WHERE id = ?`,
-      [pet.name, pet.gender, pet.type, pet.image, pet.foundDate, pet.foundLocal, pet.description, pet.contact, pet.idUser, id]
+      [pet.name, pet.gender, pet.type, pet.image, pet.foundDate, pet.foundLocal, pet.currentLocal, pet.description, pet.contact, pet.idUser, id]
     )
 
     db.close()

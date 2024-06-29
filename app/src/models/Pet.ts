@@ -3,12 +3,13 @@ import { PetType } from '../enums/PetType'
 
 interface Pet {
   id?: number
-  name?: string
+  name: string
   gender: string
   type: PetType
   image: any
   foundDate: Date | null
-  foundLocal: string
+  foundLocal: string,
+  currentLocal: string,
   description?: string
   contact: string
   idUser: number
