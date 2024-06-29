@@ -41,6 +41,11 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
   })
 
   const [animalTypeLabel, setAnimalTypeLabel] = useState('')
+  const [foundDate, setFoundDate] = useState<Date | null>(null)
+
+  const [currentLocalModalVisible, setCurrentLocalModalVisible] = useState(false);
+  const [foundLocalModalVisible, setFoundLocalModalVisible] = useState(false);
+
   const [foundAddress, setFoundAddress] = useState('')
   const [currentAddress, setCurrentAddress] = useState('')
   const [genderLabel, setGenderLabel] = useState('')
@@ -88,25 +93,21 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
     setShowDatePicker(true)
   }
 
-  const handleDateChange = (event, selectedDate) => {
+  const handleDateChange = (event: Event, selectedDate: Date) => {
     const currentDate = selectedDate || pet.foundDate
     setShowDatePicker(false)
 
-    console.log('currentDate', currentDate)
-
-    //setPet(prev => ({ ...prev, foundDate: currentDate }))
+    setFoundDate(currentDate)
+    setPet(prev => ({ ...prev, foundDate: currentDate }))
   }
 
-  const [currentLocationModalVisible, setCurrentLocationModalVisible] = useState(false);
-  const [foundLocationModalVisible, setFoundLocationModalVisible] = useState(false);
-
   const handleSaveCurrentLocation = (addressInfo) => {
-    setCurrentLocationModalVisible(false);
+    setCurrentLocalModalVisible(false);
     setCurrentAddress(`${addressInfo.street}, ${addressInfo.neighborhood}`);
   };
 
   const handleSaveFoundLocation = (addressInfo) => {
-    setFoundLocationModalVisible(false);
+    setFoundLocalModalVisible(false);
     setFoundAddress(`${addressInfo.street}, ${addressInfo.neighborhood}`);
   };
 
@@ -214,8 +215,8 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
       { value: pet.type >= 0, setter: setAnimalTypeError },
       { value: pet.name, setter: setNameError },
       { value: pet.description, setter: setDescriptionError },
-      { value: pet.foundLocal, setter: setFoundLocalError },
       { value: pet.foundDate, setter: setFoundDateError },
+      { value: pet.foundLocal, setter: setFoundLocalError },
       { value: pet.currentLocal, setter: setCurrentLocalError },
       { value: pet.gender, setter: setGenderError },
       { value: pet.image, setter: setImageError }
@@ -245,19 +246,6 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleRegister = async () => {
     if (validateFields() && user?.id) {
-      // const payload: Pet = {
-      //   name,
-      //   gender,
-      //   type: animalType,
-      //   image,
-      //   foundDate,
-      //   foundLocal,
-      //   currentLocal,
-      //   description,
-      //   contact,
-      //   idUser: user?.id
-      // }
-
       pet.idUser = user.id
 
       let data;
@@ -402,7 +390,7 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
         </TouchableOpacity>
         {showDatePicker &&
           <DateTimePicker
-            value={pet.foundDate || new Date()}
+            value={foundDate || new Date()}
             mode="date"
             display="default"
             onChange={handleDateChange}
@@ -411,29 +399,29 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
 
         <TouchableOpacity
           style={[styles.inputContainer, currentLocalError && styles.errorInput]}
-          onPress={() => setCurrentLocationModalVisible(true)}>
+          onPress={() => setCurrentLocalModalVisible(true)}>
           <Ionicons name="location" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
           <Text style={styles.textInput}>{currentAddress || 'Endereço Atual do Pet'}
           </Text>
         </TouchableOpacity>
 
         <AddressModal
-          visible={currentLocationModalVisible}
-          onClose={() => setCurrentLocationModalVisible(false)}
+          visible={currentLocalModalVisible}
+          onClose={() => setCurrentLocalModalVisible(false)}
           onSave={handleSaveCurrentLocation}
           title="Endereço atual"
         />
 
         <TouchableOpacity
           style={[styles.inputContainer, foundLocalError && styles.errorInput]}
-          onPress={() => setFoundLocationModalVisible(true)}>
+          onPress={() => setFoundLocalModalVisible(true)}>
           <Ionicons name="location" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
           <Text style={styles.textInput}>{foundAddress || 'Endereço Encontrado'}</Text>
         </TouchableOpacity>
 
         <AddressModal
-          visible={foundLocationModalVisible}
-          onClose={() => setFoundLocationModalVisible(false)}
+          visible={foundLocalModalVisible}
+          onClose={() => setFoundLocalModalVisible(false)}
           onSave={handleSaveFoundLocation}
           title="Endereço encontrado"
         />

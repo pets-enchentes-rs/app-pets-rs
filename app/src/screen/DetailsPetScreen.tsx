@@ -9,6 +9,7 @@ import COLORS from '../const/colors'
 import { useUser } from '../contexts/UserContext'
 import { Pet, User } from '../models'
 import { UserService } from '../services'
+import { getRelativeCoords } from 'react-native-reanimated'
 
 const DetailsPetScreen = ({ navigation, route }) => {
   const { user } = useUser()
@@ -57,12 +58,18 @@ const DetailsPetScreen = ({ navigation, route }) => {
   const handleFoundAddress = async (foundLocal: string): Promise<string> => {
     const coords = foundLocal.split(', ')
 
-    const address = await Location.reverseGeocodeAsync({
-      latitude: parseFloat(coords[0]),
-      longitude: parseFloat(coords[1])
-    })
+    let path = ''
 
-    return `${address[0].street}, ${address[0].city ?? address[0].district}`
+    if (coords) {
+      const address = await Location.reverseGeocodeAsync({
+        latitude: parseFloat(coords[0]),
+        longitude: parseFloat(coords[1])
+      })
+
+      path = `${address[0].street}, ${address[0].city ?? address[0].district}`
+    }
+    
+    return path
   }
 
   const handleButtonPress = () => {
