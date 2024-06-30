@@ -44,26 +44,6 @@ export default class PetTransaction {
     return pet
   }
 
-  public static async getByType(id: number): Promise<Pet[]> {
-    const db = await openDb()
-
-    const pets = await db.all(`SELECT * FROM ${table} WHERE type = ?`, id)
-
-    db.close()
-
-    return pets
-  }
-
-  public static async getByUser(id: number): Promise<Pet[]> {
-    const db = await openDb()
-
-    const pets = await db.all(`SELECT * FROM ${table} WHERE idUser = ?`, id)
-
-    db.close()
-
-    return pets
-  }
-
   public static async insert(pet: Pet): Promise<number | undefined> {
     const db = await openDb()
 

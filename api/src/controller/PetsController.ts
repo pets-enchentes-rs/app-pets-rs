@@ -24,28 +24,6 @@ export default class PetsController {
     return res.json(pet)
   }
 
-  // GET: /pets/type/1
-  public static async findByType(req: Request, res: Response): Promise<Response<Pet[]>> {
-    const { id } = req.params
-
-    const pets = await PetTransaction.getByType(parseInt(id))
-
-    if (!pets) return res.status(HttpStatus.NO_CONTENT).end()
-
-    return res.json(pets)
-  }
-
-  // GET: /pets/user/1
-  public static async findByUser(req: Request, res: Response): Promise<Response<Pet[]>> {
-    const { id } = req.params
-
-    const pets = await PetTransaction.getByUser(parseInt(id))
-
-    if (!pets) return res.status(HttpStatus.NO_CONTENT).end()
-
-    return res.json(pets)
-  }
-
   // POST: /pets
   public static async add(req: Request, res: Response): Promise<Response<Pet>> {
     const pet: Pet = req.body

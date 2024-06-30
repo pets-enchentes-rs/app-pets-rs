@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import COLORS from '../const/colors';
+import { useUser } from '../contexts/UserContext';
 import { PetType } from '../enums/PetType';
 import { Pet } from '../models';
 import { PetService } from '../services';
@@ -14,14 +15,6 @@ interface CardProps {
   pet: Pet;
   navigation: any;
 }
-
-const petCategories = [
-  { id: PetType.CAT, name: 'GATOS', icon: 'cat' },
-  { id: PetType.DOG, name: 'CACHORROS', icon: 'dog' },
-  { id: PetType.BIRD, name: 'AVES', icon: 'bird' },
-  { id: PetType.BUNNY, name: 'COELHOS', icon: 'rabbit' },
-  { id: PetType.OTHER, name: 'OUTROS', icon: 'paw' },
-];
 
 interface HomeScreenProps {
   navigation: any;
@@ -94,6 +87,8 @@ const Card: React.FC<CardProps> = ({ pet, navigation }) => {
 };
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+  const { user } = useUser()
+
   const [selectedCategoryIndex, setSeletedCategoryIndex] = useState(PetType.CAT);
   const [pets, setPets] = useState<Pet[]>([]);
   const [filteredPets, setFilteredPets] = useState<Pet[]>([]);
@@ -101,7 +96,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [gender, setGender] = useState('');
   const [showRadioOptions, setShowRadioOptions] = useState('Todos');
   const [searchText, setSearchText] = useState('');
-  const [appliedFiltersCount, setAppliedFiltersCount] = useState(0);
+  const [appliedFiltersCount, setAppliedFiltersCount] = useState(1);
+
+  const petCategories = [
+    { id: PetType.CAT, name: 'GATOS', icon: 'cat' },
+    { id: PetType.DOG, name: 'CACHORROS', icon: 'dog' },
+    { id: PetType.BIRD, name: 'AVES', icon: 'bird' },
+    { id: PetType.BUNNY, name: 'COELHOS', icon: 'rabbit' },
+    { id: PetType.OTHER, name: 'OUTROS', icon: 'paw' },
+  ];
 
   const isFocused = useIsFocused();
 
@@ -110,39 +113,53 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   }, [isFocused]);
 
   useEffect(() => {
-    filterPet(PetType.CAT);
+    filterPet(PetType.CAT)
   }, [pets]);
 
   useEffect(() => {
-    filterPetsBySearchText(searchText);
-  }, [searchText, selectedCategoryIndex, pets]);
+    filterPet()
+  }, [selectedCategoryIndex, searchText, gender, showRadioOptions])
 
   const setAllPets = async () => {
     const data = await PetService.getAll();
     if (data) setPets(data);
   };
 
-  const filterPet = (index: number) => {
-    const currentPets: Pet[] = pets.filter((item) => item.type == index);
-    setFilteredPets(currentPets);
-  };
-
-  const filterPetsBySearchText = (text: string) => {
-    const currentPets: Pet[] = pets.filter((item) =>
-      item.type == selectedCategoryIndex && item.name?.toLowerCase().includes(text.toLowerCase())
-    );
-    setFilteredPets(currentPets);
-  };
-
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  const applyFilters = () => {
+  const filterPet = (index?: number) => {
     let count = 1;
     if (gender !== '') count++;
     setAppliedFiltersCount(count);
-  };
+
+    let currentPets: Pet[] = pets
+
+    if (index) {
+      setSeletedCategoryIndex(index)
+    }
+
+    if (selectedCategoryIndex !== null && selectedCategoryIndex !== undefined && selectedCategoryIndex >= 0) {
+      currentPets = currentPets.filter((item) => item.type == selectedCategoryIndex);
+    }
+
+    if (searchText) {
+      currentPets = currentPets.filter((item) =>
+        item.name?.toLowerCase().includes(searchText.toLowerCase())
+      );
+    }
+
+    if (gender) {
+      currentPets = currentPets.filter((item) => item.gender == gender.charAt(0));
+    }
+
+    if (showRadioOptions !== 'Todos') {
+      currentPets = currentPets.filter((item) => item.idUser === user?.id);
+    }
+
+    setFilteredPets(currentPets)
+  }
 
   return (
     <View style={styles.container}>
@@ -185,7 +202,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               <TouchableOpacity
                 onPress={() => {
                   setSeletedCategoryIndex(category.id);
-                  filterPet(category.id);
                 }}
                 style={[
                   styles.categoryButton,
@@ -220,7 +236,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         setGender={setGender}
         showRadioOptions={showRadioOptions}
         setShowRadioOptions={setShowRadioOptions}
-        applyFilters={applyFilters}
+        applyFilters={filterPet}
       />
     </View>
   );

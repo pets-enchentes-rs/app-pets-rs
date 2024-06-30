@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import COLORS from '../const/colors';
+import React, { useEffect, useState } from 'react';
+import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { TextInputMask } from 'react-native-masked-text';
 import Toast from 'react-native-toast-message';
+import COLORS from '../const/colors';
 
 const AddressModal = ({ visible, onClose, onSave, title, initialAddress }) => {
   const [street, setStreet] = useState('');
@@ -21,6 +22,26 @@ const AddressModal = ({ visible, onClose, onSave, title, initialAddress }) => {
       setCity(initialAddress.city || '');
     }
   }, [initialAddress]);
+
+  const getCoordinates = async (address: string) => {
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?q=${address}&format=json&limit=1`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data && data.length > 0) {
+        return {
+          latitude: data[0].lat,
+          longitude: data[0].lon
+        };
+      } else {
+        throw new Error('Coordenadas não encontradas');
+      }
+    } catch (error) {
+      console.error('Erro ao obter coordenadas:', error);
+      throw error;
+    }
+  };
 
   const handleSave = async () => {
     if (!street || !neighborhood || !postalCode || !number || !city) {
@@ -83,11 +104,18 @@ const AddressModal = ({ visible, onClose, onSave, title, initialAddress }) => {
           </View>
 
           <View style={[styles.inputContainer]}>
-            <TextInput style={[styles.textInput]} placeholder="Número" placeholderTextColor={COLORS.lightGrey} value={number} onChangeText={setNumber} />
+            <TextInput style={[styles.textInput]} placeholder="Número" placeholderTextColor={COLORS.lightGrey} value={number} onChangeText={setNumber} keyboardType='numeric' />
           </View>
 
           <View style={[styles.inputContainer]}>
-            <TextInput style={[styles.textInput]} placeholder="CEP" placeholderTextColor={COLORS.lightGrey} value={postalCode} onChangeText={setPostalCode} />
+            <TextInputMask
+              type={'zip-code'}
+              style={styles.textInput}
+              placeholder="CEP"
+              placeholderTextColor={COLORS.lightGrey}
+              value={postalCode}
+              onChangeText={setPostalCode}
+            />
           </View>
 
           <TouchableOpacity style={styles.buttonContainer} onPress={handleSave}>
