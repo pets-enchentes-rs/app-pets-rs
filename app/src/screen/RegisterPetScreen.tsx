@@ -4,7 +4,6 @@ import { NavigationProp } from '@react-navigation/native'
 import { format } from 'date-fns'
 import * as ImagePicker from 'expo-image-picker'
 import { LinearGradient } from 'expo-linear-gradient'
-import * as Location from 'expo-location'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useState } from 'react'
 import { Image, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
@@ -46,8 +45,8 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
   const [currentLocalModalVisible, setCurrentLocalModalVisible] = useState(false);
   const [foundLocalModalVisible, setFoundLocalModalVisible] = useState(false);
 
-  const [foundAddress, setFoundAddress] = useState('')
-  const [currentAddress, setCurrentAddress] = useState('')
+  const [foundAddress, setFoundAddress] = useState({ street: '', neighborhood: '', number: '', postalCode: '', city: '' });
+  const [currentAddress, setCurrentAddress] = useState({ street: '', neighborhood: '', number: '', postalCode: '', city: '' });
   const [genderLabel, setGenderLabel] = useState('')
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [animalModalVisible, setAnimalModalVisible] = useState(false)
@@ -84,10 +83,20 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
       setAnimalTypeLabel(petTypeOptions.find(opt => opt.id === petToEdit.type)?.label || '')
       setGenderLabel(genderOptions.find(opt => opt.char === petToEdit.gender)?.label || '')
 
-      setLocation(true)
-      setLocation(false)
+      fetchAddress(petToEdit.currentLocal, true);
+      fetchAddress(petToEdit.foundLocal, false);
     }
   }, [isEditing, petToEdit]);
+
+  const fetchAddress = async (coords: string, isCurrent: boolean) => {
+    const [latitude, longitude] = coords.split(',').map(coord => parseFloat(coord.trim()));
+    const address = await getAddress(latitude, longitude);
+    if (isCurrent) {
+      setCurrentAddress(address);
+    } else {
+      setFoundAddress(address);
+    }
+  };
 
   const openDatePicker = () => {
     setShowDatePicker(true)
@@ -103,31 +112,40 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleSaveCurrentLocation = (addressInfo) => {
     setCurrentLocalModalVisible(false);
-    setCurrentAddress(`${addressInfo.street}, ${addressInfo.neighborhood}`);
+    const coordinates = `${addressInfo.latitude}, ${addressInfo.longitude}`;
+    setPet(prev => ({ ...prev, currentLocal: coordinates }));
+    setCurrentAddress(addressInfo);
   };
 
   const handleSaveFoundLocation = (addressInfo) => {
     setFoundLocalModalVisible(false);
-    setFoundAddress(`${addressInfo.street}, ${addressInfo.neighborhood}`);
+    const coordinates = `${addressInfo.latitude}, ${addressInfo.longitude}`;
+    setPet(prev => ({ ...prev, foundLocal: coordinates }));
+    setFoundAddress(addressInfo);
   };
 
-  //função para pegar endereço pelas coordenadas
-  // async function getAddressFromCoordinates(lat, lon) {
-  //   try {
-  //     const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+  const getAddress = async (latitude: number, longitude: number): Promise<{ street: string, neighborhood: string, number: string, postalCode: string, city: string }> => {
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+      const response = await fetch(url);
+      const data = await response.json();
 
-  //    if (response.data && response.data.display_name) {
-  //      const address = response.data.display_name;
-  //       return address;
-  //     } else {
-  //        console.log('Não foi possível encontrar o endereço para as coordenadas fornecidas.');
-  //       return null;
-  //     }
-  //    } catch (error) {
-  //     console.error('Erro ao obter endereço:', error);
-  //    throw error;
-  //   }
-  //  }
+      if (data && data.address) {
+        return {
+          street: data.address.road || '',
+          neighborhood: data.address.suburb || '',
+          number: data.address.house_number || '',
+          postalCode: data.address.postcode || '',
+          city: data.address.city || data.address.town || data.address.village || ''
+        };
+      } else {
+        throw new Error('Endereço não encontrado');
+      }
+    } catch (error) {
+      console.error('Erro ao obter endereço:', error);
+      throw error;
+    }
+  };
 
   const handleChangeAnimalType = (option: number) => {
     const animalType = petTypeOptions.find(opt => opt.id === option);
@@ -135,48 +153,6 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
 
     setPet(prev => ({ ...prev, type: option }))
     setAnimalTypeLabel(animalTypeLabel)
-  }
-
-  const setLocation = async (isCurrent: boolean) => {
-    let { status } = await Location.requestForegroundPermissionsAsync()
-    if (status !== 'granted') {
-      alert('Permissão para acessar localização é necessária!')
-      return
-    }
-
-    let location = null;
-    let address = null;
-    let coords = ''
-
-    if (isEditing && pet.currentLocal && pet.foundLocal) {
-      location = isCurrent ? pet.currentLocal.split(', ') : pet.foundLocal.split(', ');
-
-      address = await Location.reverseGeocodeAsync({
-        latitude: parseFloat(location[0]),
-        longitude: parseFloat(location[1]),
-      });
-
-      coords = isCurrent ? pet.currentLocal : pet.foundLocal
-    } else {
-      location = await Location.getCurrentPositionAsync({})
-
-      address = await Location.reverseGeocodeAsync({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude
-      })
-
-      coords = `${location.coords.latitude}, ${location.coords.longitude}`
-    }
-
-    let addressName = `${address[0].street}, ${address[0].city ?? address[0].district}`
-
-    if (isCurrent) {
-      setPet(prev => ({ ...prev, currentLocal: coords }))
-      setCurrentAddress(addressName)
-    } else {
-      setPet(prev => ({ ...prev, foundLocal: coords }))
-      setFoundAddress(addressName)
-    }
   }
 
   const pickImage = async () => {
@@ -262,6 +238,10 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
           text1: 'Sucesso 😸',
           text2: isEditing ? 'Pet atualizado com sucesso' : 'Pet cadastrado com sucesso',
         });
+
+        if (!isEditing) {
+          resetForm()
+        }
         navigation.navigate('HomeScreen');
       }
     }
@@ -295,8 +275,8 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
       idUser: 0
     })
 
-    setCurrentAddress('')
-    setFoundAddress('')
+    setCurrentAddress({ street: '', neighborhood: '', number: '', postalCode: '', city: '' });
+    setFoundAddress({ street: '', neighborhood: '', number: '', postalCode: '', city: '' });
     setGenderLabel('')
 
     setAnimalTypeError(false)
@@ -398,25 +378,34 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
         }
 
         <TouchableOpacity
-          style={[styles.inputContainer, currentLocalError && styles.errorInput]}
+          style={[styles.inputContainer, currentLocalError && styles.errorInput, { height: 55 }]}
           onPress={() => setCurrentLocalModalVisible(true)}>
           <Ionicons name="location" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
-          <Text style={styles.textInput}>{currentAddress || 'Endereço Atual do Pet'}
+          <Text style={styles.textInput}>
+            {currentAddress.street || currentAddress.neighborhood || currentAddress.city ?
+              `${currentAddress.street ? currentAddress.street + ', ' : ''}${currentAddress.neighborhood ? currentAddress.neighborhood + ', ' : ''}${currentAddress.city ? currentAddress.city : ''}` :
+              'Endereço Atual do Pet'}
           </Text>
         </TouchableOpacity>
+
 
         <AddressModal
           visible={currentLocalModalVisible}
           onClose={() => setCurrentLocalModalVisible(false)}
           onSave={handleSaveCurrentLocation}
           title="Endereço atual"
+          initialAddress={isEditing ? currentAddress : null}
         />
 
         <TouchableOpacity
-          style={[styles.inputContainer, foundLocalError && styles.errorInput]}
+          style={[styles.inputContainer, foundLocalError && styles.errorInput, { height: 55 }]}
           onPress={() => setFoundLocalModalVisible(true)}>
           <Ionicons name="location" size={24} color={COLORS.lightGrey} style={styles.inputIcon} />
-          <Text style={styles.textInput}>{foundAddress || 'Endereço Encontrado'}</Text>
+          <Text style={styles.textInput}>
+            {foundAddress.street || foundAddress.neighborhood || foundAddress.city ?
+              `${foundAddress.street ? foundAddress.street + ', ' : ''}${foundAddress.neighborhood ? foundAddress.neighborhood + ', ' : ''}${foundAddress.city ? foundAddress.city : ''}` :
+              'Endereço Encontrado'}
+          </Text>
         </TouchableOpacity>
 
         <AddressModal
@@ -424,6 +413,7 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
           onClose={() => setFoundLocalModalVisible(false)}
           onSave={handleSaveFoundLocation}
           title="Endereço encontrado"
+          initialAddress={isEditing ? foundAddress : null}
         />
 
         <TouchableOpacity style={[styles.inputContainer, genderError && styles.errorInput]} onPress={() => setGenderModalVisible(true)}>
@@ -468,7 +458,7 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
 
         <View style={[styles.buttonsRow, !isEditing && { justifyContent: 'center' }]}>
           <TouchableOpacity
-            style={[styles.buttonContainer, !isEditing ? { flex: 1 } : { flex: 0.45, marginRight: 10 }]}
+            style={[styles.buttonContainer, !isEditing ? { flex: 1 } : { flex: 0.50 }]}
             onPress={handleRegister}
           >
             <LinearGradient colors={[COLORS.secondary, COLORS.primary]} style={styles.button}>
@@ -477,7 +467,7 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
           </TouchableOpacity>
 
           {isEditing && (
-            <TouchableOpacity style={[styles.buttonContainer, { flex: 0.45 }]} onPress={handleDelete}>
+            <TouchableOpacity style={[styles.buttonContainer, { flex: 0.50, marginLeft: 10 }]} onPress={handleDelete}>
               <LinearGradient colors={['#C30010', '#FF0000']} style={styles.button}>
                 <Text style={styles.buttonText}>Excluir</Text>
               </LinearGradient>
@@ -508,7 +498,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   textInput: {
-    color: COLORS.lightGrey,
+    color: COLORS.dark,
     flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 15
@@ -567,6 +557,8 @@ const styles = StyleSheet.create({
   },
   buttonsRow: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginTop: 30,
     width: '85%',
   },
@@ -578,7 +570,8 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 20,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '100%' 
   },
   buttonText: {
     color: COLORS.white,
@@ -589,6 +582,7 @@ const styles = StyleSheet.create({
     borderColor: 'red',
     borderWidth: 1
   }
-})
+});
+
 
 export default RegisterPetScreen

@@ -29,14 +29,14 @@ interface HomeScreenProps {
 
 const Card: React.FC<CardProps> = ({ pet, navigation }) => {
   const [genderIcon, setGenderIcon] = useState('');
-  const [foundAddress, setFoundAddress] = useState('');
+  const [currentAddress, setCurrentAddress] = useState('');
 
   const imageSource = typeof pet.image === 'string' ? { uri: pet.image } : pet.image;
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await handleFoundAddress(pet.foundLocal);
-      setFoundAddress(result);
+      const result = await handleCurrentAddress(pet.currentLocal);
+      setCurrentAddress(result);
     };
 
     handleGenderIcon(pet.gender);
@@ -61,8 +61,8 @@ const Card: React.FC<CardProps> = ({ pet, navigation }) => {
     }
   };
 
-  const handleFoundAddress = async (foundLocal: string): Promise<string> => {
-    const coords = foundLocal.split(', ');
+  const handleCurrentAddress = async (currentLocal: string): Promise<string> => {
+    const coords = currentLocal.split(', ');
 
     const address = await Location.reverseGeocodeAsync({
       latitude: parseFloat(coords[0]),
@@ -85,7 +85,7 @@ const Card: React.FC<CardProps> = ({ pet, navigation }) => {
           </View>
           <View style={{ marginTop: 20, flexDirection: 'row' }}>
             <MaterialCommunityIcons name="map-marker" size={18} color="#306060" />
-            <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>{foundAddress}</Text>
+            <Text style={{ fontSize: 12, marginLeft: 5, color: COLORS.grey }}>{currentAddress}</Text>
           </View>
         </View>
       </View>

@@ -9,10 +9,18 @@ import {
     LocationAccuracy
 } from 'expo-location';
 import COLORS from '../const/colors';
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const MapScreen = ({ navigation }) => {
+const MapScreen = ({ navigation, route }) => {
     const [location, setLocation] = useState<LocationObject | null>(null);
+    const { currentLocal } = route.params;
+
+    const initialRegion = currentLocal ? {
+        latitude: parseFloat(currentLocal.split(',')[0]),
+        longitude: parseFloat(currentLocal.split(',')[1]),
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005
+    } : null;
 
     async function requestLocationPermissions() {
         const { granted } = await requestForegroundPermissionsAsync();
@@ -48,19 +56,14 @@ const MapScreen = ({ navigation }) => {
                 />
             </View>
             {
-                location &&
+                initialRegion &&
                 <MapView style={styles.map}
-                    initialRegion={{
-                        latitude: location.coords.latitude,
-                        longitude: location.coords.longitude,
-                        latitudeDelta: 0.005,
-                        longitudeDelta: 0.005
-                    }}
+                    initialRegion={initialRegion}
                 >
                     <Marker
                         coordinate={{
-                            latitude: location.coords.latitude,
-                            longitude: location.coords.longitude
+                            latitude: initialRegion.latitude,
+                            longitude: initialRegion.longitude
                         }} />
                 </MapView>
             }
@@ -79,8 +82,8 @@ const styles = StyleSheet.create({
     },
     header: {
         position: 'absolute',
-        top: 40, 
-        left: 20, 
+        top: 40,
+        left: 20,
         zIndex: 1,
         borderRadius: 18,
         backgroundColor: COLORS.background,

@@ -1,18 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import COLORS from '../const/colors';
 import Toast from 'react-native-toast-message';
 
-const AddressModal = ({ visible, onClose, onSave, title }) => {
+const AddressModal = ({ visible, onClose, onSave, title, initialAddress }) => {
   const [street, setStreet] = useState('');
   const [neighborhood, setNeighborhood] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [number, setNumber] = useState('');
+  const [city, setCity] = useState('');
+
+  useEffect(() => {
+    if (initialAddress) {
+      setStreet(initialAddress.street || '');
+      setNeighborhood(initialAddress.neighborhood || '');
+      setPostalCode(initialAddress.postalCode || '');
+      setNumber(initialAddress.number || '');
+      setCity(initialAddress.city || '');
+    }
+  }, [initialAddress]);
 
   const handleSave = async () => {
-    if (!street || !neighborhood || !postalCode || !number) {
+    if (!street || !neighborhood || !postalCode || !number || !city) {
       Toast.show({
         type: 'error',
         text1: 'Campos obrigatórios',
@@ -23,12 +34,12 @@ const AddressModal = ({ visible, onClose, onSave, title }) => {
       return;
     }
 
-    const fullAddress = `${street}, ${number} - ${neighborhood}, ${postalCode}`;
+    const fullAddress = `${street}, ${number} - ${neighborhood}, ${city}, ${postalCode}`;
 
     try {
       const coordinates = await getCoordinates(fullAddress);
       if (coordinates) {
-        onSave({ street, neighborhood, postalCode, number, ...coordinates });
+        onSave({ street, neighborhood, postalCode, number, city, ...coordinates });
         onClose();
       } else {
         Toast.show({
@@ -40,7 +51,6 @@ const AddressModal = ({ visible, onClose, onSave, title }) => {
         });
       }
     } catch (error) {
-      console.error('Erro ao obter coordenadas:', error);
       Toast.show({
         type: 'error',
         text1: 'Erro 🙀',
@@ -48,25 +58,6 @@ const AddressModal = ({ visible, onClose, onSave, title }) => {
         visibilityTime: 3000,
         autoHide: true,
       });
-    }
-  };
-
-  const getCoordinates = async (address) => {
-    try {
-      const formattedAddress = encodeURIComponent(address);
-      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${formattedAddress}`;
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if (data && data.length > 0) {
-        const { lat, lon } = data[0];
-        return { latitude: parseFloat(lat), longitude: parseFloat(lon) };
-      } else {
-        throw new Error('Endereço não encontrado');
-      }
-    } catch (error) {
-      console.error('Erro ao obter coordenadas:', error);
-      throw error;
     }
   };
 
@@ -80,19 +71,23 @@ const AddressModal = ({ visible, onClose, onSave, title }) => {
           <Text style={styles.modalTitle}>{title}</Text>
 
           <View style={[styles.inputContainer]}>
-            <TextInput style={[styles.textInput]} placeholder="Rua" value={street} onChangeText={setStreet} />
+            <TextInput style={[styles.textInput]} placeholder="Cidade" placeholderTextColor={COLORS.lightGrey} value={city} onChangeText={setCity} />
           </View>
 
           <View style={[styles.inputContainer]}>
-            <TextInput style={[styles.textInput]} placeholder="Bairro" value={neighborhood} onChangeText={setNeighborhood} />
+            <TextInput style={[styles.textInput]} placeholder="Rua" placeholderTextColor={COLORS.lightGrey} value={street} onChangeText={setStreet} />
           </View>
 
           <View style={[styles.inputContainer]}>
-            <TextInput style={[styles.textInput]} placeholder="Número" value={number} onChangeText={setNumber} />
+            <TextInput style={[styles.textInput]} placeholder="Bairro" placeholderTextColor={COLORS.lightGrey} value={neighborhood} onChangeText={setNeighborhood} />
           </View>
 
           <View style={[styles.inputContainer]}>
-            <TextInput style={[styles.textInput]} placeholder="CEP" value={postalCode} onChangeText={setPostalCode} />
+            <TextInput style={[styles.textInput]} placeholder="Número" placeholderTextColor={COLORS.lightGrey} value={number} onChangeText={setNumber} />
+          </View>
+
+          <View style={[styles.inputContainer]}>
+            <TextInput style={[styles.textInput]} placeholder="CEP" placeholderTextColor={COLORS.lightGrey} value={postalCode} onChangeText={setPostalCode} />
           </View>
 
           <TouchableOpacity style={styles.buttonContainer} onPress={handleSave}>
@@ -160,7 +155,7 @@ const styles = StyleSheet.create({
     width: '85%'
   },
   textInput: {
-    color: COLORS.lightGrey,
+    color: COLORS.dark,
     flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 15
