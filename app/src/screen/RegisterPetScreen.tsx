@@ -275,8 +275,9 @@ const RegisterPetScreen: React.FC<Props> = ({ navigation, route }) => {
       idUser: 0
     })
 
-    setCurrentAddress({ street: '', neighborhood: '', number: '', postalCode: '', city: '' });
-    setFoundAddress({ street: '', neighborhood: '', number: '', postalCode: '', city: '' });
+    setAnimalTypeLabel('Selecionar tipo de animal')
+    setCurrentAddress({ street: '', neighborhood: '', number: '', postalCode: '', city: '' })
+    setFoundAddress({ street: '', neighborhood: '', number: '', postalCode: '', city: '' })
     setGenderLabel('')
 
     setAnimalTypeError(false)
