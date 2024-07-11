@@ -28,15 +28,15 @@ export default class UsersController {
   public static async add(req: Request, res: Response): Promise<Response<User>> {
     const user: User = req.body
 
-    const id = await UserTransaction.insert(user)
+    try {
+      const id = await UserTransaction.insert(user)
 
-    if (id) {
-      user.id = id
-
-      return res.json(user)
+      if (id) user.id = id
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).end()
     }
 
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).end()
+    return res.json(user)
   }
 
   // POST: /users/login

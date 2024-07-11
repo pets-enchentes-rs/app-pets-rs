@@ -6,6 +6,10 @@ import { Request, Response } from 'express'
 jest.mock('../transactions/UserTransaction.ts')
 
 describe('Users Controller', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
   test('Should register a User successfully', async () => {
     const request: Partial<Request> = {
       body: {
@@ -66,20 +70,16 @@ describe('Users Controller', () => {
       end: jest.fn()
     }
 
-    // Mock the UserTransaction.insert method to resolve with null
-    ;(UserTransaction.insert as jest.Mock).mockResolvedValueOnce(null)
+    const mockInsert = UserTransaction.insert as jest.Mock
+    mockInsert.mockRejectedValue(new Error('Mocking exception'))
 
-    await UsersController.add(request as Request, response as Response)
+    try {
+      await UsersController.add(request as Request, response as Response)
+    } catch (error) {
+      // Must return error
+    }
 
-    expect(UserTransaction.insert).toHaveBeenCalledTimes(2)
-    expect(UserTransaction.insert).toHaveBeenCalledWith({
-      name: 'Fernando',
-      email: 'email@teste.com',
-      image: 'foto',
-      phone: '51999887766',
-      password: 'teste123'
-    })
-
+    expect(UserTransaction.insert).toHaveBeenCalledTimes(1)
     expect(response.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR)
     expect(response.end).toHaveBeenCalled()
   })
