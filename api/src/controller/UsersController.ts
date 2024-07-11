@@ -36,7 +36,7 @@ export default class UsersController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).end()
     }
 
-    return res.json(user)
+    return res.status(HttpStatus.CREATED).json(user)
   }
 
   // POST: /users/login

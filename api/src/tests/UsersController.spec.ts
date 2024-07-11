@@ -32,25 +32,20 @@ describe('Users Controller', () => {
 
     await UsersController.add(request as Request, response as Response)
 
-    expect(UserTransaction.insert).toHaveBeenCalledTimes(1)
-    expect(UserTransaction.insert).toHaveBeenCalledWith({
+    const returnUser = {
       id: 1,
       name: 'Fernando',
       email: 'email@teste.com',
       image: 'foto',
       phone: '51999887766',
       password: 'teste123'
-    })
+    }
 
-    expect(response.json).toHaveBeenCalledWith({
-      id: 1,
-      name: 'Fernando',
-      email: 'email@teste.com',
-      image: 'foto',
-      phone: '51999887766',
-      password: 'teste123'
-    })
-    expect(response.status).not.toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR)
+    expect(UserTransaction.insert).toHaveBeenCalledTimes(1)
+    expect(UserTransaction.insert).toHaveBeenCalledWith(returnUser)
+
+    expect(response.json).toHaveBeenCalledWith(returnUser)
+    expect(response.status).toHaveBeenCalledWith(HttpStatus.CREATED)
   })
 
   test('Should return internal server error if user creation fails', async () => {
