@@ -10,7 +10,7 @@ export default class UsersController {
 
     if (!users) return res.status(HttpStatus.NO_CONTENT).end()
 
-    return res.json(users)
+    return res.status(HttpStatus.OK).json(users)
   }
 
   // GET: /users/1
@@ -21,7 +21,7 @@ export default class UsersController {
 
     if (!user) return res.status(HttpStatus.NOT_FOUND).end()
 
-    return res.json(user)
+    return res.status(HttpStatus.OK).json(user)
   }
 
   // POST: /users
