@@ -92,7 +92,7 @@ describe('Users Controller', () => {
     expect(response.status).toHaveBeenLastCalledWith(HttpStatus.OK)
   })
 
-  test('Should return no content when the specific users is not found', async () => {
+  test('Should return no content when the specific user is not found', async () => {
     const request: Partial<Request> = {
       params: {
         id: ''
@@ -168,13 +168,9 @@ describe('Users Controller', () => {
     }
 
     const mockInsert = UserTransaction.insert as jest.Mock
-    mockInsert.mockRejectedValue(new Error('Mocking exception'))
+    mockInsert.mockResolvedValueOnce(null)
 
-    try {
-      await UsersController.add(request as Request, response as Response)
-    } catch (error) {
-      // Must return error
-    }
+    await UsersController.add(request as Request, response as Response)
 
     expect(UserTransaction.insert).toHaveBeenCalledTimes(1)
     expect(response.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR)

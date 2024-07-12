@@ -28,15 +28,15 @@ export default class UsersController {
   public static async add(req: Request, res: Response): Promise<Response<User>> {
     const user: User = req.body
 
-    try {
-      const id = await UserTransaction.insert(user)
+    const id = await UserTransaction.insert(user)
 
-      if (id) user.id = id
-    } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).end()
+    if (id) {
+      user.id = id
+
+      return res.status(HttpStatus.CREATED).json(user)
     }
 
-    return res.status(HttpStatus.CREATED).json(user)
+    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).end()
   }
 
   // POST: /users/login
@@ -47,7 +47,7 @@ export default class UsersController {
 
     if (!user) return res.status(HttpStatus.NOT_FOUND).end()
 
-    return res.json(user)
+    return res.status(HttpStatus.OK).json(user)
   }
 
   // PUT: /users/1
