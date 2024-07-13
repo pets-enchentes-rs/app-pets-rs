@@ -284,4 +284,48 @@ describe('Users Controller', () => {
     expect(response.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR)
     expect(response.end).toHaveBeenCalled()
   })
+
+  test('Should return OK when delete user with specific ID', async () => {
+    const request: Partial<Request> = {
+      params: {
+        id: '5'
+      }
+    }
+
+    const response: Partial<Response> = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    }
+
+    const mockFunc = UserTransaction.delete as jest.Mock
+    mockFunc.mockResolvedValue(1)
+
+    await UsersController.delete(request as Request, response as Response)
+
+    expect(mockFunc).toHaveBeenCalledTimes(1)
+    expect(mockFunc).not.toHaveBeenCalledWith(null)
+
+    expect(response.status).toHaveBeenCalledWith(HttpStatus.OK)
+    expect(response.json).toHaveBeenCalledWith('Usuário deletado com sucesso')
+  })
+
+  test('Should return Not Found if there is no user with specific ID', async () => {
+    const request: Partial<Request> = {
+      params: {}
+    }
+
+    const response: Partial<Response> = {
+      status: jest.fn().mockReturnThis(),
+      end: jest.fn()
+    }
+
+    const mockFunc = UserTransaction.delete as jest.Mock
+    mockFunc.mockResolvedValue(null)
+
+    await UsersController.delete(request as Request, response as Response)
+
+    expect(mockFunc).toHaveBeenCalledTimes(1)
+    expect(response.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND)
+    expect(response.end).toHaveBeenCalled()
+  })
 })

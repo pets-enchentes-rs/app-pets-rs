@@ -89,6 +89,6 @@ export default class UsersController {
 
     if (!result) return res.status(HttpStatus.NOT_FOUND).end()
 
-    return res.json('Usuário deletado com sucesso')
+    return res.status(HttpStatus.OK).json('Usuário deletado com sucesso')
   }
 }
