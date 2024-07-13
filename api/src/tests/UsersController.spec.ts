@@ -130,11 +130,6 @@ describe('Users Controller', () => {
       json: jest.fn()
     }
 
-    const mock = UserTransaction.insert as jest.Mock
-    mock.mockResolvedValueOnce(1)
-
-    await UsersController.add(request as Request, response as Response)
-
     const mockUser: User = {
       id: 1,
       name: 'Fernando',
@@ -143,6 +138,11 @@ describe('Users Controller', () => {
       phone: '51999887766',
       password: 'teste123'
     }
+
+    const mock = UserTransaction.insert as jest.Mock
+    mock.mockResolvedValueOnce(1)
+
+    await UsersController.add(request as Request, response as Response)
 
     expect(UserTransaction.insert).toHaveBeenCalledTimes(1)
     expect(UserTransaction.insert).toHaveBeenCalledWith(mockUser)
@@ -153,13 +153,7 @@ describe('Users Controller', () => {
 
   test('Should return internal server error if user creation fails', async () => {
     const request: Partial<Request> = {
-      body: {
-        name: 'Fernando',
-        email: 'email@teste.com',
-        image: 'foto',
-        phone: '51999887766',
-        password: 'teste123'
-      }
+      body: {}
     }
 
     const response: Partial<Response> = {
@@ -174,6 +168,60 @@ describe('Users Controller', () => {
 
     expect(UserTransaction.insert).toHaveBeenCalledTimes(1)
     expect(response.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR)
+    expect(response.end).toHaveBeenCalled()
+  })
+
+  test('Should return user with specific email and password', async () => {
+    const request: Partial<Request> = {
+      body: {
+        email: 'email@teste.com',
+        password: 'teste123'
+      }
+    }
+
+    const response: Partial<Response> = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    }
+
+    const mockUser: User = {
+      id: 1,
+      name: 'Fernando',
+      email: 'email@teste.com',
+      image: 'foto',
+      phone: '51999887766',
+      password: 'teste123'
+    }
+
+    const mock = UserTransaction.getByLogin as jest.Mock
+    mock.mockResolvedValue(mockUser)
+
+    await UsersController.login(request as Request, response as Response)
+
+    expect(UserTransaction.getByLogin).toHaveBeenCalledTimes(1)
+    expect(UserTransaction.getByLogin).toHaveBeenCalledWith('email@teste.com', 'teste123')
+
+    expect(response.json).toHaveBeenCalledWith(mockUser)
+    expect(response.status).toHaveBeenCalledWith(HttpStatus.OK)
+  })
+
+  test('Should return Not Found when there is no user with specific login', async () => {
+    const request: Partial<Request> = {
+      body: {}
+    }
+
+    const response: Partial<Response> = {
+      status: jest.fn().mockReturnThis(),
+      end: jest.fn()
+    }
+
+    const mock = UserTransaction.getByLogin as jest.Mock
+    mock.mockResolvedValue(null)
+
+    await UsersController.login(request as Request, response as Response)
+
+    expect(UserTransaction.getByLogin).toHaveBeenCalledTimes(1)
+    expect(response.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND)
     expect(response.end).toHaveBeenCalled()
   })
 })
