@@ -45,7 +45,7 @@ describe('Users Controller', () => {
     expect(response.status).toHaveBeenCalledWith(HttpStatus.OK)
   })
 
-  test('Should return no content when no users are found', async () => {
+  test('Should return No Content when no users are found', async () => {
     const response: Partial<Response> = {
       status: jest.fn().mockReturnThis(),
       end: jest.fn()
@@ -92,7 +92,7 @@ describe('Users Controller', () => {
     expect(response.status).toHaveBeenLastCalledWith(HttpStatus.OK)
   })
 
-  test('Should return no content when the specific user is not found', async () => {
+  test('Should return No Content when the specific user is not found', async () => {
     const request: Partial<Request> = {
       params: {
         id: ''
@@ -151,7 +151,7 @@ describe('Users Controller', () => {
     expect(response.status).toHaveBeenCalledWith(HttpStatus.CREATED)
   })
 
-  test('Should return internal server error if user creation fails', async () => {
+  test('Should return Internal Server Error if user creation fails', async () => {
     const request: Partial<Request> = {
       body: {}
     }
@@ -222,6 +222,65 @@ describe('Users Controller', () => {
 
     expect(UserTransaction.getByLogin).toHaveBeenCalledTimes(1)
     expect(response.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND)
+    expect(response.end).toHaveBeenCalled()
+  })
+
+  test('Should return updated user with specific ID', async () => {
+    const request: Partial<Request> = {
+      params: {
+        id: '1'
+      },
+      body: {
+        name: 'Fernando',
+        email: 'novo_email@teste.com',
+        image: 'foto1',
+        phone: '51999887766'
+      }
+    }
+
+    const response: Partial<Response> = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    }
+
+    const mockUser: Partial<User> = {
+      id: 1,
+      name: 'Fernando',
+      email: 'novo_email@teste.com',
+      image: 'foto1',
+      phone: '51999887766'
+    }
+
+    const mock = UserTransaction.update as jest.Mock
+    mock.mockResolvedValue(mockUser)
+
+    await UsersController.update(request as Request, response as Response)
+
+    expect(UserTransaction.update).toHaveBeenCalledTimes(1)
+    expect(UserTransaction.update).toHaveBeenCalledWith(mockUser.id, mockUser)
+
+    expect(response.json).toHaveBeenCalledWith(mockUser)
+    expect(response.status).toHaveBeenCalledWith(HttpStatus.OK)
+  })
+
+  test('Should return Internal Server Error if user update fails', async () => {
+    const request: Partial<Request> = {
+      params: {},
+      body: {}
+    }
+
+    const response: Partial<Response> = {
+      status: jest.fn().mockReturnThis(),
+      end: jest.fn()
+    }
+
+    const mock = UserTransaction.update as jest.Mock
+    mock.mockResolvedValue(null)
+
+    await UsersController.update(request as Request, response as Response)
+
+    expect(UserTransaction.update).toHaveBeenCalledTimes(1)
+    expect(response.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR)
     expect(response.end).toHaveBeenCalled()
   })
 })

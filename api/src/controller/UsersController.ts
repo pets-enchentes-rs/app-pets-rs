@@ -59,7 +59,7 @@ export default class UsersController {
 
     if (result) {
       user.id = parseInt(id)
-      res.json(user)
+      return res.status(HttpStatus.OK).json(user)
     }
 
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).end()
