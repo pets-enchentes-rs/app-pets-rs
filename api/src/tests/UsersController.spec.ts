@@ -35,12 +35,12 @@ describe('Users Controller', () => {
       }
     ]
 
-    const mock = UserTransaction.getAll as jest.Mock
-    mock.mockResolvedValueOnce(mockUsers)
+    const mockFunc = UserTransaction.getAll as jest.Mock
+    mockFunc.mockResolvedValueOnce(mockUsers)
 
     await UsersController.findAll({} as Request, response as Response)
 
-    expect(UserTransaction.getAll).toHaveBeenCalledTimes(1)
+    expect(mockFunc).toHaveBeenCalledTimes(1)
     expect(response.json).toHaveBeenCalledWith(mockUsers)
     expect(response.status).toHaveBeenCalledWith(HttpStatus.OK)
   })
@@ -51,12 +51,12 @@ describe('Users Controller', () => {
       end: jest.fn()
     }
 
-    const mock = UserTransaction.getAll as jest.Mock
-    mock.mockResolvedValueOnce(null)
+    const mockFunc = UserTransaction.getAll as jest.Mock
+    mockFunc.mockResolvedValueOnce(null)
 
     await UsersController.findAll({} as Request, response as Response)
 
-    expect(UserTransaction.getAll).toHaveBeenCalledTimes(1)
+    expect(mockFunc).toHaveBeenCalledTimes(1)
     expect(response.end).toHaveBeenCalled()
     expect(response.status).toHaveBeenCalledWith(HttpStatus.NO_CONTENT)
   })
@@ -64,7 +64,7 @@ describe('Users Controller', () => {
   test('Should return the user with the specific ID', async () => {
     const request: Partial<Request> = {
       params: {
-        id: '1'
+        id: '5'
       }
     }
 
@@ -74,7 +74,7 @@ describe('Users Controller', () => {
     }
 
     const mockUser: User = {
-      id: 1,
+      id: 5,
       name: 'Fernando',
       email: 'email@teste.com',
       image: 'foto',
@@ -82,12 +82,13 @@ describe('Users Controller', () => {
       password: 'teste123'
     }
 
-    const mock = UserTransaction.getById as jest.Mock
-    mock.mockResolvedValueOnce(mockUser)
+    const mockFunc = UserTransaction.getById as jest.Mock
+    mockFunc.mockResolvedValueOnce(mockUser)
 
     await UsersController.findById(request as Request, response as Response)
 
-    expect(UserTransaction.getById).toHaveBeenCalledTimes(1)
+    expect(mockFunc).toHaveBeenCalledTimes(1)
+    expect(mockFunc).toHaveBeenCalledWith(5)
     expect(response.json).toHaveBeenCalledWith(mockUser)
     expect(response.status).toHaveBeenLastCalledWith(HttpStatus.OK)
   })
@@ -104,12 +105,12 @@ describe('Users Controller', () => {
       end: jest.fn()
     }
 
-    const mock = UserTransaction.getById as jest.Mock
-    mock.mockResolvedValueOnce(null)
+    const mockFunc = UserTransaction.getById as jest.Mock
+    mockFunc.mockResolvedValueOnce(null)
 
     await UsersController.findById(request as Request, response as Response)
 
-    expect(UserTransaction.getById).toHaveBeenCalledTimes(1)
+    expect(mockFunc).toHaveBeenCalledTimes(1)
     expect(response.end).toHaveBeenCalled()
     expect(response.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND)
   })
@@ -139,13 +140,13 @@ describe('Users Controller', () => {
       password: 'teste123'
     }
 
-    const mock = UserTransaction.insert as jest.Mock
-    mock.mockResolvedValueOnce(1)
+    const mockFunc = UserTransaction.insert as jest.Mock
+    mockFunc.mockResolvedValueOnce(1)
 
     await UsersController.add(request as Request, response as Response)
 
-    expect(UserTransaction.insert).toHaveBeenCalledTimes(1)
-    expect(UserTransaction.insert).toHaveBeenCalledWith(mockUser)
+    expect(mockFunc).toHaveBeenCalledTimes(1)
+    expect(mockFunc).toHaveBeenCalledWith(mockUser)
 
     expect(response.json).toHaveBeenCalledWith(mockUser)
     expect(response.status).toHaveBeenCalledWith(HttpStatus.CREATED)
@@ -161,12 +162,12 @@ describe('Users Controller', () => {
       end: jest.fn()
     }
 
-    const mockInsert = UserTransaction.insert as jest.Mock
-    mockInsert.mockResolvedValueOnce(null)
+    const mockFunc = UserTransaction.insert as jest.Mock
+    mockFunc.mockResolvedValueOnce(null)
 
     await UsersController.add(request as Request, response as Response)
 
-    expect(UserTransaction.insert).toHaveBeenCalledTimes(1)
+    expect(mockFunc).toHaveBeenCalledTimes(1)
     expect(response.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR)
     expect(response.end).toHaveBeenCalled()
   })
@@ -193,13 +194,13 @@ describe('Users Controller', () => {
       password: 'teste123'
     }
 
-    const mock = UserTransaction.getByLogin as jest.Mock
-    mock.mockResolvedValue(mockUser)
+    const mockFunc = UserTransaction.getByLogin as jest.Mock
+    mockFunc.mockResolvedValue(mockUser)
 
     await UsersController.login(request as Request, response as Response)
 
-    expect(UserTransaction.getByLogin).toHaveBeenCalledTimes(1)
-    expect(UserTransaction.getByLogin).toHaveBeenCalledWith('email@teste.com', 'teste123')
+    expect(mockFunc).toHaveBeenCalledTimes(1)
+    expect(mockFunc).toHaveBeenCalledWith('email@teste.com', 'teste123')
 
     expect(response.json).toHaveBeenCalledWith(mockUser)
     expect(response.status).toHaveBeenCalledWith(HttpStatus.OK)
@@ -215,12 +216,12 @@ describe('Users Controller', () => {
       end: jest.fn()
     }
 
-    const mock = UserTransaction.getByLogin as jest.Mock
-    mock.mockResolvedValue(null)
+    const mockFunc = UserTransaction.getByLogin as jest.Mock
+    mockFunc.mockResolvedValue(null)
 
     await UsersController.login(request as Request, response as Response)
 
-    expect(UserTransaction.getByLogin).toHaveBeenCalledTimes(1)
+    expect(mockFunc).toHaveBeenCalledTimes(1)
     expect(response.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND)
     expect(response.end).toHaveBeenCalled()
   })
@@ -251,13 +252,13 @@ describe('Users Controller', () => {
       phone: '51999887766'
     }
 
-    const mock = UserTransaction.update as jest.Mock
-    mock.mockResolvedValue(mockUser)
+    const mockFunc = UserTransaction.update as jest.Mock
+    mockFunc.mockResolvedValue(mockUser)
 
     await UsersController.update(request as Request, response as Response)
 
-    expect(UserTransaction.update).toHaveBeenCalledTimes(1)
-    expect(UserTransaction.update).toHaveBeenCalledWith(mockUser.id, mockUser)
+    expect(mockFunc).toHaveBeenCalledTimes(1)
+    expect(mockFunc).toHaveBeenCalledWith(mockUser.id, mockUser)
 
     expect(response.json).toHaveBeenCalledWith(mockUser)
     expect(response.status).toHaveBeenCalledWith(HttpStatus.OK)
@@ -274,12 +275,12 @@ describe('Users Controller', () => {
       end: jest.fn()
     }
 
-    const mock = UserTransaction.update as jest.Mock
-    mock.mockResolvedValue(null)
+    const mockFunc = UserTransaction.update as jest.Mock
+    mockFunc.mockResolvedValue(null)
 
     await UsersController.update(request as Request, response as Response)
 
-    expect(UserTransaction.update).toHaveBeenCalledTimes(1)
+    expect(mockFunc).toHaveBeenCalledTimes(1)
     expect(response.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR)
     expect(response.end).toHaveBeenCalled()
   })
