@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsnd --quiet --debug --inspect -- ./src/server.ts",
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\"",
-    "test": "jest"
+    "test": "jest --verbose"
   },
   "dependencies": {
     "cors": "^2.8.5",

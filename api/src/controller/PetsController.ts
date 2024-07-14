@@ -10,7 +10,7 @@ export default class PetsController {
 
     if (!pets) return res.status(HttpStatus.NO_CONTENT).end()
 
-    return res.json(pets)
+    return res.status(HttpStatus.OK).json(pets)
   }
 
   // GET: /pets/1
@@ -21,7 +21,7 @@ export default class PetsController {
 
     if (!pet) return res.status(HttpStatus.NOT_FOUND).end()
 
-    return res.json(pet)
+    return res.status(HttpStatus.OK).json(pet)
   }
 
   // POST: /pets
@@ -33,7 +33,7 @@ export default class PetsController {
     if (id) {
       pet.id = id
 
-      return res.json(pet)
+      return res.status(HttpStatus.CREATED).json(pet)
     }
 
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).end()
@@ -48,7 +48,7 @@ export default class PetsController {
 
     if (result) {
       pet.id = parseInt(id)
-      res.json(pet)
+      return res.status(HttpStatus.OK).json(pet)
     }
 
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).end()
@@ -62,6 +62,6 @@ export default class PetsController {
 
     if (!result) return res.status(HttpStatus.NOT_FOUND).end()
 
-    return res.json('Pet deletado com sucesso')
+    return res.status(HttpStatus.OK).json('Pet deletado com sucesso')
   }
 }

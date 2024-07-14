@@ -11,7 +11,7 @@ describe('Users Controller', () => {
     jest.clearAllMocks()
   })
 
-  test('Should return all users registered', async () => {
+  test('Should return all registered Users', async () => {
     const response: Partial<Response> = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
@@ -23,6 +23,7 @@ describe('Users Controller', () => {
         id: 1,
         name: 'Fernando',
         email: 'fernando@email.com',
+        image: 'photo.png',
         phone: '51988887777',
         password: 'teste123'
       },
@@ -30,6 +31,7 @@ describe('Users Controller', () => {
         id: 2,
         name: 'Evelyn',
         email: 'evelyn@email.com',
+        image: 'photo.png',
         phone: '51977776666',
         password: 'teste321'
       }
@@ -45,7 +47,7 @@ describe('Users Controller', () => {
     expect(response.status).toHaveBeenCalledWith(HttpStatus.OK)
   })
 
-  test('Should return No Content when no users are found', async () => {
+  test('Should return No Content when no Users are found', async () => {
     const response: Partial<Response> = {
       status: jest.fn().mockReturnThis(),
       end: jest.fn()
@@ -61,7 +63,7 @@ describe('Users Controller', () => {
     expect(response.status).toHaveBeenCalledWith(HttpStatus.NO_CONTENT)
   })
 
-  test('Should return the user with the specific ID', async () => {
+  test('Should return the User with the specific ID', async () => {
     const request: Partial<Request> = {
       params: {
         id: '5'
@@ -77,7 +79,7 @@ describe('Users Controller', () => {
       id: 5,
       name: 'Fernando',
       email: 'email@teste.com',
-      image: 'foto',
+      image: 'photo.png',
       phone: '51999887766',
       password: 'teste123'
     }
@@ -94,7 +96,7 @@ describe('Users Controller', () => {
     expect(response.status).toHaveBeenLastCalledWith(HttpStatus.OK)
   })
 
-  test('Should return No Content when the specific user is not found', async () => {
+  test('Should return No Content when the specific User is not found', async () => {
     const request: Partial<Request> = {
       params: {}
     }
@@ -119,7 +121,7 @@ describe('Users Controller', () => {
       body: {
         name: 'Fernando',
         email: 'email@teste.com',
-        image: 'foto',
+        image: 'photo.png',
         phone: '51999887766',
         password: 'teste123'
       }
@@ -131,16 +133,16 @@ describe('Users Controller', () => {
     }
 
     const mockUser: User = {
-      id: 1,
+      id: 5,
       name: 'Fernando',
       email: 'email@teste.com',
-      image: 'foto',
+      image: 'photo.png',
       phone: '51999887766',
       password: 'teste123'
     }
 
     const mockFunc = UserTransaction.insert as jest.Mock
-    mockFunc.mockResolvedValueOnce(1)
+    mockFunc.mockResolvedValueOnce(5)
 
     await UsersController.add(request as Request, response as Response)
 
@@ -151,7 +153,7 @@ describe('Users Controller', () => {
     expect(response.status).toHaveBeenCalledWith(HttpStatus.CREATED)
   })
 
-  test('Should return Internal Server Error if user creation fails', async () => {
+  test('Should return Internal Server Error if User creation fails', async () => {
     const request: Partial<Request> = {
       body: {}
     }
@@ -171,7 +173,7 @@ describe('Users Controller', () => {
     expect(response.end).toHaveBeenCalled()
   })
 
-  test('Should return user with specific email and password', async () => {
+  test('Should return User with specific email and password', async () => {
     const request: Partial<Request> = {
       body: {
         email: 'email@teste.com',
@@ -198,7 +200,7 @@ describe('Users Controller', () => {
     expect(response.status).toHaveBeenCalledWith(HttpStatus.OK)
   })
 
-  test('Should return Not Found when there is no user with specific login', async () => {
+  test('Should return Not Found when there is no User with specific login', async () => {
     const request: Partial<Request> = {
       body: {}
     }
@@ -218,15 +220,15 @@ describe('Users Controller', () => {
     expect(response.end).toHaveBeenCalled()
   })
 
-  test('Should return updated user with specific ID', async () => {
+  test('Should return updated User with specific ID', async () => {
     const request: Partial<Request> = {
       params: {
-        id: '1'
+        id: '5'
       },
       body: {
         name: 'Fernando',
         email: 'novo_email@teste.com',
-        image: 'foto1',
+        image: 'photo1.png',
         phone: '51999887766'
       }
     }
@@ -237,10 +239,10 @@ describe('Users Controller', () => {
     }
 
     const mockUser: Partial<User> = {
-      id: 1,
+      id: 5,
       name: 'Fernando',
       email: 'novo_email@teste.com',
-      image: 'foto1',
+      image: 'photo1.png',
       phone: '51999887766'
     }
 
@@ -250,13 +252,13 @@ describe('Users Controller', () => {
     await UsersController.update(request as Request, response as Response)
 
     expect(mockFunc).toHaveBeenCalledTimes(1)
-    expect(mockFunc).toHaveBeenCalledWith(1, mockUser)
+    expect(mockFunc).toHaveBeenCalledWith(5, mockUser)
 
     expect(response.json).toHaveBeenCalledWith(mockUser)
     expect(response.status).toHaveBeenCalledWith(HttpStatus.OK)
   })
 
-  test('Should return Internal Server Error if user update fails', async () => {
+  test('Should return Internal Server Error if User update fails', async () => {
     const request: Partial<Request> = {
       params: {},
       body: {}
@@ -314,7 +316,7 @@ describe('Users Controller', () => {
     expect(response.json).toHaveBeenCalledWith(mockUser)
   })
 
-  test('Should return Internal Server Error when user isnt found or Change Password doesnt work', async () => {
+  test('Should return Internal Server Error when User isnt found or Change Password doesnt work', async () => {
     const request: Partial<Request> = {
       params: {},
       body: {}
@@ -340,7 +342,7 @@ describe('Users Controller', () => {
     expect(response.end).toHaveBeenCalled()
   })
 
-  test('Should return OK when delete user with specific ID', async () => {
+  test('Should return OK when delete User with specific ID', async () => {
     const request: Partial<Request> = {
       params: {
         id: '5'
@@ -364,7 +366,7 @@ describe('Users Controller', () => {
     expect(response.json).toHaveBeenCalledWith('Usuário deletado com sucesso')
   })
 
-  test('Should return Not Found if there is no user with specific ID', async () => {
+  test('Should return Not Found if there is no User with specific ID', async () => {
     const request: Partial<Request> = {
       params: {}
     }
