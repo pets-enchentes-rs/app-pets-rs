@@ -285,6 +285,69 @@ describe('Users Controller', () => {
     expect(response.end).toHaveBeenCalled()
   })
 
+  test('Should return User with new password', async () => {
+    const request: Partial<Request> = {
+      params: {
+        id: '5'
+      },
+      body: {
+        newPass: 'newPassword'
+      }
+    }
+
+    const response: Partial<Response> = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    }
+
+    const mockUser = { id: 5, password: 'oldPassword' } as User
+
+    const mockGetById = UserTransaction.getById as jest.Mock
+    mockGetById.mockResolvedValue(mockUser)
+
+    const mockChangePass = UserTransaction.changePassword as jest.Mock
+    mockChangePass.mockResolvedValue(1)
+
+    await UsersController.changePassword(request as Request, response as Response)
+
+    expect(mockGetById).toHaveBeenCalledTimes(1)
+    expect(mockGetById).toHaveBeenCalledWith(mockUser.id)
+
+    expect(mockChangePass).toHaveBeenCalledTimes(1)
+    expect(mockChangePass).toHaveBeenCalledWith(mockUser.id, request.body.newPass)
+
+    expect(mockUser.password).toBe(request.body.newPass)
+
+    expect(response.status).toHaveBeenCalledWith(HttpStatus.OK)
+    expect(response.json).toHaveBeenCalledWith(mockUser)
+  })
+
+  test('Should return Internal Server Error when user isnt found or Change Password doesnt work', async () => {
+    const request: Partial<Request> = {
+      params: {},
+      body: {}
+    }
+
+    const response: Partial<Response> = {
+      status: jest.fn().mockReturnThis(),
+      end: jest.fn()
+    }
+
+    const mockGetById = UserTransaction.getById as jest.Mock
+    mockGetById.mockResolvedValue(null)
+
+    const mockChangePass = UserTransaction.changePassword as jest.Mock
+    mockChangePass.mockResolvedValue(null)
+
+    await UsersController.changePassword(request as Request, response as Response)
+
+    expect(mockGetById).toHaveBeenCalledTimes(1)
+    expect(mockChangePass).toHaveBeenCalledTimes(1)
+
+    expect(response.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR)
+    expect(response.end).toHaveBeenCalled()
+  })
+
   test('Should return OK when delete user with specific ID', async () => {
     const request: Partial<Request> = {
       params: {

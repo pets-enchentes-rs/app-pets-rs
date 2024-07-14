@@ -75,7 +75,7 @@ export default class UsersController {
 
     if (user && data) {
       user.password = newPass
-      return res.json(user)
+      return res.status(HttpStatus.OK).json(user)
     }
 
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).end()
