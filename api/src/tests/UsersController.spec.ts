@@ -89,15 +89,14 @@ describe('Users Controller', () => {
 
     expect(mockFunc).toHaveBeenCalledTimes(1)
     expect(mockFunc).toHaveBeenCalledWith(5)
+
     expect(response.json).toHaveBeenCalledWith(mockUser)
     expect(response.status).toHaveBeenLastCalledWith(HttpStatus.OK)
   })
 
   test('Should return No Content when the specific user is not found', async () => {
     const request: Partial<Request> = {
-      params: {
-        id: ''
-      }
+      params: {}
     }
 
     const response: Partial<Response> = {
@@ -185,14 +184,7 @@ describe('Users Controller', () => {
       json: jest.fn()
     }
 
-    const mockUser: User = {
-      id: 1,
-      name: 'Fernando',
-      email: 'email@teste.com',
-      image: 'foto',
-      phone: '51999887766',
-      password: 'teste123'
-    }
+    const mockUser = { email: 'email@teste.com', password: 'teste123' } as User
 
     const mockFunc = UserTransaction.getByLogin as jest.Mock
     mockFunc.mockResolvedValue(mockUser)
@@ -258,7 +250,7 @@ describe('Users Controller', () => {
     await UsersController.update(request as Request, response as Response)
 
     expect(mockFunc).toHaveBeenCalledTimes(1)
-    expect(mockFunc).toHaveBeenCalledWith(mockUser.id, mockUser)
+    expect(mockFunc).toHaveBeenCalledWith(1, mockUser)
 
     expect(response.json).toHaveBeenCalledWith(mockUser)
     expect(response.status).toHaveBeenCalledWith(HttpStatus.OK)
@@ -300,7 +292,7 @@ describe('Users Controller', () => {
       json: jest.fn()
     }
 
-    const mockUser = { id: 5, password: 'oldPassword' } as User
+    const mockUser: Partial<User> = { id: 5, password: 'oldPassword' }
 
     const mockGetById = UserTransaction.getById as jest.Mock
     mockGetById.mockResolvedValue(mockUser)
