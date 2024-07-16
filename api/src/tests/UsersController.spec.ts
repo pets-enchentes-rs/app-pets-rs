@@ -4,7 +4,7 @@ import { User } from '../models'
 import { UserTransaction } from '../transactions'
 import { Request, Response } from 'express'
 
-jest.mock('../transactions/UserTransaction.ts')
+jest.mock('../transactions/UserTransaction')
 
 describe('Users Controller', () => {
   beforeEach(() => {

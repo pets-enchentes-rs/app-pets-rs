@@ -5,7 +5,7 @@ import { Pet } from '../models'
 import { Request, Response } from 'express'
 import { PetType } from '../enums/PetType'
 
-jest.mock('../transactions/PetTransaction.ts')
+jest.mock('../transactions/PetTransaction')
 
 describe('Pets Controller', () => {
   beforeEach(() => {
